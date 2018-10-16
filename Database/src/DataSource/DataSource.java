@@ -18,12 +18,12 @@ public final class DataSource {
     private static HikariConfig config = new HikariConfig();
 
     public static Connection getConnection() throws SQLException {
-        HikariDataSource ds = new com.zaxxer.hikari.HikariDataSource(config);
+        HikariDataSource ds = new HikariDataSource(config);
         return ds.getConnection();
     }
 
     public static void configSetup(){
-        config.setJdbcUrl("jdbc:sql://localhost:3306/traderbobsemporium");
+        config.setJdbcUrl("jdbc:mysql://localhost:3306/traderbobsemporium");
         config.setUsername("root");
         config.setPassword("root");
         config.addDataSourceProperty("cachePrepStmts", "true");

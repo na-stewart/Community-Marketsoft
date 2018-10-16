@@ -1,6 +1,6 @@
 package Main;
 
-import DataSource.DataSource;
+import ID.ID;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -11,13 +11,8 @@ import javafx.stage.Stage;
  * All rights reserved.
  */
 public class Main extends Application {
-
     @Override
-    public void start(Stage primaryStage) throws Exception {
-       DataSource.configSetup();
-    }
+    public void start(Stage stage) throws Exception {
 
-    public void main(String[] args){
-        launch(args);
     }
 }

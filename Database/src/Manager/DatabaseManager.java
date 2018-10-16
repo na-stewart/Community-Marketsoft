@@ -20,13 +20,25 @@ import java.sql.SQLException;
 public class DatabaseManager {
 
     public ResultSet receiver(String query) throws SQLException {
-        CachedRowSet crs = new CachedRowSetImpl();
-        PreparedStatement preparedStatement = DataSource.getConnection().prepareStatement(query);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        crs.populate(resultSet);
+        CachedRowSet cachedRowSet = new CachedRowSetImpl();
+        Connection connection = DataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        cachedRowSet.populate(preparedStatement.executeQuery());
+        tryToCloseReceiver(preparedStatement, connection);
+        return cachedRowSet;
+    }
+
+    private void tryToCloseReceiver(PreparedStatement preparedStatement, Connection connection){
+        try {
+          closeReceiver(preparedStatement, connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void closeReceiver(PreparedStatement preparedStatement, Connection connection) throws SQLException {
+        connection.close();
         preparedStatement.close();
-        resultSet.close();
-        return crs;
     }
 
     public void update(String query) throws SQLException {
