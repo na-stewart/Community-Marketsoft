@@ -7,4 +7,5 @@ package Admin;
  * All rights reserved.
  */
 public class AdminPanel {
+
 }

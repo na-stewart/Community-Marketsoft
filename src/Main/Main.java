@@ -1,6 +1,6 @@
 package Main;
 
-import ID.ID;
+import GUILoader.GUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -11,8 +11,11 @@ import javafx.stage.Stage;
  * All rights reserved.
  */
 public class Main extends Application {
+    public static Stage mainStage;
     @Override
     public void start(Stage stage) throws Exception {
+        mainStage = stage;
+        new GUI(stage, "Login/LoginGUI/LoginGUI.fxml");
 
     }
 }

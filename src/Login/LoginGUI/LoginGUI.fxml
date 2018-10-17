@@ -1,14 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Login.LoginGUI.LoginGUI"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login.LoginGUI.GUIController">
+   <children>
+      <ImageView fx:id="backgroundImage" fitHeight="543.0" fitWidth="885.0">
+         <image>
+            <Image url="@Resources/2869952188041c352fc4c5077cb91e14.jpg" />
+         </image>
+      </ImageView>
+      <VBox layoutX="76.0" layoutY="109.0" prefHeight="357.0" prefWidth="708.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="77.0" AnchorPane.leftAnchor="76.0" AnchorPane.rightAnchor="101.0" AnchorPane.topAnchor="109.0">
+         <children>
+            <VBox alignment="CENTER" fillWidth="false" prefHeight="155.0" prefWidth="708.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
+                     <font>
+                        <Font name="System Bold" size="26.0" />
+                     </font>
+                  </Text>
+                  <PasswordField prefHeight="31.0" prefWidth="469.0" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" fillWidth="false" prefHeight="108.0" prefWidth="708.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
+                     <font>
+                        <Font name="System Bold" size="26.0" />
+                     </font>
+                  </Text>
+                  <TextField prefHeight="31.0" prefWidth="462.0" />
+               </children>
+            </VBox>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="64.0" prefWidth="708.0" spacing="200.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="99.0" text="Register" />
+                  <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="99.0" text="Login" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <StackPane layoutX="162.0" layoutY="-8.0" prefHeight="126.0" prefWidth="537.0" AnchorPane.leftAnchor="162.0" AnchorPane.rightAnchor="186.0" AnchorPane.topAnchor="-8.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Trader Bobs Emporium" textAlignment="CENTER">
+               <font>
+                  <Font name="Leelawadee UI" size="53.0" />
+               </font>
+            </Text>
+         </children>
+      </StackPane>
+   </children>
 </AnchorPane>

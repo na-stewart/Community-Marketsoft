@@ -10,7 +10,7 @@ import Manager.DatabaseManager;
  * All rights reserved.
  */
 public class LoginPanel implements Database {
-    DatabaseManager databaseManager = new DatabaseManager();
+
 
     @Override
     public void receiveData() {
