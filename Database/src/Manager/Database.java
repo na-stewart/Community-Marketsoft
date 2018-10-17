@@ -1,5 +1,7 @@
 package Manager;
 
+import java.sql.SQLException;
+
 /**
  * @Author Aidan Stewart
  * @Year 2018
@@ -7,6 +9,6 @@ package Manager;
  * All rights reserved.
  */
 public interface Database {
-    void receiveData();
-    void updateData();
+    void receiveDatabaseData() throws SQLException;
+    void updateDatabaseData() throws SQLException;
 }

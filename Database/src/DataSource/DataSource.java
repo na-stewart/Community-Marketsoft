@@ -3,6 +3,7 @@ package DataSource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -16,6 +17,10 @@ import java.sql.SQLException;
 public final class DataSource {
 
     private static HikariConfig config = new HikariConfig();
+
+    private DataSource(){
+
+    }
 
     public static Connection getConnection() throws SQLException {
         HikariDataSource ds = new HikariDataSource(config);
