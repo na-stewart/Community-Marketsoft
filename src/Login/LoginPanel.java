@@ -1,8 +1,6 @@
 package Login;
 
-import AccountPerms.AccountTypePerms;
-import DataSource.DataSource;
-import GUILoader.GUI;
+import DataID.ID;
 import Main.Main;
 import Manager.Database;
 import Manager.DatabaseManager;
@@ -31,9 +29,8 @@ public class LoginPanel implements Database {
     public void receiveDatabaseData() throws SQLException {
         String query = "SELECT * FROM employee WHERE username ='" + user + "' AND password='" + pass + "'";
         ResultSet resultSet = manager.receiver(query);
-        if (resultSet.next())
-            if (!resultSet.getBoolean(5))
-                Main.mainStage.close();
+        if (resultSet.next() && resultSet.getInt(4) != 3)
+            Main.mainStage.close();
         else
             displayAlertDialog(Alert.AlertType.ERROR, alertContexts(true));
         resultSet.close();
@@ -41,8 +38,11 @@ public class LoginPanel implements Database {
 
     @Override
     public void updateDatabaseData() throws SQLException {
-        //String query = "";
-      //  manager.update(query);
+        String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
+                user + "','" +
+                pass + "','" +
+                '3' + "')";
+        manager.update(query);
         displayAlertDialog(Alert.AlertType.INFORMATION,  alertContexts(false));
     }
 
