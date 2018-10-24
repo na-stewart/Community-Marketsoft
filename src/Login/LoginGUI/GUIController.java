@@ -42,7 +42,7 @@ public class GUIController implements Initializable {
         if (buttonText.equals("Login"))
             loginPanel.receiveDatabaseData();
         else
-            loginPanel.updateDatabaseData();
+            loginPanel.updateDatabase();
     }
 
     private void bindBackgroundImage(){

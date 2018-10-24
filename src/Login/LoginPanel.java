@@ -37,7 +37,7 @@ public class LoginPanel implements Database {
     }
 
     @Override
-    public void updateDatabaseData() throws SQLException {
+    public void updateDatabase() throws SQLException {
         String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
                 user + "','" +
                 pass + "','" +
