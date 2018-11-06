@@ -1,2 +1,2 @@
 # Trader Bobs Emporium
-im STUCK :(((( 
+Currently in development.
