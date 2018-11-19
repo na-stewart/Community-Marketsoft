@@ -1,6 +1,6 @@
 package Login.LoginGUI;
 
-import Login.LoginPanel;
+import Login.Login;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -38,9 +38,9 @@ public class GUIController implements Initializable {
     @FXML
     private void buttonActionEvent(ActionEvent event) throws SQLException {
         String buttonText = ((Button) event.getSource()).getText();
-        LoginPanel loginPanel = new LoginPanel(username.getText(), password.getText());
+        Login loginPanel = new Login(username.getText(), password.getText());
         if (buttonText.equals("Login"))
-            loginPanel.receiveDatabaseData();
+            loginPanel.retrieveDatabaseData();
         else
             loginPanel.updateDatabase();
     }

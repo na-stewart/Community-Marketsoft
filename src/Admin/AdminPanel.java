@@ -1,14 +1,10 @@
 package Admin;
 
-import Data.Camper;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import java.net.URL;
-import java.util.ResourceBundle;
+import Manager.MonoQuery;
+import Manager.DatabaseManager;
+import Manager.MultiQuery;
+
+import java.sql.SQLException;
 
 /**
  * @Author Aidan Stewart
@@ -16,21 +12,17 @@ import java.util.ResourceBundle;
  * Copyright (c)
  * All rights reserved.
  */
-public class AdminPanel implements Initializable {
-    @FXML
-    private TableView<Camper> camperTable;
-    @FXML
-    private TableColumn<Camper, TextField> id, name, coinCount;
+public class AdminPanel implements MultiQuery {
+
+    DatabaseManager databaseManager = new DatabaseManager();
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        setCellValueFactories();
+    public void updateDatabase(String query) throws SQLException {
 
     }
 
-    private void setCellValueFactories(){
-        id.setCellValueFactory(new PropertyValueFactory<>("id"));
-        name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        coinCount.setCellValueFactory(new PropertyValueFactory<>("coinCount"));
+    @Override
+    public void retrieveDatabaseData(String query) throws SQLException {
+
     }
 }

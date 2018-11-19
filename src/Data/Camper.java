@@ -1,5 +1,7 @@
 package Data;
 
+import javafx.scene.control.TextField;
+
 /**
  * @Author Aidan Stewart
  * @Year 2018
@@ -7,17 +9,17 @@ package Data;
  * All rights reserved.
  */
 public class Camper {
-    private int id;
+    private String id;
     private String name;
-    private int coinCount;
+    private String balance;
 
-    public Camper(int id, String name, int coinCount) {
+    public Camper(String id, String name, String balance) {
         this.id = id;
         this.name = name;
-        this.coinCount = coinCount;
+        this.balance = balance;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -25,7 +27,7 @@ public class Camper {
         return name;
     }
 
-    public int getCoinCount() {
-        return coinCount;
+    public String getBalance() {
+        return balance;
     }
 }
