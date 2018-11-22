@@ -17,7 +17,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         mainStage = stage;
         DataSource.configSetup();
-        new GUI(stage, "Login/LoginGUI/LoginGUI.fxml");
+        new GUI(stage, "Admin/AdminGUI/AdminGUI.fxml");
 
     }
 }

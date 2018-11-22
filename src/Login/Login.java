@@ -5,7 +5,6 @@ import DataID.ID;
 import Main.Main;
 import Manager.MonoQuery;
 import Manager.DatabaseManager;
-import Util.LoggedInAccountUtil;
 import javafx.scene.control.Alert;
 
 import java.net.InetAddress;
@@ -61,17 +60,10 @@ public class Login implements MonoQuery {
             String query = "SELECT * FROM employee WHERE username ='" + user + "' AND password='" + pass + "'";
             ResultSet resultSet = manager.receiver(query);
             if (canLogin(resultSet)) {
-                setCurrentAccount(resultSet);
                 Main.mainStage.close();
             } else
                 displayAlertDialog(Alert.AlertType.ERROR, alertContexts(true));
             resultSet.close();
-    }
-
-    private void setCurrentAccount(ResultSet resultSet) throws SQLException {
-        LoggedInAccountUtil.setAccountType(AccountType.intToAccountTypePerms(resultSet.getInt(4)));
-        LoggedInAccountUtil.setID(resultSet.getInt(1));
-        LoggedInAccountUtil.setUsername(resultSet.getString(2));
     }
 
     private boolean canLogin(ResultSet resultSet) throws SQLException {

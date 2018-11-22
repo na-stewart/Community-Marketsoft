@@ -1,4 +1,4 @@
-package Data;
+package Data.Consumables;
 
 /**
  * @Author Aidan Stewart
@@ -6,5 +6,6 @@ package Data;
  * Copyright (c)
  * All rights reserved.
  */
-public class Account {
+public enum ItemTypes {
+    CONSUMABLE, MERCH, TOILETRIES
 }

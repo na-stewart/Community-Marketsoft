@@ -9,17 +9,18 @@ import javafx.scene.control.TextField;
  * All rights reserved.
  */
 public class Camper {
-    private String id;
+    private int id;
     private String name;
-    private String balance;
+    private int balance;
 
-    public Camper(String id, String name, String balance) {
+
+    public Camper(int id, String name, int balance) {
         this.id = id;
         this.name = name;
         this.balance = balance;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -27,7 +28,7 @@ public class Camper {
         return name;
     }
 
-    public String getBalance() {
+    public int getBalance() {
         return balance;
     }
 }

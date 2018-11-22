@@ -1,5 +1,6 @@
 package Admin.AdminGUI;
 
+import Admin.AdminPanel;
 import Data.Camper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -27,27 +29,23 @@ public class GUIController implements Initializable {
     private TableView<Camper> camperTableView;
     @FXML
     private TableColumn<Camper, String> camperID, camperName, camperBalance;
+    private AdminPanel adminPanel = new AdminPanel();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //setCellValueFactories();
-
-
+        setCellValueFactories();
+        try {
+            adminPanel.retrieveDatabaseData("SELECT * FROM camper", camperTableView);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     private void setCellValueFactories() {
         camperID.setCellValueFactory(new PropertyValueFactory<>("id"));
         camperName.setCellValueFactory(new PropertyValueFactory<>("name"));
         camperBalance.setCellValueFactory(new PropertyValueFactory<>("balance"));
-
-
-    }
-
-
-
-    private  void something() {
-        ObservableList<Camper> words = FXCollections.observableArrayList();
-        camperTableView.setItems(words);
-
     }
 }
