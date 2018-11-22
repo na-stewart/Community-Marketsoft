@@ -8,7 +8,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public interface Database {
-    void receiveDatabaseData() throws SQLException;
-    void updateDatabaseData() throws SQLException;
+public interface MonoQuery {
+    void updateDatabase() throws SQLException;
+    void retrieveDatabaseData() throws SQLException;
 }

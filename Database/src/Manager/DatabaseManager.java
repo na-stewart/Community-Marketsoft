@@ -24,22 +24,11 @@ public class DatabaseManager {
         Connection connection = DataSource.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         cachedRowSet.populate(preparedStatement.executeQuery());
-        tryToCloseReceiver(preparedStatement, connection);
+        connection.close();
+        preparedStatement.close();
         return cachedRowSet;
     }
 
-    private void tryToCloseReceiver(PreparedStatement preparedStatement, Connection connection){
-        try {
-          closeReceiver(preparedStatement, connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void closeReceiver(PreparedStatement preparedStatement, Connection connection) throws SQLException {
-        connection.close();
-        preparedStatement.close();
-    }
 
     public void update(String query) throws SQLException {
         PreparedStatement preparedStatement = DataSource.getConnection().prepareStatement(query);
