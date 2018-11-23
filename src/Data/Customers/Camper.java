@@ -1,4 +1,4 @@
-package Data;
+package Data.Customers;
 
 import javafx.scene.control.TextField;
 

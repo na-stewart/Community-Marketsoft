@@ -1,4 +1,4 @@
-package Data;
+package Data.Customers;
 
 import AccountTypes.AccountType;
 
@@ -9,22 +9,22 @@ import AccountTypes.AccountType;
  * All rights reserved.
  */
 public class Employee {
-    private int ID;
+    private int id;
     private String username;
     private String password;
     private AccountType accountType;
     private String macAddress;
 
     public Employee(int ID, String username, String password, AccountType accountType, String macAddress) {
-        this.ID = ID;
+        this.id = ID;
         this.username = username;
         this.password = password;
         this.accountType = accountType;
         this.macAddress = macAddress;
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
     public String getUsername() {

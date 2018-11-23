@@ -73,8 +73,8 @@
                                     </columnResizePolicy>
                                     <columns>
                                         <TableColumn fx:id="camperID" prefWidth="75.0" text="ID" />
-                                        <TableColumn fx:id="camperName" prefWidth="75.0" text="Name" />
-                                        <TableColumn fx:id="camperBalance" prefWidth="75.0" text="Balance" />
+                                        <TableColumn fx:id="name" prefWidth="75.0" text="Name" />
+                                        <TableColumn fx:id="balance" prefWidth="75.0" text="Balance" />
                                     </columns>
                                 </TableView>
                             </children>
@@ -161,16 +161,16 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="161.0" prefWidth="332.0">
                             <children>
-                                <TableView layoutX="502.0" prefHeight="568.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <TableView fx:id="employeeTableView" layoutX="502.0" prefHeight="568.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <columnResizePolicy>
                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                     </columnResizePolicy>
                                     <columns>
-                                        <TableColumn prefWidth="75.0" text="ID" />
-                                        <TableColumn prefWidth="75.0" text="Username" />
-                                        <TableColumn prefWidth="75.0" text="Password" />
-                              <TableColumn prefWidth="75.0" text="AccountType" />
-                              <TableColumn prefWidth="75.0" text="Mac Address" />
+                                        <TableColumn fx:id="employeeID" prefWidth="75.0" text="ID" />
+                                        <TableColumn fx:id="username" prefWidth="75.0" text="Username" />
+                                        <TableColumn fx:id="password" prefWidth="75.0" text="Password" />
+                              <TableColumn fx:id="accountType" prefWidth="75.0" text="AccountType" />
+                              <TableColumn fx:id="macAddress" prefWidth="75.0" text="Mac Address" />
                                     </columns>
                                 </TableView>
                                 <Text layoutX="153.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employees">

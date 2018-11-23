@@ -10,5 +10,5 @@ import java.sql.SQLException;
  */
 public interface MultiQuery {
     void updateDatabase(String query) throws SQLException;
-    void retrieveDatabaseData(String query, Object dataViewer) throws SQLException;
+    void retrieveDatabaseData(String query, DatabaseViewer dataViewer) throws SQLException;
 }
