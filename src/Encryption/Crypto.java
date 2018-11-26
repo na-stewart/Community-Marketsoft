@@ -49,7 +49,7 @@ public class Crypto {
 
     public String tryToDecrypt(String secretKey, String encryptedData){
         try {
-            decrypt(secretKey, encryptedData);
+            return decrypt(secretKey, encryptedData);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
