@@ -1,5 +1,6 @@
 package Login.LoginGUI;
 
+import Encryption.Crypto;
 import Login.Login;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

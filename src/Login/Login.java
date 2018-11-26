@@ -1,7 +1,7 @@
 package Login;
 
-import AccountTypes.AccountType;
-import DataID.ID;
+import Data.ID;
+import Encryption.Crypto;
 import Main.Main;
 import Manager.MonoQuery;
 import Manager.DatabaseManager;
@@ -22,6 +22,7 @@ public class Login implements MonoQuery {
     private DatabaseManager manager = new DatabaseManager();
     private String user;
     private String pass;
+    private Crypto crypto = new Crypto();
 
     public Login(String user, String pass) {
         this.user = user;
@@ -48,7 +49,7 @@ public class Login implements MonoQuery {
     public void updateDatabase() throws SQLException {
         String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
                 user + "','" +
-                pass + "','" +
+                crypto.tryToEncrypt("key",pass) + "','" +
                 '3' + "','" +
                 getMacAddress() +"')" ;
         manager.update(query);
@@ -57,7 +58,9 @@ public class Login implements MonoQuery {
 
     @Override
     public void retrieveDatabaseData() throws SQLException {
-            String query = "SELECT * FROM employee WHERE username ='" + user + "' AND password='" + pass + "'";
+        String query = "SELECT * FROM employee WHERE username =" +
+                "'" + user + "' AND password=" +
+                "'" + crypto.tryToEncrypt("key", pass) + "'";
             ResultSet resultSet = manager.receiver(query);
             if (canLogin(resultSet)) {
                 Main.mainStage.close();

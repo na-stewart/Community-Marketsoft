@@ -1,4 +1,4 @@
-package Admin;
+package AccountTypes.Admin;
 
 import AccountTypes.AccountType;
 import Data.Customers.Camper;

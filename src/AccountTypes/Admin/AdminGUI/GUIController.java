@@ -1,11 +1,12 @@
-package Admin.AdminGUI;
+package AccountTypes.Admin.AdminGUI;
 
-import Admin.AdminPanel;
+import AccountTypes.Admin.AdminPanel;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Manager.DatabaseViewer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -22,6 +23,8 @@ import java.util.ResourceBundle;
  */
 public class GUIController implements Initializable {
     @FXML
+    private TabPane tabPane;
+    @FXML
     private TableView<Employee> employeeTableView;
     @FXML
     private TableColumn<Employee, String> employeeID, username, password, accountType, macAddress;
@@ -29,14 +32,14 @@ public class GUIController implements Initializable {
     private TableView<Camper> camperTableView;
     @FXML
     private TableColumn<Camper, String> camperID, name, balance;
-
     private AdminPanel adminPanel = new AdminPanel();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setCellValueFactories();
-        tryToPopulateAll();
-    }
+    setCellValueFactories();
+    tryToPopulateAll();
+}
 
     private void tryToPopulateAll(){
         try {

@@ -1,4 +1,4 @@
-package DataID;
+package Data;
 
 import java.util.Random;
 
@@ -11,6 +11,6 @@ import java.util.Random;
 public class ID {
     public int getId(){
         Random rand = new Random();
-        return rand.nextInt(10000);
+        return rand.nextInt(100000);
     }
 }
