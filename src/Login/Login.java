@@ -49,7 +49,7 @@ public class Login implements MonoQuery {
     public void updateDatabase() throws SQLException {
         String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
                 user + "','" +
-                crypto.tryToEncrypt("key",pass) + "','" +
+                crypto.tryToEncrypt("key", pass) + "','" +
                 '3' + "','" +
                 getMacAddress() +"')" ;
         manager.update(query);

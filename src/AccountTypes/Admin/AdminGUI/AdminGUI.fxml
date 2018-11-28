@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.web.*?>
-<?import javafx.scene.text.*?>
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="761.0" prefWidth="1205.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
     <children>
@@ -33,7 +27,7 @@
                                                         <Font size="25.0" />
                                                     </font>
                                                 </Text>
-                                                <TextField />
+                                                <TextField fx:id="nameField" />
                                             </children>
                                         </VBox>
                                         <VBox alignment="TOP_CENTER" prefHeight="0.0" prefWidth="358.0" spacing="8.0">
@@ -43,7 +37,7 @@
                                                         <Font size="25.0" />
                                                     </font>
                                                 </Text>
-                                                <TextField />
+                                                <TextField fx:id="balanceField" />
                                             </children>
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
@@ -67,7 +61,7 @@
                                         </HBox>
                                     </children>
                                 </VBox>
-                                <TableView fx:id="camperTableView" layoutX="502.0" prefHeight="617.0" prefWidth="701.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <TableView fx:id="camperTableView" layoutX="502.0" onMouseClicked="#tableViewListener" prefHeight="617.0" prefWidth="701.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <columnResizePolicy>
                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                     </columnResizePolicy>
@@ -161,7 +155,7 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="161.0" prefWidth="332.0">
                             <children>
-                                <TableView fx:id="employeeTableView" layoutX="502.0" prefHeight="568.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <TableView fx:id="employeeTableView" layoutX="502.0" onMouseClicked="#tableViewListener" prefHeight="568.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <columnResizePolicy>
                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                     </columnResizePolicy>
@@ -170,7 +164,6 @@
                                         <TableColumn fx:id="username" prefWidth="75.0" text="Username" />
                                         <TableColumn fx:id="password" prefWidth="75.0" text="Password" />
                               <TableColumn fx:id="accountType" prefWidth="75.0" text="AccountType" />
-                              <TableColumn fx:id="macAddress" prefWidth="75.0" text="Mac Address" />
                                     </columns>
                                 </TableView>
                                 <Text layoutX="153.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employees">
@@ -187,7 +180,7 @@
                                                         <Font size="25.0" />
                                                     </font>
                                                 </Text>
-                                                <TextField />
+                                                <TextField fx:id="usernameField" />
                                             </children>
                                         </VBox>
                                         <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
@@ -197,19 +190,9 @@
                                                         <Font size="25.0" />
                                                     </font>
                                                 </Text>
-                                                <TextField />
+                                                <TextField fx:id="passwordField" />
                                             </children>
                                         </VBox>
-                              <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mac Address">
-                                       <font>
-                                          <Font size="25.0" />
-                                       </font>
-                                    </Text>
-                                    <TextField />
-                                 </children>
-                              </VBox>
                                         <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
                                             <children>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Account Type">

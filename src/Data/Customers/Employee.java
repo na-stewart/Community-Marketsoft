@@ -13,14 +13,13 @@ public class Employee {
     private String username;
     private String password;
     private AccountType accountType;
-    private String macAddress;
 
-    public Employee(int ID, String username, String password, AccountType accountType, String macAddress) {
+    public Employee(int ID, String username, String password, AccountType accountType) {
         this.id = ID;
         this.username = username;
         this.password = password;
         this.accountType = accountType;
-        this.macAddress = macAddress;
+
     }
 
     public int getId() {
@@ -37,9 +36,5 @@ public class Employee {
 
     public AccountType getAccountType() {
         return accountType;
-    }
-
-    public String getMacAddress() {
-        return macAddress;
     }
 }

@@ -1,7 +1,5 @@
 package Data.Customers;
 
-import javafx.scene.control.TextField;
-
 /**
  * @Author Aidan Stewart
  * @Year 2018

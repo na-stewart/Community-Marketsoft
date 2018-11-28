@@ -19,9 +19,5 @@ public class Main extends Application {
         mainStage = stage;
         DataSource.configSetup();
         new GUI(stage, "AccountTypes/Admin/AdminGUI/AdminGUI.fxml");
-
-
-
-
     }
 }

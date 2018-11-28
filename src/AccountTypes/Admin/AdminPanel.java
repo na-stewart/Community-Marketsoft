@@ -50,14 +50,14 @@ public class AdminPanel implements MultiQuery {
         tableView.setItems(list);
     }
 
+
     private void populateEmployee(ResultSet resultSet, ObservableList<Employee> employeeList) throws SQLException {
         Crypto crypto = new Crypto();
         int id = resultSet.getInt(1);
         String username = resultSet.getString(2);
         String password = resultSet.getString(3);
         AccountType accountType = AccountType.intToAccountTypePerms(resultSet.getInt(4));
-        String macAddress = resultSet.getString(5);
-        employeeList.add(new Employee(id, username, crypto.tryToDecrypt("key", password), accountType, macAddress));
+        employeeList.add(new Employee(id, username, crypto.tryToDecrypt("key", password), accountType));
 
     }
 

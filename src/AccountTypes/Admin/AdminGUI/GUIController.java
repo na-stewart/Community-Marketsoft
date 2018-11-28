@@ -1,15 +1,15 @@
 package AccountTypes.Admin.AdminGUI;
 
+import AccountTypes.AccountType;
 import AccountTypes.Admin.AdminPanel;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Manager.DatabaseViewer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -25,9 +25,15 @@ public class GUIController implements Initializable {
     @FXML
     private TabPane tabPane;
     @FXML
+    private TextField nameField, balanceField;
+    @FXML
+    private TextField usernameField, passwordField;
+    @FXML
+    private ChoiceBox accountTypes, consumableType;
+    @FXML
     private TableView<Employee> employeeTableView;
     @FXML
-    private TableColumn<Employee, String> employeeID, username, password, accountType, macAddress;
+    private TableColumn<Employee, String> employeeID, username, password, accountType;
     @FXML
     private TableView<Camper> camperTableView;
     @FXML
@@ -49,11 +55,37 @@ public class GUIController implements Initializable {
         }
     }
 
+    @FXML
+    private void tableViewListener(MouseEvent e){
+        String tableView = ((TableView) e.getSource()).getId();
+        if (e.getClickCount() == 2) {
+            switch (tableView) {
+                case "employeeTableView":
+                    setEmployeeFields(employeeTableView.getSelectionModel().getSelectedItem());
+                    break;
+                case "camperTableView":
+                    setCamperFields(camperTableView.getSelectionModel().getSelectedItem());
+                    break;
+
+            }
+        }
+
+    }
+
+    private void setEmployeeFields(Employee employee){
+        usernameField.setText(employee.getUsername());
+        passwordField.setText(employee.getPassword());
+    }
+
+    private void setCamperFields(Camper camper){
+        nameField.setText(camper.getName());
+        balanceField.setText(String.valueOf(camper.getBalance()));
+    }
+
     private void populateAll() throws SQLException {
         adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
         adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
     }
-
 
     private void setCellValueFactories() {
         setEmployeeColumns();
@@ -65,7 +97,6 @@ public class GUIController implements Initializable {
         username.setCellValueFactory(new PropertyValueFactory<>("username"));
         password.setCellValueFactory(new PropertyValueFactory<>("password"));
         accountType.setCellValueFactory(new PropertyValueFactory<>("accountType"));
-        macAddress.setCellValueFactory(new PropertyValueFactory<>("macAddress"));
     }
 
     private void setCamperColumns(){
