@@ -162,7 +162,7 @@
                                     <columns>
                                         <TableColumn fx:id="employeeID" prefWidth="75.0" text="ID" />
                                         <TableColumn fx:id="username" prefWidth="75.0" text="Username" />
-                                        <TableColumn fx:id="password" prefWidth="75.0" text="Password" />
+                              <TableColumn fx:id="password" prefWidth="75.0" text="Password" />
                               <TableColumn fx:id="accountType" prefWidth="75.0" text="AccountType" />
                                     </columns>
                                 </TableView>
@@ -183,16 +183,16 @@
                                                 <TextField fx:id="usernameField" />
                                             </children>
                                         </VBox>
-                                        <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
-                                            <children>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
-                                                    <font>
-                                                        <Font size="25.0" />
-                                                    </font>
-                                                </Text>
-                                                <TextField fx:id="passwordField" />
-                                            </children>
-                                        </VBox>
+                              <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
+                                       <font>
+                                          <Font size="25.0" />
+                                       </font>
+                                    </Text>
+                                    <TextField fx:id="passwordField" />
+                                 </children>
+                              </VBox>
                                         <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
                                             <children>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Account Type">
@@ -200,7 +200,7 @@
                                                         <Font size="25.0" />
                                                     </font>
                                                 </Text>
-                                                <ChoiceBox prefHeight="31.0" prefWidth="388.0" />
+                                                <ChoiceBox fx:id="accountTypes" prefHeight="31.0" prefWidth="388.0" />
                                             </children>
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">

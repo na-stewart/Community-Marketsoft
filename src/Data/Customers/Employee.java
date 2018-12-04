@@ -1,6 +1,6 @@
 package Data.Customers;
 
-import AccountTypes.AccountType;
+import AccountTypes.AccountTypes;
 
 /**
  * @Author Aidan Stewart
@@ -12,12 +12,12 @@ public class Employee {
     private int id;
     private String username;
     private String password;
-    private AccountType accountType;
+    private AccountTypes accountType;
 
-    public Employee(int ID, String username, String password, AccountType accountType) {
+    public Employee(int ID, String username, String password, AccountTypes accountType) {
         this.id = ID;
-        this.username = username;
         this.password = password;
+        this.username = username;
         this.accountType = accountType;
 
     }
@@ -26,15 +26,15 @@ public class Employee {
         return id;
     }
 
+    public String getPassword(){
+        return password;
+    }
+
     public String getUsername() {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public AccountType getAccountType() {
+    public AccountTypes getAccountType() {
         return accountType;
     }
 }

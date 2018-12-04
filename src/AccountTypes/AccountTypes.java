@@ -6,10 +6,10 @@ package AccountTypes;
  * Copyright (c)
  * All rights reserved.
  */
-public enum AccountType {
+public enum AccountTypes {
     ADMIN, EMPLOYEE, VENDOR, UNCONFIRMED;
 
-    public static AccountType intToAccountTypePerms(int accountTypePermsInt){
+    public static AccountTypes intToAccountTypePerms(int accountTypePermsInt){
         switch (accountTypePermsInt){
             case 0:
                 return ADMIN;
@@ -23,7 +23,7 @@ public enum AccountType {
         return null;
     }
 
-    public static int accountTypePermToInt(AccountType accountTypePerms){
+    public static int accountTypePermToInt(AccountTypes accountTypePerms){
         switch (accountTypePerms) {
             case ADMIN:
                 return 0;

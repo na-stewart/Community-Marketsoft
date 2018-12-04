@@ -1,12 +1,12 @@
 package AccountTypes.Admin;
 
-import AccountTypes.AccountType;
+import AccountTypes.AccountTypes;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
-import Encryption.Crypto;
 import Manager.DatabaseManager;
 import Manager.DatabaseViewer;
 import Manager.MultiQuery;
+import Util.LoggedInAccountUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
@@ -52,13 +52,19 @@ public class AdminPanel implements MultiQuery {
 
 
     private void populateEmployee(ResultSet resultSet, ObservableList<Employee> employeeList) throws SQLException {
-        Crypto crypto = new Crypto();
         int id = resultSet.getInt(1);
         String username = resultSet.getString(2);
         String password = resultSet.getString(3);
-        AccountType accountType = AccountType.intToAccountTypePerms(resultSet.getInt(4));
-        employeeList.add(new Employee(id, username, crypto.tryToDecrypt("key", password), accountType));
+        AccountTypes accountType = AccountTypes.intToAccountTypePerms(resultSet.getInt(4));
+        employeeList.add(new Employee(id, username, password, accountType));
+        if (LoggedInAccountUtil.thisAccountType == AccountTypes.EMPLOYEE)
+           employeeList.removeIf(this::removeForbiddenAccountVisibility);
+    }
 
+    private Boolean removeForbiddenAccountVisibility(Employee employee){
+        return employee.getAccountType() == AccountTypes.EMPLOYEE ||
+                employee.getAccountType() == AccountTypes.ADMIN ||
+                employee.getAccountType() == AccountTypes.UNCONFIRMED;
     }
 
     private void populateCamper(ResultSet resultSet, ObservableList<Camper> camperList) throws SQLException {
@@ -66,7 +72,6 @@ public class AdminPanel implements MultiQuery {
         String name = resultSet.getString(2);
         int balance = resultSet.getInt(3);
         camperList.add(new Camper(id, name, balance));
-
 
     }
 }

@@ -1,6 +1,6 @@
 package AccountTypes.Admin.AdminGUI;
 
-import AccountTypes.AccountType;
+import AccountTypes.AccountTypes;
 import AccountTypes.Admin.AdminPanel;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
@@ -45,6 +45,8 @@ public class GUIController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
     setCellValueFactories();
     tryToPopulateAll();
+    setChoiceBoxes();
+
 }
 
     private void tryToPopulateAll(){
@@ -61,30 +63,30 @@ public class GUIController implements Initializable {
         if (e.getClickCount() == 2) {
             switch (tableView) {
                 case "employeeTableView":
-                    setEmployeeFields(employeeTableView.getSelectionModel().getSelectedItem());
+                    Employee employee = employeeTableView.getSelectionModel().getSelectedItem();
+                    usernameField.setText(employee.getUsername());
+                    accountTypes.setValue(employee.getAccountType());
+                    passwordField.setText(employee.getPassword());
                     break;
                 case "camperTableView":
-                    setCamperFields(camperTableView.getSelectionModel().getSelectedItem());
+                    Camper camper = camperTableView.getSelectionModel().getSelectedItem();
+                    nameField.setText(camper.getName());
+                    balanceField.setText(String.valueOf(camper.getBalance()));
                     break;
 
             }
         }
-
     }
 
-    private void setEmployeeFields(Employee employee){
-        usernameField.setText(employee.getUsername());
-        passwordField.setText(employee.getPassword());
-    }
-
-    private void setCamperFields(Camper camper){
-        nameField.setText(camper.getName());
-        balanceField.setText(String.valueOf(camper.getBalance()));
-    }
 
     private void populateAll() throws SQLException {
         adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
         adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
+    }
+
+    private void setChoiceBoxes(){
+        for (AccountTypes accountType: AccountTypes.values())
+            accountTypes.getItems().add(accountType);
     }
 
     private void setCellValueFactories() {

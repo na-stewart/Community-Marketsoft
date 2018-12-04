@@ -1,14 +1,15 @@
 package Login;
 
+import AccountTypes.AccountTypes;
 import Data.ID;
-import Encryption.Crypto;
+import GUILoader.GUI;
 import Main.Main;
-import Manager.MonoQuery;
 import Manager.DatabaseManager;
+import Manager.MonoQuery;
+import Util.LoggedInAccountUtil;
 import javafx.scene.control.Alert;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import javafx.stage.Stage;
+import PassProtection.PassHash;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -22,7 +23,8 @@ public class Login implements MonoQuery {
     private DatabaseManager manager = new DatabaseManager();
     private String user;
     private String pass;
-    private Crypto crypto = new Crypto();
+    private PassHash passHash = new PassHash();
+
 
     public Login(String user, String pass) {
         this.user = user;
@@ -49,45 +51,46 @@ public class Login implements MonoQuery {
     public void updateDatabase() throws SQLException {
         String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
                 user + "','" +
-                crypto.tryToEncrypt("key", pass) + "','" +
-                '3' + "','" +
-                getMacAddress() +"')" ;
+                passHash.tryToGetSaltedHash(pass)+ "','" +
+                '3' + "')";
         manager.update(query);
         displayAlertDialog(Alert.AlertType.INFORMATION, alertContexts(false));
     }
 
     @Override
     public void retrieveDatabaseData() throws SQLException {
-        String query = "SELECT * FROM employee WHERE username =" +
-                "'" + user + "' AND password=" +
-                "'" + crypto.tryToEncrypt("key", pass) + "'";
+        String query = "SELECT * FROM employee WHERE username='"+ user +"'";
             ResultSet resultSet = manager.receiver(query);
             if (canLogin(resultSet)) {
-                Main.mainStage.close();
+                login(resultSet);
             } else
                 displayAlertDialog(Alert.AlertType.ERROR, alertContexts(true));
             resultSet.close();
     }
 
+
     private boolean canLogin(ResultSet resultSet) throws SQLException {
         return resultSet.next()
-                && resultSet.getInt(4) != 3
-                && resultSet.getString(5).equals(getMacAddress()) ;
+                && resultSet.getInt(4) != 3 &&
+                passHash.tryToCheckHash(pass, resultSet.getString(3));
     }
 
-    private String getMacAddress() {
-        InetAddress ip;
-        try {
-            ip = InetAddress.getLocalHost();
-            NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-            byte[] mac = network.getHardwareAddress();
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < mac.length; i++)
-                sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-            return sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    private void login(ResultSet resultSet) throws SQLException {
+        Main.mainStage.close();
+        setLoggedInAccountInfo(resultSet);
+        openAccountInterface();
     }
+
+    private void setLoggedInAccountInfo(ResultSet resultSet) throws SQLException {
+        AccountTypes accountType = AccountTypes.intToAccountTypePerms(resultSet.getInt(4));
+        LoggedInAccountUtil.thisUsername = resultSet.getString(1);
+        LoggedInAccountUtil.thisAccountType = accountType;
+    }
+    private void openAccountInterface(){
+        boolean openEmployeeInterface = LoggedInAccountUtil.thisAccountType == AccountTypes.EMPLOYEE ||
+                LoggedInAccountUtil.thisAccountType == AccountTypes.ADMIN;
+        if (openEmployeeInterface)
+            new GUI(new Stage(),"AccountTypes/Admin/AdminGUI/AdminGUI.fxml");
+    }
+
 }
