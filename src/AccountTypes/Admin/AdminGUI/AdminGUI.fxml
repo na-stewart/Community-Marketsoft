@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="761.0" prefWidth="1205.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
     <children>
-        <TabPane layoutY="24.0" prefHeight="507.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
+        <TabPane fx:id="tabPane" layoutY="24.0" prefHeight="507.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
             <tabs>
                 <Tab text="Campers">
                     <content>
@@ -42,7 +42,7 @@
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" prefHeight="45.0" prefWidth="94.0" text="Add">
+                                                <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="45.0" prefWidth="94.0" text="Add">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>
@@ -205,7 +205,7 @@
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" prefHeight="45.0" prefWidth="94.0" text="Add">
+                                                <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="45.0" prefWidth="94.0" text="Add">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>

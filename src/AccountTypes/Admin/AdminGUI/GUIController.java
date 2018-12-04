@@ -4,7 +4,10 @@ import AccountTypes.AccountTypes;
 import AccountTypes.Admin.AdminPanel;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
+import Data.ID;
 import Manager.DatabaseViewer;
+import PassProtection.PassHash;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -29,7 +32,9 @@ public class GUIController implements Initializable {
     @FXML
     private TextField usernameField, passwordField;
     @FXML
-    private ChoiceBox accountTypes, consumableType;
+    private ChoiceBox<AccountTypes> accountTypes;
+    @FXML
+    private ChoiceBox itemTypes;
     @FXML
     private TableView<Employee> employeeTableView;
     @FXML
@@ -39,6 +44,7 @@ public class GUIController implements Initializable {
     @FXML
     private TableColumn<Camper, String> camperID, name, balance;
     private AdminPanel adminPanel = new AdminPanel();
+    private PassHash passHash = new PassHash();
 
 
     @Override
@@ -56,6 +62,21 @@ public class GUIController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void buttonListener(ActionEvent e) throws SQLException {
+        String buttonText = ((Button) e.getSource()).getText();
+        switch (buttonText){
+            case "Add":
+                addToTable();
+                break;
+            case "Edit":
+                break;
+            case "Delete":
+                break;
+        }
+    }
+
 
     @FXML
     private void tableViewListener(MouseEvent e){
@@ -78,12 +99,39 @@ public class GUIController implements Initializable {
         }
     }
 
+    private void addToTable() throws SQLException {
+        int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();;
+        switch (tabPaneIndex){
+            case 0:
+                addToCamper();
+            case 2:
+                addToEmployee();
+                break;
+        }
+    }
+
+    private void addToCamper() throws SQLException {
+        String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
+                nameField.getText() + "','" +
+                balanceField.getText() + "')";
+        adminPanel.updateDatabase(query);
+        adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
+    }
+
+    private void addToEmployee() throws SQLException {
+        int accountType = AccountTypes.accountTypePermToInt(accountTypes.getSelectionModel().getSelectedItem());
+        String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
+                usernameField.getText() + "','" +
+                passHash.tryToGetSaltedHash(passwordField.getText())+ "','" +
+                accountType + "')";
+        adminPanel.updateDatabase(query);
+        adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
+    }
 
     private void populateAll() throws SQLException {
         adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
         adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
     }
-
     private void setChoiceBoxes(){
         for (AccountTypes accountType: AccountTypes.values())
             accountTypes.getItems().add(accountType);
