@@ -48,6 +48,8 @@ public class AdminPanel implements MultiQuery {
           }
         }
         tableView.setItems(list);
+        resultSet.close();
+
     }
 
 
@@ -59,6 +61,7 @@ public class AdminPanel implements MultiQuery {
         employeeList.add(new Employee(id, username, password, accountType));
         if (LoggedInAccountUtil.thisAccountType == AccountTypes.EMPLOYEE)
            employeeList.removeIf(this::removeForbiddenAccountVisibility);
+
     }
 
     private Boolean removeForbiddenAccountVisibility(Employee employee){

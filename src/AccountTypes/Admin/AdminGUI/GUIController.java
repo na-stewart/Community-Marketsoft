@@ -12,8 +12,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
+import java.awt.event.KeyListener;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -46,79 +48,89 @@ public class GUIController implements Initializable {
     private AdminPanel adminPanel = new AdminPanel();
     private PassHash passHash = new PassHash();
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-    setCellValueFactories();
-    tryToPopulateAll();
-    setChoiceBoxes();
-
-}
+        setCellValueFactories();
+        tryToPopulateAll();
+        setChoiceBoxes();
+    }
 
     private void tryToPopulateAll(){
         try {
-            populateAll();
+            adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
+            adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @FXML
-    private void buttonListener(ActionEvent e) throws SQLException {
-        String buttonText = ((Button) e.getSource()).getText();
-        switch (buttonText){
-            case "Add":
-                addToTable();
+    private void tableViewClickListener(MouseEvent e) {
+        String tableView = ((TableView) e.getSource()).getId();
+        switch (tableView) {
+            case "employeeTableView":
+                setEmployeeFields();
                 break;
-            case "Edit":
-                break;
-            case "Delete":
+            case "camperTableView":
+                setCamperFields();
                 break;
         }
+    }
+
+    private void setEmployeeFields(){
+        Employee employee = employeeTableView.getSelectionModel().getSelectedItem();
+        usernameField.setText(employee.getUsername());
+        passwordField.setText("");
+        accountTypes.setValue(employee.getAccountType());
+    }
+
+    private void setCamperFields(){
+        Camper camper = camperTableView.getSelectionModel().getSelectedItem();
+        nameField.setText(camper.getName());
+        balanceField.setText(String.valueOf(camper.getBalance()));
     }
 
 
     @FXML
-    private void tableViewListener(MouseEvent e){
-        String tableView = ((TableView) e.getSource()).getId();
-        if (e.getClickCount() == 2) {
-            switch (tableView) {
-                case "employeeTableView":
-                    Employee employee = employeeTableView.getSelectionModel().getSelectedItem();
-                    usernameField.setText(employee.getUsername());
-                    accountTypes.setValue(employee.getAccountType());
-                    passwordField.setText(employee.getPassword());
-                    break;
-                case "camperTableView":
-                    Camper camper = camperTableView.getSelectionModel().getSelectedItem();
-                    nameField.setText(camper.getName());
-                    balanceField.setText(String.valueOf(camper.getBalance()));
-                    break;
+    private void buttonListener(ActionEvent e) throws SQLException {
+        String buttonText = ((Button) e.getSource()).getText();
+        if (buttonText.equals("Update"))
+            determineHowToUpdate();
+    }
 
-            }
-        }
+    private void determineHowToUpdate() throws SQLException {
+        if (canAddToTable())
+            addToTable();
+        else
+            editTable();
+    }
+
+    private boolean canAddToTable(){
+        return employeeTableView.getSelectionModel().getSelectedItem() == null &&
+                camperTableView.getSelectionModel().getSelectedItem() == null;
     }
 
     private void addToTable() throws SQLException {
-        int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();;
+        int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();
         switch (tabPaneIndex){
             case 0:
-                addToCamper();
+                addToCamperTable();
+                break;
             case 2:
-                addToEmployee();
+                addToEmployeeTable();
                 break;
         }
     }
 
-    private void addToCamper() throws SQLException {
-        String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
+    private void addToCamperTable() throws SQLException {
+        String query = "INSERT INTO camper VALUES('" + new ID().getId() + "','" +
                 nameField.getText() + "','" +
                 balanceField.getText() + "')";
         adminPanel.updateDatabase(query);
         adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
     }
 
-    private void addToEmployee() throws SQLException {
+    private void addToEmployeeTable() throws SQLException {
         int accountType = AccountTypes.accountTypePermToInt(accountTypes.getSelectionModel().getSelectedItem());
         String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
                 usernameField.getText() + "','" +
@@ -128,10 +140,40 @@ public class GUIController implements Initializable {
         adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
     }
 
-    private void populateAll() throws SQLException {
-        adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
+    private void editTable() throws SQLException {
+        int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();
+        switch (tabPaneIndex){
+            case 0:
+                editCamperRow();
+                break;
+            case 2:
+                editEmployeeRow();
+                break;
+        }
+    }
+
+    private void editEmployeeRow() throws SQLException {
+        int accountType = AccountTypes.accountTypePermToInt(accountTypes.getSelectionModel().getSelectedItem());
+        int id = employeeTableView.getSelectionModel().getSelectedItem().getId();
+        String query = "UPDATE employee SET " +
+                "username = '" + usernameField.getText() + "',"+
+                "password = '" + passHash.tryToGetSaltedHash(passwordField.getText()) + "'," +
+                "accounttype = '" + accountType + "' " +
+                "WHERE idaccounts = "+ id +";";
+        adminPanel.updateDatabase(query);
         adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
     }
+
+    private void editCamperRow() throws SQLException {
+        int id = camperTableView.getSelectionModel().getSelectedItem().getId();
+        String query = "UPDATE camper SET " +
+                "name = '" + nameField.getText() + "',"+
+                "balance = '" + balanceField + "' " +
+                "WHERE idcamper = "+ id +";";
+        adminPanel.updateDatabase(query);
+        adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
+    }
+
     private void setChoiceBoxes(){
         for (AccountTypes accountType: AccountTypes.values())
             accountTypes.getItems().add(accountType);
