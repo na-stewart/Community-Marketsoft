@@ -171,7 +171,7 @@ public class GUIController implements Initializable {
                 "balance = '" + balanceField.getText() + "' " +
                 "WHERE idcamper = "+ id +";";
         adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
+        adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
     }
 
     private void setChoiceBoxes(){
