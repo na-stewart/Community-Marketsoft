@@ -168,7 +168,7 @@ public class GUIController implements Initializable {
         int id = camperTableView.getSelectionModel().getSelectedItem().getId();
         String query = "UPDATE camper SET " +
                 "name = '" + nameField.getText() + "',"+
-                "balance = '" + balanceField + "' " +
+                "balance = '" + balanceField.getText() + "' " +
                 "WHERE idcamper = "+ id +";";
         adminPanel.updateDatabase(query);
         adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
