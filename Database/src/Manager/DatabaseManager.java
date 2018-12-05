@@ -31,8 +31,10 @@ public class DatabaseManager {
 
 
     public void update(String query) throws SQLException {
-        PreparedStatement preparedStatement = DataSource.getConnection().prepareStatement(query);
+        Connection connection = DataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.execute();
         preparedStatement.close();
+        connection.close();
     }
 }
