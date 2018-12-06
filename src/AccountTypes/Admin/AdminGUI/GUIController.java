@@ -7,8 +7,6 @@ import Data.Customers.Employee;
 import Data.ID;
 import Manager.DatabaseViewer;
 import PassProtection.PassHash;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -103,13 +101,13 @@ public class GUIController implements Initializable {
         int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();
         switch (tabPaneIndex){
             case 0:
-                if (ifTableRowNotSelected(camperTableView))
+                if (isTableRowNotSelected(camperTableView))
                     addToCamperTable();
                 else
                     editCamperRow();
                 break;
             case 2:
-                if (ifTableRowNotSelected(employeeTableView))
+                if (isTableRowNotSelected(employeeTableView))
                     addToEmployeeTable();
                 else
                     editEmployeeRow();
@@ -118,7 +116,7 @@ public class GUIController implements Initializable {
         clearFields();
     }
 
-    private boolean ifTableRowNotSelected(TableView tableView){
+    private boolean isTableRowNotSelected(TableView tableView){
         return tableView.getSelectionModel().getSelectedItem() == null;
     }
 
@@ -163,10 +161,12 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    private void clearSelectionsOnClick(){
+    private void clearSelectionsOnClick() {
+        if (!isTableRowNotSelected(employeeTableView) || !isTableRowNotSelected(camperTableView)) {
             employeeTableView.getSelectionModel().clearSelection();
             camperTableView.getSelectionModel().clearSelection();
             clearFields();
+        }
     }
 
     private void clearFields(){
