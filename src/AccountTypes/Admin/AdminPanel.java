@@ -6,6 +6,7 @@ import Data.Customers.Employee;
 import Manager.DatabaseManager;
 import Manager.DatabaseViewer;
 import Manager.MultiQuery;
+import Manager.Tables;
 import Util.LoggedInAccountUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,27 +32,25 @@ public class AdminPanel implements MultiQuery {
     }
 
     @Override
-    public void retrieveDatabaseData(String query, DatabaseViewer dataViewer) throws SQLException {
-        ResultSet resultSet = databaseManager.receiver(query);
-        TableView tableView = (TableView) dataViewer.getDataViewer();
+    public void retrieveDatabaseData(Tables tables, Object dataViewer) throws SQLException {
+        ResultSet resultSet = databaseManager.receiver("SELECT * FROM " + tables.name().toLowerCase());
+        TableView tableView = (TableView) dataViewer;
         ObservableList list = FXCollections.observableArrayList();
         while (resultSet.next()) {
-          switch (dataViewer.getTable()) {
-              case "employee":
-                  populateEmployee(resultSet, list);
-                  break;
-              case "camper":
-                  populateCamper(resultSet, list);
-                  break;
-              case "consumable":
-                  break;
-          }
+            switch (tables.name().toLowerCase()) {
+                case "employee":
+                    populateEmployee(resultSet, list);
+                    break;
+                case "camper":
+                    populateCamper(resultSet, list);
+                    break;
+                case "consumable":
+                    break;
+            }
         }
         tableView.setItems(list);
         resultSet.close();
-
     }
-
 
     private void populateEmployee(ResultSet resultSet, ObservableList<Employee> employeeList) throws SQLException {
         int id = resultSet.getInt(1);

@@ -6,6 +6,7 @@ import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Data.ID;
 import Manager.DatabaseViewer;
+import Manager.Tables;
 import PassProtection.PassHash;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import java.net.URL;
+import java.security.cert.TrustAnchor;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -63,8 +65,8 @@ public class GUIController implements Initializable {
     @FXML
     private void tryToPopulateAll(){
         try {
-            adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
-            adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
+            adminPanel.retrieveDatabaseData(Tables.EMPLOYEE, employeeTableView);
+            adminPanel.retrieveDatabaseData(Tables.CAMPER, camperTableView);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -78,28 +80,28 @@ public class GUIController implements Initializable {
                 setEmployeeFields();
                 if (e.getClickCount() == 2) {
                     int empID = employeeTableView.getSelectionModel().getSelectedItem().getId();
-                    deleteRow(new DatabaseViewer(employeeTableView, "employee"), empID);
+                    deleteRow(Tables.EMPLOYEE, employeeTableView, empID);
                 }
                 break;
             case "camperTableView":
                 setCamperFields();
                 if (e.getClickCount() == 2) {
                     int cmpID = camperTableView.getSelectionModel().getSelectedItem().getId();
-                    deleteRow(new DatabaseViewer(camperTableView, "camper"), cmpID);
+                    deleteRow(Tables.CAMPER, camperTableView, cmpID);
                 }
                 break;
         }
     }
 
-    private void deleteRow(DatabaseViewer databaseViewer, int id) throws SQLException {
+    private void deleteRow(Tables tables, TableView tableView, int id) throws SQLException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete this row?");
         ButtonType buttonTypeOne = new ButtonType("Delete");
         alert.getButtonTypes().setAll(buttonTypeOne);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne) {
-            String query = "DELETE FROM "+ databaseViewer.getTable() + " WHERE id = '" + id + "'";
+            String query = "DELETE FROM "+ tables.name().toLowerCase() + " WHERE id = '" + id + "'";
             adminPanel.updateDatabase(query);
-            adminPanel.retrieveDatabaseData("SELECT * FROM "+ databaseViewer.getTable(), databaseViewer);
+            adminPanel.retrieveDatabaseData(tables, tableView);
             clearFields();
         }
     }
@@ -146,7 +148,7 @@ public class GUIController implements Initializable {
                 nameField.getText() + "','" +
                 balanceField.getText() + "')";
         adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
+        adminPanel.retrieveDatabaseData(Tables.CAMPER, camperTableView);
     }
 
     private void addToEmployeeTable() throws SQLException {
@@ -156,7 +158,7 @@ public class GUIController implements Initializable {
                 passHash.tryToGetSaltedHash(passwordField.getText())+ "','" +
                 accountType + "')";
         adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
+        adminPanel.retrieveDatabaseData(Tables.EMPLOYEE, employeeTableView);
     }
 
     private void editCamperRow() throws SQLException {
@@ -166,7 +168,7 @@ public class GUIController implements Initializable {
                 "balance = '" + balanceField.getText() + "' " +
                 "WHERE id = "+ id +";";
         adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
+        adminPanel.retrieveDatabaseData(Tables.CAMPER, camperTableView);
     }
 
     private void editEmployeeRow() throws SQLException {
@@ -178,7 +180,7 @@ public class GUIController implements Initializable {
                 "accounttype = '" + accountType + "' " +
                 "WHERE id = "+ id +";";
         adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
+        adminPanel.retrieveDatabaseData(Tables.EMPLOYEE, employeeTableView);
     }
 
     @FXML
