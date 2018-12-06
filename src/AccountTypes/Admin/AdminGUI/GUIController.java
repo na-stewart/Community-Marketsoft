@@ -7,15 +7,16 @@ import Data.Customers.Employee;
 import Data.ID;
 import Manager.DatabaseViewer;
 import PassProtection.PassHash;
-import javafx.event.ActionEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 
-import java.awt.event.KeyListener;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -27,6 +28,10 @@ import java.util.ResourceBundle;
  * All rights reserved.
  */
 public class GUIController implements Initializable {
+    @FXML
+    private AnchorPane mainPane;
+    @FXML
+    private ImageView banner;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -50,11 +55,14 @@ public class GUIController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        banner.fitWidthProperty().bind(mainPane.widthProperty());
         setCellValueFactories();
         tryToPopulateAll();
         setChoiceBoxes();
+
     }
 
+    @FXML
     private void tryToPopulateAll(){
         try {
             adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
@@ -90,36 +98,28 @@ public class GUIController implements Initializable {
         balanceField.setText(String.valueOf(camper.getBalance()));
     }
 
-
     @FXML
-    private void buttonListener(ActionEvent e) throws SQLException {
-        String buttonText = ((Button) e.getSource()).getText();
-        if (buttonText.equals("Update"))
-            determineHowToUpdate();
-    }
-
-    private void determineHowToUpdate() throws SQLException {
-        if (canAddToTable())
-            addToTable();
-        else
-            editTable();
-    }
-
-    private boolean canAddToTable(){
-        return employeeTableView.getSelectionModel().getSelectedItem() == null &&
-                camperTableView.getSelectionModel().getSelectedItem() == null;
-    }
-
-    private void addToTable() throws SQLException {
+    private void buttonListener() throws SQLException {
         int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();
         switch (tabPaneIndex){
             case 0:
-                addToCamperTable();
+                if (ifTableRowNotSelected(camperTableView))
+                    addToCamperTable();
+                else
+                    editCamperRow();
                 break;
             case 2:
-                addToEmployeeTable();
+                if (ifTableRowNotSelected(employeeTableView))
+                    addToEmployeeTable();
+                else
+                    editEmployeeRow();
                 break;
         }
+        clearFields();
+    }
+
+    private boolean ifTableRowNotSelected(TableView tableView){
+        return tableView.getSelectionModel().getSelectedItem() == null;
     }
 
     private void addToCamperTable() throws SQLException {
@@ -140,16 +140,14 @@ public class GUIController implements Initializable {
         adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
     }
 
-    private void editTable() throws SQLException {
-        int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();
-        switch (tabPaneIndex){
-            case 0:
-                editCamperRow();
-                break;
-            case 2:
-                editEmployeeRow();
-                break;
-        }
+    private void editCamperRow() throws SQLException {
+        int id = camperTableView.getSelectionModel().getSelectedItem().getId();
+        String query = "UPDATE camper SET " +
+                "name = '" + nameField.getText() + "',"+
+                "balance = '" + balanceField.getText() + "' " +
+                "WHERE idcamper = "+ id +";";
+        adminPanel.updateDatabase(query);
+        adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
     }
 
     private void editEmployeeRow() throws SQLException {
@@ -164,14 +162,28 @@ public class GUIController implements Initializable {
         adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
     }
 
-    private void editCamperRow() throws SQLException {
-        int id = camperTableView.getSelectionModel().getSelectedItem().getId();
-        String query = "UPDATE camper SET " +
-                "name = '" + nameField.getText() + "',"+
-                "balance = '" + balanceField.getText() + "' " +
-                "WHERE idcamper = "+ id +";";
-        adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
+    @FXML
+    private void clearSelectionsOnClick(){
+            employeeTableView.getSelectionModel().clearSelection();
+            camperTableView.getSelectionModel().clearSelection();
+            clearFields();
+    }
+
+    private void clearFields(){
+        clearCamperFields();
+        clearEmployeeFields();
+    }
+
+
+    private void clearCamperFields() {
+        nameField.setText("");
+        balanceField.setText("");
+    }
+
+    private void clearEmployeeFields(){
+        usernameField.setText("");
+        passwordField.setText("");
+        accountTypes.setValue(null);
     }
 
     private void setChoiceBoxes(){

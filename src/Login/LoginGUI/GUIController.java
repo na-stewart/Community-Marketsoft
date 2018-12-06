@@ -39,7 +39,6 @@ public class GUIController implements Initializable {
     private void buttonActionEvent(ActionEvent event) throws SQLException {
         String buttonText = ((Button) event.getSource()).getText();
         Login loginPanel = new Login(username.getText(), password.getText());
-
         if (buttonText.equals("Login"))
             loginPanel.retrieveDatabaseData();
         else
