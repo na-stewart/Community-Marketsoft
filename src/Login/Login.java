@@ -87,10 +87,12 @@ public class Login implements MonoQuery {
         LoggedInAccountUtil.thisAccountType = accountType;
     }
     private void openAccountInterface(){
-        boolean openEmployeeInterface = LoggedInAccountUtil.thisAccountType == AccountTypes.EMPLOYEE ||
-                LoggedInAccountUtil.thisAccountType == AccountTypes.ADMIN;
-        if (openEmployeeInterface)
+        if (employeeInterfaceConditionsMet())
             new GUI(new Stage(),"AccountTypes/Admin/AdminGUI/AdminGUI.fxml");
+    }
+
+    private boolean employeeInterfaceConditionsMet(){
+        return LoggedInAccountUtil.thisAccountType == AccountTypes.EMPLOYEE || LoggedInAccountUtil.thisAccountType == AccountTypes.ADMIN;
     }
 
 }

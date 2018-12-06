@@ -63,11 +63,6 @@
                                                         <Font size="22.0" />
                                                     </font>
                                                 </Button>
-                                                <Button layoutX="37.0" layoutY="10.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="102.0" text="Delete">
-                                                    <font>
-                                                        <Font size="22.0" />
-                                                    </font>
-                                                </Button>
                                             </children>
                                         </HBox>
                                     </children>
@@ -144,11 +139,6 @@
                                                         <Font size="22.0" />
                                                     </font>
                                                 </Button>
-                                                <Button layoutX="37.0" layoutY="10.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="102.0" text="Delete">
-                                                    <font>
-                                                        <Font size="22.0" />
-                                                    </font>
-                                                </Button>
                                             </children>
                                         </HBox>
                                     </children>
@@ -212,11 +202,6 @@
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
                                                 <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="48.0" prefWidth="102.0" text="Update">
-                                                    <font>
-                                                        <Font size="22.0" />
-                                                    </font>
-                                                </Button>
-                                                <Button layoutX="37.0" layoutY="10.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="102.0" text="Delete">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>

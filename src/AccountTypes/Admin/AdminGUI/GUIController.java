@@ -14,9 +14,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -71,15 +71,36 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    private void tableViewClickListener(MouseEvent e) {
+    private void tableViewClickListener(MouseEvent e) throws SQLException {
         String tableView = ((TableView) e.getSource()).getId();
         switch (tableView) {
             case "employeeTableView":
                 setEmployeeFields();
+                if (e.getClickCount() == 2) {
+                    int empID = employeeTableView.getSelectionModel().getSelectedItem().getId();
+                    deleteRow(new DatabaseViewer(employeeTableView, "employee"), empID);
+                }
                 break;
             case "camperTableView":
                 setCamperFields();
+                if (e.getClickCount() == 2) {
+                    int cmpID = camperTableView.getSelectionModel().getSelectedItem().getId();
+                    deleteRow(new DatabaseViewer(camperTableView, "camper"), cmpID);
+                }
                 break;
+        }
+    }
+
+    private void deleteRow(DatabaseViewer databaseViewer, int id) throws SQLException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete this row?");
+        ButtonType buttonTypeOne = new ButtonType("Delete");
+        alert.getButtonTypes().setAll(buttonTypeOne);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOne) {
+            String query = "DELETE FROM "+ databaseViewer.getTable() + " WHERE id = '" + id + "'";
+            adminPanel.updateDatabase(query);
+            adminPanel.retrieveDatabaseData("SELECT * FROM "+ databaseViewer.getTable(), databaseViewer);
+            clearFields();
         }
     }
 
@@ -143,7 +164,7 @@ public class GUIController implements Initializable {
         String query = "UPDATE camper SET " +
                 "name = '" + nameField.getText() + "',"+
                 "balance = '" + balanceField.getText() + "' " +
-                "WHERE idcamper = "+ id +";";
+                "WHERE id = "+ id +";";
         adminPanel.updateDatabase(query);
         adminPanel.retrieveDatabaseData("SELECT * FROM camper", new DatabaseViewer(camperTableView, "camper"));
     }
@@ -155,7 +176,7 @@ public class GUIController implements Initializable {
                 "username = '" + usernameField.getText() + "',"+
                 "password = '" + passHash.tryToGetSaltedHash(passwordField.getText()) + "'," +
                 "accounttype = '" + accountType + "' " +
-                "WHERE idaccounts = "+ id +";";
+                "WHERE id = "+ id +";";
         adminPanel.updateDatabase(query);
         adminPanel.retrieveDatabaseData("SELECT * FROM employee", new DatabaseViewer(employeeTableView, "employee"));
     }
