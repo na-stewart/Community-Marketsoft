@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainPane" prefHeight="853.0" prefWidth="1301.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
+<AnchorPane fx:id="mainPane" prefHeight="789.0" prefWidth="1033.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
     <children>
       <ImageView fx:id="banner" fitHeight="145.0" fitWidth="1301.0">
          <image>
@@ -23,7 +23,7 @@
             </ImageView>
          </children>
       </StackPane>
-        <TabPane fx:id="tabPane" layoutY="145.0" onMouseClicked="#clearSelectionsOnClick" prefHeight="708.0" prefWidth="1301.0" style="-fx-effect: null;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="145.0">
+        <TabPane fx:id="tabPane" layoutY="145.0" onKeyPressed="#keyListener" onMouseClicked="#clearSelectionsOnClick" prefHeight="708.0" prefWidth="1301.0" style="-fx-effect: null;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="145.0">
             <tabs>
                 <Tab text="Campers">
                     <content>
@@ -58,7 +58,7 @@
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="48.0" prefWidth="102.0" text="Update">
+                                                <Button mnemonicParsing="false" onAction="#update" prefHeight="48.0" prefWidth="102.0" text="Update">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>
@@ -134,7 +134,7 @@
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" prefHeight="48.0" prefWidth="102.0" text="Update">
+                                                <Button mnemonicParsing="false" onAction="#update" prefHeight="48.0" prefWidth="102.0" text="Update">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>
@@ -201,7 +201,7 @@
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="48.0" prefWidth="102.0" text="Update">
+                                                <Button mnemonicParsing="false" onAction="#update" prefHeight="48.0" prefWidth="102.0" text="Update">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>
@@ -212,11 +212,6 @@
                                 </VBox>
                             </children>
                         </AnchorPane>
-                    </content>
-                </Tab>
-                <Tab text="Console">
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                     </content>
                 </Tab>
             </tabs>

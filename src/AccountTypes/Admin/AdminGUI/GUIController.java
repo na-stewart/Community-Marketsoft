@@ -5,18 +5,18 @@ import AccountTypes.Admin.AdminPanel;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Data.ID;
-import Manager.DatabaseViewer;
-import Manager.Tables;
+import Manager.DbTable;
 import PassProtection.PassHash;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import java.net.URL;
-import java.security.cert.TrustAnchor;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -59,14 +59,12 @@ public class GUIController implements Initializable {
         setCellValueFactories();
         tryToPopulateAll();
         setChoiceBoxes();
-
     }
 
-    @FXML
     private void tryToPopulateAll(){
         try {
-            adminPanel.retrieveDatabaseData(Tables.EMPLOYEE, employeeTableView);
-            adminPanel.retrieveDatabaseData(Tables.CAMPER, camperTableView);
+            adminPanel.retrieveDatabaseData(DbTable.EMPLOYEE, employeeTableView);
+            adminPanel.retrieveDatabaseData(DbTable.CAMPER, camperTableView);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -80,28 +78,28 @@ public class GUIController implements Initializable {
                 setEmployeeFields();
                 if (e.getClickCount() == 2) {
                     int empID = employeeTableView.getSelectionModel().getSelectedItem().getId();
-                    deleteRow(Tables.EMPLOYEE, employeeTableView, empID);
+                    deleteRow(DbTable.EMPLOYEE, employeeTableView, empID);
                 }
                 break;
             case "camperTableView":
                 setCamperFields();
                 if (e.getClickCount() == 2) {
                     int cmpID = camperTableView.getSelectionModel().getSelectedItem().getId();
-                    deleteRow(Tables.CAMPER, camperTableView, cmpID);
+                    deleteRow(DbTable.CAMPER, camperTableView, cmpID);
                 }
                 break;
         }
     }
 
-    private void deleteRow(Tables tables, TableView tableView, int id) throws SQLException {
+    private void deleteRow(DbTable table, TableView tableView, int id) throws SQLException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete this row?");
         ButtonType buttonTypeOne = new ButtonType("Delete");
         alert.getButtonTypes().setAll(buttonTypeOne);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne) {
-            String query = "DELETE FROM "+ tables.name().toLowerCase() + " WHERE id = '" + id + "'";
+            String query = "DELETE FROM "+ table.name().toLowerCase() + " WHERE id = '" + id + "'";
             adminPanel.updateDatabase(query);
-            adminPanel.retrieveDatabaseData(tables, tableView);
+            adminPanel.retrieveDatabaseData(table, tableView);
             clearFields();
         }
     }
@@ -120,7 +118,13 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    private void buttonListener() throws SQLException {
+    private void keyListener(KeyEvent keyEvent) throws SQLException {
+       if(keyEvent.getCode() == KeyCode.ENTER)
+           update();
+    }
+
+    @FXML
+    private void update() throws SQLException {
         int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();
         switch (tabPaneIndex){
             case 0:
@@ -139,16 +143,12 @@ public class GUIController implements Initializable {
         clearFields();
     }
 
-    private boolean isTableRowNotSelected(TableView tableView){
-        return tableView.getSelectionModel().getSelectedItem() == null;
-    }
-
     private void addToCamperTable() throws SQLException {
         String query = "INSERT INTO camper VALUES('" + new ID().getId() + "','" +
                 nameField.getText() + "','" +
                 balanceField.getText() + "')";
         adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData(Tables.CAMPER, camperTableView);
+        adminPanel.retrieveDatabaseData(DbTable.CAMPER, camperTableView);
     }
 
     private void addToEmployeeTable() throws SQLException {
@@ -158,7 +158,7 @@ public class GUIController implements Initializable {
                 passHash.tryToGetSaltedHash(passwordField.getText())+ "','" +
                 accountType + "')";
         adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData(Tables.EMPLOYEE, employeeTableView);
+        adminPanel.retrieveDatabaseData(DbTable.EMPLOYEE, employeeTableView);
     }
 
     private void editCamperRow() throws SQLException {
@@ -168,7 +168,7 @@ public class GUIController implements Initializable {
                 "balance = '" + balanceField.getText() + "' " +
                 "WHERE id = "+ id +";";
         adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData(Tables.CAMPER, camperTableView);
+        adminPanel.retrieveDatabaseData(DbTable.CAMPER, camperTableView);
     }
 
     private void editEmployeeRow() throws SQLException {
@@ -180,7 +180,12 @@ public class GUIController implements Initializable {
                 "accounttype = '" + accountType + "' " +
                 "WHERE id = "+ id +";";
         adminPanel.updateDatabase(query);
-        adminPanel.retrieveDatabaseData(Tables.EMPLOYEE, employeeTableView);
+        adminPanel.retrieveDatabaseData(DbTable.EMPLOYEE, employeeTableView);
+    }
+
+
+    private boolean isTableRowNotSelected(TableView tableView){
+        return tableView.getSelectionModel().getSelectedItem() == null;
     }
 
     @FXML
@@ -196,7 +201,6 @@ public class GUIController implements Initializable {
         clearCamperFields();
         clearEmployeeFields();
     }
-
 
     private void clearCamperFields() {
         nameField.setText("");

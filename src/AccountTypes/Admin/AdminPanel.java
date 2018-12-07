@@ -3,10 +3,9 @@ package AccountTypes.Admin;
 import AccountTypes.AccountTypes;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
-import Manager.DatabaseManager;
-import Manager.DatabaseViewer;
-import Manager.MultiQuery;
-import Manager.Tables;
+import Manager.DbManagers.DatabaseManager;
+import Manager.Interfaces.MultiQuery;
+import Manager.DbTable;
 import Util.LoggedInAccountUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,12 +31,13 @@ public class AdminPanel implements MultiQuery {
     }
 
     @Override
-    public void retrieveDatabaseData(Tables tables, Object dataViewer) throws SQLException {
-        ResultSet resultSet = databaseManager.receiver("SELECT * FROM " + tables.name().toLowerCase());
+    public void retrieveDatabaseData(DbTable tables, Object dataViewer) throws SQLException {
+        String tableName = tables.name().toLowerCase();
+        ResultSet resultSet = databaseManager.receiver("SELECT * FROM " + tableName);
         TableView tableView = (TableView) dataViewer;
         ObservableList list = FXCollections.observableArrayList();
         while (resultSet.next()) {
-            switch (tables.name().toLowerCase()) {
+            switch (tableName) {
                 case "employee":
                     populateEmployee(resultSet, list);
                     break;
