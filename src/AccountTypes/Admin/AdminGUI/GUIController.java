@@ -1,7 +1,8 @@
 package AccountTypes.Admin.AdminGUI;
 
-import AccountTypes.AccountTypes;
+import Data.Customers.EmployeeType;
 import AccountTypes.Admin.AdminPanel;
+import Data.Item.Item;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Data.ID;
@@ -39,7 +40,7 @@ public class GUIController implements Initializable {
     @FXML
     private TextField usernameField, passwordField;
     @FXML
-    private ChoiceBox<AccountTypes> accountTypes;
+    private ChoiceBox<EmployeeType> accountTypes;
     @FXML
     private ChoiceBox itemTypes;
     @FXML
@@ -50,6 +51,8 @@ public class GUIController implements Initializable {
     private TableView<Camper> camperTableView;
     @FXML
     private TableColumn<Camper, String> camperID, name, balance;
+    @FXML
+    private TableView<Item> itemTableView;
     private AdminPanel adminPanel = new AdminPanel();
     private PassHash passHash = new PassHash();
 
@@ -61,7 +64,7 @@ public class GUIController implements Initializable {
         setChoiceBoxes();
     }
 
-    private void tryToPopulateAll(){
+    private void tryToPopulateAll() {
         try {
             adminPanel.retrieveDatabaseData(DbTable.EMPLOYEE, employeeTableView);
             adminPanel.retrieveDatabaseData(DbTable.CAMPER, camperTableView);
@@ -97,21 +100,21 @@ public class GUIController implements Initializable {
         alert.getButtonTypes().setAll(buttonTypeOne);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne) {
-            String query = "DELETE FROM "+ table.name().toLowerCase() + " WHERE id = '" + id + "'";
+            String query = "DELETE FROM " + table.name().toLowerCase() + " WHERE id = '" + id + "'";
             adminPanel.updateDatabase(query);
             adminPanel.retrieveDatabaseData(table, tableView);
             clearFields();
         }
     }
 
-    private void setEmployeeFields(){
+    private void setEmployeeFields() {
         Employee employee = employeeTableView.getSelectionModel().getSelectedItem();
         usernameField.setText(employee.getUsername());
         passwordField.setText("");
         accountTypes.setValue(employee.getAccountType());
     }
 
-    private void setCamperFields(){
+    private void setCamperFields() {
         Camper camper = camperTableView.getSelectionModel().getSelectedItem();
         nameField.setText(camper.getName());
         balanceField.setText(String.valueOf(camper.getBalance()));
@@ -119,19 +122,25 @@ public class GUIController implements Initializable {
 
     @FXML
     private void keyListener(KeyEvent keyEvent) throws SQLException {
-       if(keyEvent.getCode() == KeyCode.ENTER)
-           update();
+        if (keyEvent.getCode() == KeyCode.ENTER)
+            update();
     }
 
     @FXML
     private void update() throws SQLException {
         int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();
-        switch (tabPaneIndex){
+        switch (tabPaneIndex) {
             case 0:
                 if (isTableRowNotSelected(camperTableView))
                     addToCamperTable();
                 else
                     editCamperRow();
+                break;
+            case 1:
+                /*
+                if (isTableRowNotSelected())
+                    addToConsumableTable();
+                    */
                 break;
             case 2:
                 if (isTableRowNotSelected(employeeTableView))
@@ -152,39 +161,51 @@ public class GUIController implements Initializable {
     }
 
     private void addToEmployeeTable() throws SQLException {
-        int accountType = AccountTypes.accountTypePermToInt(accountTypes.getSelectionModel().getSelectedItem());
+        int accountType = EmployeeType.EmployeeTypeToInt(accountTypes.getSelectionModel().getSelectedItem());
         String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
                 usernameField.getText() + "','" +
-                passHash.tryToGetSaltedHash(passwordField.getText())+ "','" +
+                passHash.tryToGetSaltedHash(passwordField.getText()) + "','" +
                 accountType + "')";
         adminPanel.updateDatabase(query);
         adminPanel.retrieveDatabaseData(DbTable.EMPLOYEE, employeeTableView);
     }
 
+    private void addToConsumableTable(){
+
+    }
+
+    private void editConsumableTable(){
+
+    }
+
+    private void consumableTypeSelector(){
+
+    }
+
     private void editCamperRow() throws SQLException {
         int id = camperTableView.getSelectionModel().getSelectedItem().getId();
         String query = "UPDATE camper SET " +
-                "name = '" + nameField.getText() + "',"+
+                "name = '" + nameField.getText() + "'," +
                 "balance = '" + balanceField.getText() + "' " +
-                "WHERE id = "+ id +";";
+                "WHERE id = " + id + ";";
         adminPanel.updateDatabase(query);
         adminPanel.retrieveDatabaseData(DbTable.CAMPER, camperTableView);
     }
 
     private void editEmployeeRow() throws SQLException {
-        int accountType = AccountTypes.accountTypePermToInt(accountTypes.getSelectionModel().getSelectedItem());
+        int accountType = EmployeeType.EmployeeTypeToInt(accountTypes.getSelectionModel().getSelectedItem());
         int id = employeeTableView.getSelectionModel().getSelectedItem().getId();
         String query = "UPDATE employee SET " +
-                "username = '" + usernameField.getText() + "',"+
+                "username = '" + usernameField.getText() + "'," +
                 "password = '" + passHash.tryToGetSaltedHash(passwordField.getText()) + "'," +
                 "accounttype = '" + accountType + "' " +
-                "WHERE id = "+ id +";";
+                "WHERE id = " + id + ";";
         adminPanel.updateDatabase(query);
         adminPanel.retrieveDatabaseData(DbTable.EMPLOYEE, employeeTableView);
     }
 
 
-    private boolean isTableRowNotSelected(TableView tableView){
+    private boolean isTableRowNotSelected(TableView tableView) {
         return tableView.getSelectionModel().getSelectedItem() == null;
     }
 
@@ -197,7 +218,7 @@ public class GUIController implements Initializable {
         }
     }
 
-    private void clearFields(){
+    private void clearFields() {
         clearCamperFields();
         clearEmployeeFields();
     }
@@ -207,14 +228,14 @@ public class GUIController implements Initializable {
         balanceField.setText("");
     }
 
-    private void clearEmployeeFields(){
+    private void clearEmployeeFields() {
         usernameField.setText("");
         passwordField.setText("");
         accountTypes.setValue(null);
     }
 
-    private void setChoiceBoxes(){
-        for (AccountTypes accountType: AccountTypes.values())
+    private void setChoiceBoxes() {
+        for (EmployeeType accountType : EmployeeType.values())
             accountTypes.getItems().add(accountType);
     }
 
@@ -223,14 +244,14 @@ public class GUIController implements Initializable {
         setCamperColumns();
     }
 
-    private void setEmployeeColumns(){
+    private void setEmployeeColumns() {
         employeeID.setCellValueFactory(new PropertyValueFactory<>("id"));
         username.setCellValueFactory(new PropertyValueFactory<>("username"));
         password.setCellValueFactory(new PropertyValueFactory<>("password"));
         accountType.setCellValueFactory(new PropertyValueFactory<>("accountType"));
     }
 
-    private void setCamperColumns(){
+    private void setCamperColumns() {
         camperID.setCellValueFactory(new PropertyValueFactory<>("id"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         balance.setCellValueFactory(new PropertyValueFactory<>("balance"));

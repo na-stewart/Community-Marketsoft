@@ -1,6 +1,6 @@
 package Login;
 
-import AccountTypes.AccountTypes;
+import Data.Customers.EmployeeType;
 import Data.ID;
 import GUILoader.GUI;
 import Main.Main;
@@ -82,7 +82,7 @@ public class Login implements MonoQuery {
     }
 
     private void setLoggedInAccountInfo(ResultSet resultSet) throws SQLException {
-        AccountTypes accountType = AccountTypes.intToAccountTypePerms(resultSet.getInt(4));
+        EmployeeType accountType = EmployeeType.intToEmployeeType(resultSet.getInt(4));
         LoggedInAccountUtil.thisUsername = resultSet.getString(1);
         LoggedInAccountUtil.thisAccountType = accountType;
     }
@@ -92,7 +92,7 @@ public class Login implements MonoQuery {
     }
 
     private boolean employeeInterfaceConditionsMet(){
-        return LoggedInAccountUtil.thisAccountType == AccountTypes.EMPLOYEE || LoggedInAccountUtil.thisAccountType == AccountTypes.ADMIN;
+        return LoggedInAccountUtil.thisAccountType == EmployeeType.EMPLOYEE || LoggedInAccountUtil.thisAccountType == EmployeeType.ADMIN;
     }
 
 }

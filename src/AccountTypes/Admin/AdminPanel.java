@@ -1,6 +1,6 @@
 package AccountTypes.Admin;
 
-import AccountTypes.AccountTypes;
+import Data.Customers.EmployeeType;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Manager.DbManagers.DatabaseManager;
@@ -56,17 +56,17 @@ public class AdminPanel implements MultiQuery {
         int id = resultSet.getInt(1);
         String username = resultSet.getString(2);
         String password = resultSet.getString(3);
-        AccountTypes accountType = AccountTypes.intToAccountTypePerms(resultSet.getInt(4));
+        EmployeeType accountType = EmployeeType.intToEmployeeType(resultSet.getInt(4));
         employeeList.add(new Employee(id, username, password, accountType));
-        if (LoggedInAccountUtil.thisAccountType == AccountTypes.EMPLOYEE)
+        if (LoggedInAccountUtil.thisAccountType == EmployeeType.EMPLOYEE)
            employeeList.removeIf(this::removeForbiddenAccountVisibility);
 
     }
 
     private Boolean removeForbiddenAccountVisibility(Employee employee){
-        return employee.getAccountType() == AccountTypes.EMPLOYEE ||
-                employee.getAccountType() == AccountTypes.ADMIN ||
-                employee.getAccountType() == AccountTypes.UNCONFIRMED;
+        return employee.getAccountType() == EmployeeType.EMPLOYEE ||
+                employee.getAccountType() == EmployeeType.ADMIN ||
+                employee.getAccountType() == EmployeeType.UNCONFIRMED;
     }
 
     private void populateCamper(ResultSet resultSet, ObservableList<Camper> camperList) throws SQLException {

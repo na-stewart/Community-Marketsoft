@@ -7,22 +7,22 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainPane" prefHeight="789.0" prefWidth="1033.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
+<AnchorPane fx:id="mainPane" prefHeight="950.0" prefWidth="1301.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
     <children>
-      <ImageView fx:id="banner" fitHeight="145.0" fitWidth="1301.0">
-         <image>
-            <Image url="@Resources/Fijian_Sunset_banner.jpg" />
-         </image>
-      </ImageView>
-      <StackPane layoutX="395.0" layoutY="28.0" prefHeight="90.0" prefWidth="511.0" AnchorPane.leftAnchor="395.0" AnchorPane.rightAnchor="395.0" AnchorPane.topAnchor="28.0">
-         <children>
-            <ImageView fitHeight="89.0" fitWidth="511.0">
-               <image>
-                  <Image url="@Resources/logo.PNG" />
-               </image>
-            </ImageView>
-         </children>
-      </StackPane>
+        <ImageView fx:id="banner" fitHeight="145.0" fitWidth="1301.0">
+            <image>
+                <Image url="@Resources/Fijian_Sunset_banner.jpg" />
+            </image>
+        </ImageView>
+        <StackPane layoutX="395.0" layoutY="28.0" prefHeight="90.0" prefWidth="511.0" AnchorPane.leftAnchor="395.0" AnchorPane.rightAnchor="395.0" AnchorPane.topAnchor="28.0">
+            <children>
+                <ImageView fitHeight="89.0" fitWidth="511.0">
+                    <image>
+                        <Image url="@Resources/logo.PNG" />
+                    </image>
+                </ImageView>
+            </children>
+        </StackPane>
         <TabPane fx:id="tabPane" layoutY="145.0" onKeyPressed="#keyListener" onMouseClicked="#clearSelectionsOnClick" prefHeight="708.0" prefWidth="1301.0" style="-fx-effect: null;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="145.0">
             <tabs>
                 <Tab text="Campers">
@@ -81,7 +81,7 @@
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab text="Consumables">
+                <Tab text="Items">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="161.0" prefWidth="332.0">
                             <children>
@@ -92,10 +92,13 @@
                                     <columns>
                                         <TableColumn prefWidth="75.0" text="ID" />
                                         <TableColumn prefWidth="75.0" text="Name" />
-                                        <TableColumn prefWidth="75.0" text="Price" />
+                              <TableColumn prefWidth="75.0" text="Price" />
+                                        <TableColumn prefWidth="75.0" text="ImageURL" />
+                              <TableColumn prefWidth="75.0" text="Catagory" />
+                              <TableColumn prefWidth="75.0" text="Subcatagory" />
                                     </columns>
                                 </TableView>
-                                <Text layoutX="133.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consumables">
+                                <Text layoutX="199.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Items">
                                     <font>
                                         <Font name="Mongolian Baiti" size="42.0" />
                                     </font>
@@ -124,7 +127,7 @@
                                         </VBox>
                                         <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
                                             <children>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Image">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Image URL">
                                                     <font>
                                                         <Font size="25.0" />
                                                     </font>
@@ -132,6 +135,26 @@
                                                 <TextField />
                                             </children>
                                         </VBox>
+                              <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Item Type">
+                                       <font>
+                                          <Font size="25.0" />
+                                       </font>
+                                    </Text>
+                                    <ChoiceBox prefHeight="31.0" prefWidth="654.0" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Item SubType">
+                                       <font>
+                                          <Font size="25.0" />
+                                       </font>
+                                    </Text>
+                                    <ChoiceBox prefHeight="31.0" prefWidth="654.0" />
+                                 </children>
+                              </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
                                                 <Button mnemonicParsing="false" onAction="#update" prefHeight="48.0" prefWidth="102.0" text="Update">
@@ -158,8 +181,8 @@
                                     <columns>
                                         <TableColumn fx:id="employeeID" prefWidth="75.0" text="ID" />
                                         <TableColumn fx:id="username" prefWidth="75.0" text="Username" />
-                              <TableColumn fx:id="password" prefWidth="75.0" text="Password" />
-                              <TableColumn fx:id="accountType" prefWidth="75.0" text="AccountType" />
+                                        <TableColumn fx:id="password" prefWidth="75.0" text="Password" />
+                                        <TableColumn fx:id="accountType" prefWidth="75.0" text="AccountType" />
                                     </columns>
                                 </TableView>
                                 <Text layoutX="153.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employees">
@@ -179,16 +202,16 @@
                                                 <TextField fx:id="usernameField" />
                                             </children>
                                         </VBox>
-                              <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
-                                       <font>
-                                          <Font size="25.0" />
-                                       </font>
-                                    </Text>
-                                    <TextField fx:id="passwordField" />
-                                 </children>
-                              </VBox>
+                                        <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
+                                            <children>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
+                                                    <font>
+                                                        <Font size="25.0" />
+                                                    </font>
+                                                </Text>
+                                                <TextField fx:id="passwordField" />
+                                            </children>
+                                        </VBox>
                                         <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
                                             <children>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Account Type">

@@ -1,6 +1,6 @@
 package Util;
 
-import AccountTypes.AccountTypes;
+import Data.Customers.EmployeeType;
 
 /**
  * @Author Aidan Stewart
@@ -10,5 +10,5 @@ import AccountTypes.AccountTypes;
  */
 public class LoggedInAccountUtil {
     public static String thisUsername;
-    public static AccountTypes thisAccountType;
+    public static EmployeeType thisAccountType;
 }
