@@ -135,6 +135,7 @@ public class GUIController implements Initializable {
                     addToCamperTable();
                 else
                     editCamperRow();
+                nameField.requestFocus();
                 break;
             case 1:
                 /*
@@ -147,7 +148,9 @@ public class GUIController implements Initializable {
                     addToEmployeeTable();
                 else
                     editEmployeeRow();
+                usernameField.requestFocus();
                 break;
+
         }
         clearFields();
     }
