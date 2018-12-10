@@ -218,7 +218,7 @@ public class GUIController implements Initializable {
         int id = itemTableView.getSelectionModel().getSelectedItem().getId();
         String query = "UPDATE item SET " +
                 "name = '" + nameField.getText() + "'," +
-                "price = '" + balanceField.getText() + "'" +
+                "price = '" + balanceField.getText() + "'," +
                 "imageurl = '" + imageURLField.getText() + "'" +
                 "itemtype = '" + itemType + "'" +
                 "WHERE id = " + id + ";";
