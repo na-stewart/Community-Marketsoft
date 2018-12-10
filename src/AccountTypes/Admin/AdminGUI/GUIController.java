@@ -216,7 +216,7 @@ public class GUIController implements Initializable {
     private void editItemTable() throws SQLException {
         int itemType = ItemType.itemTypeToInt(itemTypes.getSelectionModel().getSelectedItem());
         int id = camperTableView.getSelectionModel().getSelectedItem().getId();
-        String query = "UPDATE camper SET " +
+        String query = "UPDATE item SET " +
                 "name = '" + nameField.getText() + "'," +
                 "price = '" + balanceField.getText() + "'" +
                 "imageurl = '" + imageURLField.getText() + "'" +
