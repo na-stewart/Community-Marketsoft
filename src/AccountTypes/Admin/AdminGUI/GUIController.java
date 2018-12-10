@@ -220,7 +220,7 @@ public class GUIController implements Initializable {
                 "name = '" + nameField.getText() + "'," +
                 "price = '" + balanceField.getText() + "'," +
                 "imageurl = '" + imageURLField.getText() + "'" +
-                "itemtype = '" + itemType + "'" +
+                "itemtype = '" + itemType + "' " +
                 "WHERE id = " + id + ";";
         adminPanel.updateDatabase(query);
         adminPanel.retrieveDatabaseData(DbTable.ITEM, itemTableView);
