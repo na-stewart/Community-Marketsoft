@@ -7,7 +7,7 @@ import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Data.ID;
 import Manager.DbTable;
-import PassProtection.PassHash;
+import Security.PassHash;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;

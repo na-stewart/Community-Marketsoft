@@ -1,5 +1,11 @@
 package Data.Item.ItemType.SubTypes;
 
+/**
+ * @Author Aidan Stewart
+ * @Year 2018
+ * Copyright (c)
+ * All rights reserved.
+ */
 public enum ItemConsumableType{
     CANDY, DRINK, CHIPS, ICECREAM;
 

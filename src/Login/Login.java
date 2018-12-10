@@ -5,11 +5,11 @@ import Data.ID;
 import GUILoader.GUI;
 import Main.Main;
 import Manager.DbManagers.DatabaseManager;
-import Manager.Interfaces.MonoQuery;
+import Manager.Interfaces.MonoDatabaseTable;
 import Util.LoggedInAccountUtil;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import PassProtection.PassHash;
+import Security.PassHash;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class Login implements MonoQuery {
+public class Login implements MonoDatabaseTable {
     private DatabaseManager manager = new DatabaseManager();
     private String user;
     private String pass;
@@ -41,7 +41,6 @@ public class Login implements MonoQuery {
         if (loggingIn)
             return "Failure to login is due to one the reasons below:" +
                     "\n-Incorrect username or password!" +
-                    "\n-Mac address of account does not match the one of current system!" +
                     "\n-your account had not been enabled yet!";
         else
             return "Your account is now registered. Please wait for an admin to enable your account.";

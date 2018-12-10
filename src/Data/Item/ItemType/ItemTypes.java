@@ -1,5 +1,7 @@
 package Data.Item.ItemType;
 
+import java.util.EnumSet;
+
 /**
  * @Author Aidan Stewart
  * @Year 2018
