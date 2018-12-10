@@ -3,6 +3,8 @@ package AccountTypes.Admin;
 import Data.Customers.EmployeeType;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
+import Data.Item.Item;
+import Data.Item.ItemType;
 import Manager.DbManagers.DatabaseManager;
 import Manager.Interfaces.MultiQuery;
 import Manager.DbTable;
@@ -38,14 +40,16 @@ public class AdminPanel implements MultiQuery {
         ObservableList list = FXCollections.observableArrayList();
         while (resultSet.next()) {
             switch (tableName) {
-                case "employee":
-                    populateEmployee(resultSet, list);
+                case "employee": populateEmployee(resultSet, list);
+
+                    break;
+                case "item":
+                    populateItem(resultSet, list);
                     break;
                 case "camper":
                     populateCamper(resultSet, list);
                     break;
-                case "consumable":
-                    break;
+
             }
         }
         tableView.setItems(list);
@@ -69,11 +73,20 @@ public class AdminPanel implements MultiQuery {
                 employee.getAccountType() == EmployeeType.UNCONFIRMED;
     }
 
+    private void populateItem(ResultSet resultSet, ObservableList<Item> itemList) throws SQLException {
+        int id = resultSet.getInt(1);
+        String name = resultSet.getString(2);
+        int price = resultSet.getInt(3);
+        String imageUrl = resultSet.getString(4);
+        ItemType itemType = ItemType.intToItemType(resultSet.getInt(5));
+        itemList.add(new Item(id, name, price, imageUrl, itemType));
+    }
+
     private void populateCamper(ResultSet resultSet, ObservableList<Camper> camperList) throws SQLException {
         int id = resultSet.getInt(1);
         String name = resultSet.getString(2);
         int balance = resultSet.getInt(3);
         camperList.add(new Camper(id, name, balance));
-
     }
+
 }

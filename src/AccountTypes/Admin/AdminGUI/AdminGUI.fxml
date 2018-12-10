@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainPane" prefHeight="950.0" prefWidth="1301.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
+<AnchorPane fx:id="mainPane" prefHeight="830.0" prefWidth="1301.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
     <children>
         <ImageView fx:id="banner" fitHeight="145.0" fitWidth="1301.0">
             <image>
@@ -85,17 +85,16 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="161.0" prefWidth="332.0">
                             <children>
-                                <TableView fx:id="campersTableView" layoutX="502.0" prefHeight="568.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <TableView fx:id="itemTableView" layoutX="502.0" onMouseClicked="#tableViewClickListener" prefHeight="568.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <columnResizePolicy>
                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                     </columnResizePolicy>
                                     <columns>
-                                        <TableColumn prefWidth="75.0" text="ID" />
-                                        <TableColumn prefWidth="75.0" text="Name" />
-                              <TableColumn prefWidth="75.0" text="Price" />
-                                        <TableColumn prefWidth="75.0" text="ImageURL" />
-                              <TableColumn prefWidth="75.0" text="Catagory" />
-                              <TableColumn prefWidth="75.0" text="Subcatagory" />
+                                        <TableColumn fx:id="itemID" prefWidth="75.0" text="ID" />
+                                        <TableColumn fx:id="itemName" prefWidth="75.0" text="Name" />
+                              <TableColumn fx:id="price" prefWidth="75.0" text="Price" />
+                                        <TableColumn fx:id="imageURL" prefWidth="75.0" text="ImageURL" />
+                              <TableColumn fx:id="category" prefWidth="75.0" text="Catagory" />
                                     </columns>
                                 </TableView>
                                 <Text layoutX="199.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Items">
@@ -112,7 +111,7 @@
                                                         <Font size="25.0" />
                                                     </font>
                                                 </Text>
-                                                <TextField />
+                                                <TextField fx:id="itemNameField" />
                                             </children>
                                         </VBox>
                                         <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
@@ -122,7 +121,7 @@
                                                         <Font size="25.0" />
                                                     </font>
                                                 </Text>
-                                                <TextField />
+                                                <TextField fx:id="priceField" />
                                             </children>
                                         </VBox>
                                         <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
@@ -132,7 +131,7 @@
                                                         <Font size="25.0" />
                                                     </font>
                                                 </Text>
-                                                <TextField />
+                                                <TextField fx:id="imageURLField" />
                                             </children>
                                         </VBox>
                               <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
@@ -142,17 +141,7 @@
                                           <Font size="25.0" />
                                        </font>
                                     </Text>
-                                    <ChoiceBox prefHeight="31.0" prefWidth="654.0" />
-                                 </children>
-                              </VBox>
-                              <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Item SubType">
-                                       <font>
-                                          <Font size="25.0" />
-                                       </font>
-                                    </Text>
-                                    <ChoiceBox prefHeight="31.0" prefWidth="654.0" />
+                                    <ChoiceBox fx:id="itemTypes" prefHeight="31.0" prefWidth="654.0" />
                                  </children>
                               </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">

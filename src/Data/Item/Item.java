@@ -1,7 +1,5 @@
 package Data.Item;
 
-import Data.Item.ItemType.ItemTypes;
-
 /**
  * @Author Aidan Stewart
  * @Year 2018
@@ -9,17 +7,22 @@ import Data.Item.ItemType.ItemTypes;
  * All rights reserved.
  */
 public class Item {
+    private int id;
     private String name;
     private int price;
-    private ItemTypes itemType;
-    private Enum itemSubType;
+    private String imageURL;
+    private ItemType itemType;
 
-    public Item(String name, int price, ItemTypes itemType, Enum itemSubType) {
+    public Item(int id, String name, int price, String imageURL, ItemType itemType) {
+        this.id = id;
         this.name = name;
         this.price = price;
+        this.imageURL = imageURL;
         this.itemType = itemType;
-        this.itemSubType = itemSubType;
+    }
 
+    public int getId(){
+        return id;
     }
 
     public String getName() {
@@ -30,11 +33,13 @@ public class Item {
         return price;
     }
 
-    public ItemTypes getItemType() {
+    public String getImageURL(){
+        return imageURL;
+    }
+
+    public ItemType getItemType() {
         return itemType;
     }
 
-    public Enum getItemSubType() {
-        return itemSubType;
-    }
+
 }

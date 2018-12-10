@@ -6,6 +6,7 @@ import Data.Item.Item;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Data.ID;
+import Data.Item.ItemType;
 import Manager.DbTable;
 import Security.PassHash;
 import javafx.fxml.FXML;
@@ -36,13 +37,12 @@ public class GUIController implements Initializable {
     @FXML
     private TabPane tabPane;
     @FXML
-    private TextField nameField, balanceField;
-    @FXML
-    private TextField usernameField, passwordField;
+    private TextField nameField, balanceField, usernameField,
+            passwordField, priceField, imageURLField,  itemNameField;
     @FXML
     private ChoiceBox<EmployeeType> accountTypes;
     @FXML
-    private ChoiceBox itemTypes;
+    private ChoiceBox<ItemType> itemTypes;
     @FXML
     private TableView<Employee> employeeTableView;
     @FXML
@@ -53,6 +53,8 @@ public class GUIController implements Initializable {
     private TableColumn<Camper, String> camperID, name, balance;
     @FXML
     private TableView<Item> itemTableView;
+    @FXML
+    private TableColumn<Item, String> itemID, itemName, price, imageURL, category;
     private AdminPanel adminPanel = new AdminPanel();
     private PassHash passHash = new PassHash();
 
@@ -68,6 +70,7 @@ public class GUIController implements Initializable {
         try {
             adminPanel.retrieveDatabaseData(DbTable.EMPLOYEE, employeeTableView);
             adminPanel.retrieveDatabaseData(DbTable.CAMPER, camperTableView);
+            adminPanel.retrieveDatabaseData(DbTable.ITEM, itemTableView);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,6 +85,13 @@ public class GUIController implements Initializable {
                 if (e.getClickCount() == 2) {
                     int empID = employeeTableView.getSelectionModel().getSelectedItem().getId();
                     deleteRow(DbTable.EMPLOYEE, employeeTableView, empID);
+                }
+                break;
+            case "itemTableView":
+                setItemFields();
+                if (e.getClickCount() == 2) {
+                    int itemId = itemTableView.getSelectionModel().getSelectedItem().getId();
+                    deleteRow(DbTable.ITEM, itemTableView, itemId);
                 }
                 break;
             case "camperTableView":
@@ -114,6 +124,14 @@ public class GUIController implements Initializable {
         accountTypes.setValue(employee.getAccountType());
     }
 
+    private void setItemFields(){
+        Item item = itemTableView.getSelectionModel().getSelectedItem();
+        itemNameField.setText(item.getName());
+        priceField.setText(String.valueOf(item.getPrice()));
+        imageURLField.setText(item.getImageURL());
+        itemTypes.setValue(item.getItemType());
+    }
+
     private void setCamperFields() {
         Camper camper = camperTableView.getSelectionModel().getSelectedItem();
         nameField.setText(camper.getName());
@@ -138,10 +156,10 @@ public class GUIController implements Initializable {
                 nameField.requestFocus();
                 break;
             case 1:
-                /*
-                if (isTableRowNotSelected())
-                    addToConsumableTable();
-                    */
+                if (isTableRowNotSelected(itemTableView))
+                    addToItemTable();
+                else
+                    editItemTable();
                 break;
             case 2:
                 if (isTableRowNotSelected(employeeTableView))
@@ -163,8 +181,19 @@ public class GUIController implements Initializable {
         adminPanel.retrieveDatabaseData(DbTable.CAMPER, camperTableView);
     }
 
+    private void addToItemTable() throws SQLException {
+        int itemType = ItemType.itemTypeToInt(itemTypes.getSelectionModel().getSelectedItem());
+        String query = "INSERT INTO item VALUES('" + new ID().getId() + "','" +
+                itemNameField.getText() + "','" +
+                priceField.getText() + "','" +
+                imageURLField.getText() + "','" +
+                itemType + "')";
+        adminPanel.updateDatabase(query);
+        adminPanel.retrieveDatabaseData(DbTable.ITEM, itemTableView);
+    }
+
     private void addToEmployeeTable() throws SQLException {
-        int accountType = EmployeeType.EmployeeTypeToInt(accountTypes.getSelectionModel().getSelectedItem());
+        int accountType = EmployeeType.employeeTypeToInt(accountTypes.getSelectionModel().getSelectedItem());
         String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
                 usernameField.getText() + "','" +
                 passHash.tryToGetSaltedHash(passwordField.getText()) + "','" +
@@ -173,17 +202,6 @@ public class GUIController implements Initializable {
         adminPanel.retrieveDatabaseData(DbTable.EMPLOYEE, employeeTableView);
     }
 
-    private void addToConsumableTable(){
-
-    }
-
-    private void editConsumableTable(){
-
-    }
-
-    private void consumableTypeSelector(){
-
-    }
 
     private void editCamperRow() throws SQLException {
         int id = camperTableView.getSelectionModel().getSelectedItem().getId();
@@ -195,8 +213,22 @@ public class GUIController implements Initializable {
         adminPanel.retrieveDatabaseData(DbTable.CAMPER, camperTableView);
     }
 
+    private void editItemTable() throws SQLException {
+        int itemType = ItemType.itemTypeToInt(itemTypes.getSelectionModel().getSelectedItem());
+        int id = camperTableView.getSelectionModel().getSelectedItem().getId();
+        String query = "UPDATE camper SET " +
+                "name = '" + nameField.getText() + "'," +
+                "price = '" + balanceField.getText() + "'" +
+                "imageurl = '" + imageURLField.getText() + "'" +
+                "itemtype = '" + itemType + "'" +
+                "WHERE id = " + id + ";";
+        adminPanel.updateDatabase(query);
+        adminPanel.retrieveDatabaseData(DbTable.ITEM, itemTableView);
+    }
+
+
     private void editEmployeeRow() throws SQLException {
-        int accountType = EmployeeType.EmployeeTypeToInt(accountTypes.getSelectionModel().getSelectedItem());
+        int accountType = EmployeeType.employeeTypeToInt(accountTypes.getSelectionModel().getSelectedItem());
         int id = employeeTableView.getSelectionModel().getSelectedItem().getId();
         String query = "UPDATE employee SET " +
                 "username = '" + usernameField.getText() + "'," +
@@ -214,8 +246,9 @@ public class GUIController implements Initializable {
 
     @FXML
     private void clearSelectionsOnClick() {
-        if (!isTableRowNotSelected(employeeTableView) || !isTableRowNotSelected(camperTableView)) {
+        if (!isTableRowNotSelected(employeeTableView) || !isTableRowNotSelected(camperTableView) || !isTableRowNotSelected(itemTableView)) {
             employeeTableView.getSelectionModel().clearSelection();
+            itemTableView.getSelectionModel().clearSelection();
             camperTableView.getSelectionModel().clearSelection();
             clearFields();
         }
@@ -223,12 +256,20 @@ public class GUIController implements Initializable {
 
     private void clearFields() {
         clearCamperFields();
+        clearItemFields();
         clearEmployeeFields();
     }
 
     private void clearCamperFields() {
         nameField.setText("");
         balanceField.setText("");
+    }
+
+    private void clearItemFields(){
+        itemNameField.setText("");
+        priceField.setText("");
+        imageURLField.setText("");
+        itemTypes.setValue(null);
     }
 
     private void clearEmployeeFields() {
@@ -240,11 +281,14 @@ public class GUIController implements Initializable {
     private void setChoiceBoxes() {
         for (EmployeeType accountType : EmployeeType.values())
             accountTypes.getItems().add(accountType);
+        for (ItemType itemType : ItemType.values())
+            itemTypes.getItems().add(itemType);
     }
 
     private void setCellValueFactories() {
         setEmployeeColumns();
         setCamperColumns();
+        setItemColumns();
     }
 
     private void setEmployeeColumns() {
@@ -258,5 +302,13 @@ public class GUIController implements Initializable {
         camperID.setCellValueFactory(new PropertyValueFactory<>("id"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         balance.setCellValueFactory(new PropertyValueFactory<>("balance"));
+    }
+
+    private void setItemColumns(){
+        itemID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        itemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        price.setCellValueFactory(new PropertyValueFactory<>("price"));
+        imageURL.setCellValueFactory(new PropertyValueFactory<>("imageURL"));
+        category.setCellValueFactory(new PropertyValueFactory<>("itemType"));
     }
 }

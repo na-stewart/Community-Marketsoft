@@ -9,8 +9,8 @@ package Data.Customers;
 public enum EmployeeType {
     ADMIN, EMPLOYEE, VENDOR, UNCONFIRMED;
 
-    public static EmployeeType intToEmployeeType(int accountTypePermsInt){
-        switch (accountTypePermsInt){
+    public static EmployeeType intToEmployeeType(int accountTypeInt){
+        switch (accountTypeInt){
             case 0:
                 return ADMIN;
             case 1:
@@ -23,8 +23,8 @@ public enum EmployeeType {
         return null;
     }
 
-    public static int EmployeeTypeToInt(EmployeeType accountTypePerms){
-        switch (accountTypePerms) {
+    public static int employeeTypeToInt(EmployeeType accountType){
+        switch (accountType) {
             case ADMIN:
                 return 0;
             case EMPLOYEE:
