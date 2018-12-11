@@ -7,4 +7,10 @@ https://github.com/sw1pe/Trader-Bobs-Emporium/projects
 
 Screen SHots:
 
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/login.PNG)
+
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/camper.PNG)
+
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/item.PNG)
+
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/account.PNG)
