@@ -9,6 +9,8 @@ Screen Shots:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/login.PNG)
 
+Data Manager:
+
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/camper.PNG)
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/item.PNG)
