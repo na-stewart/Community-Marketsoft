@@ -67,7 +67,6 @@ public class Login implements MonoDatabaseTable {
             resultSet.close();
     }
 
-
     private boolean canLogin(ResultSet resultSet) throws SQLException {
         return resultSet.next()
                 && resultSet.getInt(4) != 3 &&
@@ -75,7 +74,6 @@ public class Login implements MonoDatabaseTable {
     }
 
     private void login(ResultSet resultSet) throws SQLException {
-        Main.mainStage.close();
         setLoggedInAccountInfo(resultSet);
         openAccountInterface();
     }
@@ -87,11 +85,14 @@ public class Login implements MonoDatabaseTable {
     }
     private void openAccountInterface(){
         if (employeeInterfaceConditionsMet())
-            new GUI(new Stage(),"AccountTypes/Admin/AdminGUI/AdminGUI.fxml");
+            new GUI("AccountTypes/Admin/AdminGUI/AdminGUI.fxml");
+        else
+            new GUI("AccountTypes/Vendor/VendorGUI/VendorGUI.fxml");
     }
 
     private boolean employeeInterfaceConditionsMet(){
-        return LoggedInAccountUtil.thisAccountType == EmployeeType.EMPLOYEE || LoggedInAccountUtil.thisAccountType == EmployeeType.ADMIN;
+        return LoggedInAccountUtil.thisAccountType == EmployeeType.EMPLOYEE
+                || LoggedInAccountUtil.thisAccountType == EmployeeType.ADMIN;
     }
 
 }

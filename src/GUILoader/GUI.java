@@ -1,5 +1,6 @@
 package GUILoader;
 
+import Main.Main;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,12 +17,12 @@ import java.util.Objects;
  */
 public class GUI {
 
-    public GUI(Stage stage, String path) {
+    public GUI(String path) {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource(path)));
-            stage.setScene(new Scene(root));
-            stage.setTitle("Trader Bobs Emporium");
-            stage.show();
+            Main.mainStage.setScene(new Scene(root));
+            Main.mainStage.setTitle("Trader Bobs Emporium");
+            Main.mainStage.show();
         } catch (IOException e) {
             e.printStackTrace();
 

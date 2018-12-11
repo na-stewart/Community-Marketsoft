@@ -7,8 +7,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -36,13 +37,19 @@ public class GUIController implements Initializable {
     }
 
     @FXML
+    private void keyActionEvent(KeyEvent keyEvent) throws SQLException {
+        if (keyEvent.getCode() == KeyCode.ENTER)
+            new Login(username.getText(), password.getText()).retrieveDatabaseData();
+    }
+
+    @FXML
     private void buttonActionEvent(ActionEvent event) throws SQLException {
         String buttonText = ((Button) event.getSource()).getText();
-        Login loginPanel = new Login(username.getText(), password.getText());
+        Login login = new Login(username.getText(), password.getText());
         if (buttonText.equals("Login"))
-            loginPanel.retrieveDatabaseData();
+            login.retrieveDatabaseData();
         else
-            loginPanel.updateDatabase();
+            login.updateDatabase();
 
     }
 

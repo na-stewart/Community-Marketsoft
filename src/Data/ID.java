@@ -11,6 +11,6 @@ import java.util.Random;
 public class ID {
     public int getId(){
         Random rand = new Random();
-        return rand.nextInt(100000);
+        return rand.nextInt(999999);
     }
 }
