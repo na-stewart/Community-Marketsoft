@@ -1,7 +1,7 @@
 package AccountTypes.Admin.AdminGUI;
 
 import Data.Customers.EmployeeType;
-import AccountTypes.Admin.AdminPanel;
+import AccountTypes.Admin.AdminDataManager;
 import Data.Item.Item;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
@@ -55,7 +55,7 @@ public class GUIController implements Initializable {
     private TableView<Item> itemTableView;
     @FXML
     private TableColumn<Item, String> itemID, itemName, price, imageURL, category;
-    private AdminPanel adminPanel = new AdminPanel();
+    private AdminDataManager adminPanel = new AdminDataManager();
     private PassHash passHash = new PassHash();
 
     @Override

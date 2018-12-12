@@ -1,7 +1,5 @@
 package Data.Item;
 
-import Data.Customers.EmployeeType;
-
 /**
  * @Author Aidan Stewart
  * @Year 2018
