@@ -3,9 +3,9 @@ package Login;
 import Data.Customers.EmployeeType;
 import Data.ID;
 import GUILoader.GUI;
-import Main.Main;
-import Manager.DbManagers.DatabaseManager;
-import Manager.Interfaces.MonoDatabaseTable;
+
+import Interfaces.MonoQuery;
+import Manager.DatabaseManager;
 import Util.LoggedInAccountUtil;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class Login implements MonoDatabaseTable {
+public class Login implements MonoQuery {
     private DatabaseManager manager = new DatabaseManager();
     private String user;
     private String pass;

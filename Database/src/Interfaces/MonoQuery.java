@@ -1,4 +1,4 @@
-package Manager;
+package Interfaces;
 
 import java.sql.SQLException;
 

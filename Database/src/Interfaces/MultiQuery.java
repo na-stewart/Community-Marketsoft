@@ -1,4 +1,6 @@
-package Manager;
+package Interfaces;
+
+import Manager.DataViewer;
 
 import java.sql.SQLException;
 
@@ -10,5 +12,5 @@ import java.sql.SQLException;
  */
 public interface MultiQuery {
     void updateDatabase(String query) throws SQLException;
-    void retrieveDatabaseData(String query, DatabaseViewer dataViewer) throws SQLException;
+    void retrieveDatabaseData(DataViewer dataViewer) throws SQLException;
 }

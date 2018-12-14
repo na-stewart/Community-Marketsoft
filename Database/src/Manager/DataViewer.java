@@ -1,25 +1,27 @@
 package Manager;
 
+import Tables.TableType;
+
 /**
  * @Author Aidan Stewart
  * @Year 2018
  * Copyright (c)
  * All rights reserved.
  */
-public class DatabaseViewer {
+public class DataViewer {
     private Object dataViewer;
-    private String table;
+    private TableType tableType;
 
-    public DatabaseViewer(Object dataViewer, String table) {
+    public DataViewer(TableType tableType, Object dataViewer) {
         this.dataViewer = dataViewer;
-        this.table = table;
+        this.tableType = tableType;
     }
 
     public Object getDataViewer() {
         return dataViewer;
     }
 
-    public String getTable() {
-        return table;
+    public TableType getTable() {
+        return tableType;
     }
 }

@@ -208,7 +208,7 @@
                                                         <Font size="25.0" />
                                                     </font>
                                                 </Text>
-                                                <ChoiceBox fx:id="accountTypes" prefHeight="31.0" prefWidth="388.0" />
+                                                <ChoiceBox fx:id="employeeTypes" prefHeight="31.0" prefWidth="388.0" />
                                             </children>
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
