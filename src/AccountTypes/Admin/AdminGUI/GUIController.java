@@ -19,6 +19,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import org.controlsfx.control.table.TableFilter;
+import org.controlsfx.dialog.ExceptionDialog;
+
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -85,7 +87,8 @@ public class GUIController implements Initializable {
                 tableFilters[i].apply();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionDialog exceptionDialog = new ExceptionDialog(e);
+            exceptionDialog.showAndWait();
         }
     }
 
@@ -113,28 +116,28 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    private void tableViewClickListener(MouseEvent e) throws SQLException {
+    private void tableViewClickListener(MouseEvent e) {
         String tableView = ((TableView) e.getSource()).getId();
         switch (tableView) {
             case "camperTableView":
                 setCamperFields();
                 if (e.getClickCount() == 2) {
                     int cmpID = camperTableView.getSelectionModel().getSelectedItem().getId();
-                    deleteRow(dataViewers[0], cmpID);
+                    tryToDeleteRow(dataViewers[0], cmpID);
                 }
                 break;
             case "itemTableView":
                 setItemFields();
                 if (e.getClickCount() == 2) {
                     int itemId = itemTableView.getSelectionModel().getSelectedItem().getId();
-                    deleteRow(dataViewers[1], itemId);
+                    tryToDeleteRow(dataViewers[1], itemId);
                 }
                 break;
             case "employeeTableView":
                 setEmployeeFields();
                 if (e.getClickCount() == 2) {
                     int empID = employeeTableView.getSelectionModel().getSelectedItem().getId();
-                    deleteRow(dataViewers[2], empID);
+                    tryToDeleteRow(dataViewers[2], empID);
                 }
                 break;
         }
@@ -161,6 +164,13 @@ public class GUIController implements Initializable {
         balanceField.setText(String.valueOf(camper.getBalance()));
     }
 
+    private void tryToDeleteRow(DataViewer dataViewer, int id){
+        try {
+            deleteRow(dataViewer, id);
+        } catch (SQLException e) {
+           new ExceptionDialog(e).showAndWait();
+        }
+    }
     private void deleteRow(DataViewer dataViewer, int id) throws SQLException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete this row?");
         ButtonType buttonTypeOne = new ButtonType("Delete");
@@ -181,6 +191,14 @@ public class GUIController implements Initializable {
     }
 
     @FXML
+    private void tryToUpdate(){
+        try {
+            update();
+        } catch (Exception e) {
+            new ExceptionDialog(e).showAndWait();
+        }
+    }
+
     private void update() throws SQLException {
         int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();
         switch (tabPaneIndex) {

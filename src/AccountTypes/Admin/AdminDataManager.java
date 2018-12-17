@@ -6,18 +6,15 @@ import Data.Customers.EmployeeType;
 import Data.ID;
 import Data.Item.Item;
 import Data.Item.ItemType;
-import Data.ObservableDataSupplier;
 import Manager.DataViewer;
 import Manager.DatabaseManager;
 import Interfaces.MultiQuery;
-import Tables.TableType;
 import Util.LoggedInAccountUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 
 
-import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -30,7 +27,6 @@ import java.sql.SQLException;
 public class AdminDataManager implements MultiQuery {
 
     private DatabaseManager databaseManager = new DatabaseManager();
-    private ObservableDataSupplier observableDataSupply = new ObservableDataSupplier();
 
     @Override
     public void updateDatabase(String query) throws SQLException {

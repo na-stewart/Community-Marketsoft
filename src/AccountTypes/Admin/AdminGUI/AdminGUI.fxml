@@ -58,7 +58,7 @@
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" onAction="#update" prefHeight="48.0" prefWidth="102.0" text="Update">
+                                                <Button mnemonicParsing="false" onAction="#tryToUpdate" prefHeight="48.0" prefWidth="102.0" text="Update">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>
@@ -146,7 +146,7 @@
                               </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" onAction="#update" prefHeight="48.0" prefWidth="102.0" text="Update">
+                                                <Button mnemonicParsing="false" onAction="#tryToUpdate" prefHeight="48.0" prefWidth="102.0" text="Update">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>
@@ -213,7 +213,7 @@
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" onAction="#update" prefHeight="48.0" prefWidth="102.0" text="Update">
+                                                <Button mnemonicParsing="false" onAction="#tryToUpdate" prefHeight="48.0" prefWidth="102.0" text="Update">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>

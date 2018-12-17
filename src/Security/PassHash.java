@@ -37,7 +37,6 @@ public class PassHash {
     private String getSaltedHash(String password) throws Exception {
         int saltLen = 32;
         byte[] salt = SecureRandom.getInstance("SHA1PRNG").generateSeed(saltLen);
-        // store the salt with the password
         return Base64.encodeBase64String(salt) + "$" + hash(password, salt);
     }
 
