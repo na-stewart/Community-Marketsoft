@@ -79,8 +79,8 @@ public class AdminDataManager implements MultiQuery {
 
     private void accountPermission(String field) throws SQLException {
         if (LoggedInAccountUtil.thisAccountType == EmployeeType.EMPLOYEE) {
-            if (field.equals("0") || field.equals("2") || field.equals("3"))
-                throw new SQLException("Permissions not granted to execute query");
+            if (field.equals("0") || field.equals("1") || field.equals("3"))
+                throw new SQLException("Permission not granted to execute query.");
         }
     }
 
@@ -100,6 +100,5 @@ public class AdminDataManager implements MultiQuery {
                 "itemtype = '" + fields[3] + "' " +
                 "WHERE id = " + id + ";";
     }
-
-
+    
 }
