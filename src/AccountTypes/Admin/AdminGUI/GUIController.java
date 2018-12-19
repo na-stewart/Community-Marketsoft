@@ -9,6 +9,7 @@ import Data.Item.ItemType;
 import Manager.DataViewer;
 import Security.PassHash;
 import Tables.TableType;
+import Util.LoggedInAccountUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -21,6 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import org.controlsfx.control.table.TableFilter;
 import org.controlsfx.dialog.ExceptionDialog;
 
+import javax.security.auth.login.AccountException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -28,6 +30,7 @@ import java.util.ResourceBundle;
 
 /**
  * @Author Aidan Stewart
+ * Sad Boi hours
  * @Year 2018
  * Copyright (c)
  * All rights reserved.
@@ -61,7 +64,6 @@ public class GUIController implements Initializable {
     private AdminDataManager adminDataManager = new AdminDataManager();
     private DataViewer<TableView>[] dataViewers = new DataViewer[3];
     private TableFilter.Builder[] tableFilters = new TableFilter.Builder[3];
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -204,38 +206,40 @@ public class GUIController implements Initializable {
         switch (tabPaneIndex) {
             case 0:
                 updateCamper();
+                nameField.requestFocus();
+                adminDataManager.retrieveDatabaseData(dataViewers[0]);
+                tableFilters[0].apply();
                 break;
             case 1:
                 updateItem();
+                itemNameField.requestFocus();
+                adminDataManager.retrieveDatabaseData(dataViewers[1]);
+                tableFilters[1].apply();
                 break;
             case 2:
                 updateEmployee();
+                usernameField.requestFocus();
+                adminDataManager.retrieveDatabaseData(dataViewers[2]);
+                tableFilters[2].apply();
                 break;
         }
         clearFields();
     }
 
     private void updateCamper() throws SQLException {
-        String[] fields = new String[]{
-                nameField.getText(),
-                balanceField.getText() };
+        String[] fields = new String[]{nameField.getText(),
+                balanceField.getText()};
         if (isTableRowNotSelected(camperTableView))
             adminDataManager.updateDatabase(adminDataManager.addToCamperTableQuery(fields));
         else {
             int id = camperTableView.getSelectionModel().getSelectedItem().getId();
             adminDataManager.updateDatabase(adminDataManager.editCamperTableQuery(id, fields));
         }
-        nameField.requestFocus();
-        adminDataManager.retrieveDatabaseData(dataViewers[0]);
-        tableFilters[0].apply();
     }
 
     private void updateItem() throws SQLException {
         int itemType = ItemType.itemTypeToInt(itemTypes.getValue());
-        String[] fields = new String[]{
-                itemNameField.getText(),
-                priceField.getText(),
-                imageURLField.getText(),
+        String[] fields = new String[]{itemNameField.getText(), priceField.getText(), imageURLField.getText(),
                 String.valueOf(itemType)
         };
         if (isTableRowNotSelected(itemTableView))
@@ -244,15 +248,11 @@ public class GUIController implements Initializable {
             int id = itemTableView.getSelectionModel().getSelectedItem().getId();
             adminDataManager.updateDatabase(adminDataManager.editItemTableQuery(id, fields));
         }
-        itemNameField.requestFocus();
-        adminDataManager.retrieveDatabaseData(dataViewers[1]);
-        tableFilters[1].apply();
     }
 
     private void updateEmployee() throws SQLException {
         int employeeType = EmployeeType.employeeTypeToInt(employeeTypes.getValue());
-        String fields[] = new String[]{
-                usernameField.getText(),
+        String fields[] = new String[]{usernameField.getText(),
                 new PassHash().tryToGetSaltedHash(passwordField.getText()),
                 String.valueOf(employeeType)
         };
@@ -262,9 +262,6 @@ public class GUIController implements Initializable {
             int id = employeeTableView.getSelectionModel().getSelectedItem().getId();
             adminDataManager.updateDatabase(adminDataManager.editEmployeeTableQuery(id, fields));
         }
-        usernameField.requestFocus();
-        adminDataManager.retrieveDatabaseData(dataViewers[2]);
-        tableFilters[2].apply();
     }
 
     private boolean isTableRowNotSelected(TableView tableView) {

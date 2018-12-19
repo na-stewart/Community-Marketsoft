@@ -1,6 +1,7 @@
 package Security;
 
 import org.apache.commons.codec.binary.Base64;
+import org.controlsfx.dialog.ExceptionDialog;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;

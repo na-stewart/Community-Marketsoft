@@ -3,6 +3,7 @@ package AccountTypes.Admin;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Data.Customers.EmployeeType;
+import Data.DataObjectSupplier;
 import Data.ID;
 import Data.Item.Item;
 import Data.Item.ItemType;
@@ -15,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 
 
+import javax.security.auth.login.AccountException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -35,62 +37,16 @@ public class AdminDataManager implements MultiQuery {
 
     @Override
     public void retrieveDatabaseData(DataViewer dataViewer) throws SQLException {
-        String table = dataViewer.getTableType().name().toLowerCase();
-        ResultSet resultSet = databaseManager.receiver("SELECT * FROM " + table);
+        ResultSet resultSet = databaseManager.receiver("SELECT * FROM " + dataViewer.getTableType().name().toLowerCase());
         TableView tableView = (TableView) dataViewer.getViewer();
         ObservableList observableList = FXCollections.observableArrayList();
-        while (resultSet.next()) {
-            switch (table) {
-                case "employee":
-                    populateEmployeeList(resultSet, observableList);
-                    break;
-                case "item":
-                     populateItemList(resultSet, observableList);
-                    break;
-                case "camper":
-                    populateCamperList(resultSet, observableList);
-                    break;
-            }
-        }
+        while(resultSet.next())
+            observableList.add(new DataObjectSupplier(resultSet).getData(dataViewer.getTableType()));
         tableView.setItems(observableList);
         resultSet.close();
     }
 
-
-    private void populateCamperList(ResultSet resultSet, ObservableList<Camper> campers) throws SQLException {
-        int id = resultSet.getInt(1);
-        String name = resultSet.getString(2);
-        int balance = resultSet.getInt(3);
-        campers.add(new Camper(id, name, balance));
-    }
-
-    private void populateItemList(ResultSet resultSet, ObservableList<Item> items) throws SQLException {
-        int id = resultSet.getInt(1);
-        String name = resultSet.getString(2);
-        int price = resultSet.getInt(3);
-        String imageUrl = resultSet.getString(4);
-        ItemType itemType = ItemType.intToItemType(resultSet.getInt(5));
-        items.add(new Item(id, name, price, imageUrl, itemType));
-
-    }
-
-    private void populateEmployeeList(ResultSet resultSet, ObservableList<Employee> employees) throws SQLException {
-        int id = resultSet.getInt(1);
-        String username = resultSet.getString(2);
-        String password = resultSet.getString(3);
-        EmployeeType accountType = EmployeeType.intToEmployeeType(resultSet.getInt(4));
-        employees.add(new Employee(id, username, password, accountType));
-        if (LoggedInAccountUtil.thisAccountType == EmployeeType.EMPLOYEE)
-            employees.removeIf(this::removeForbiddenAccountVisibility);
-
-    }
-    private Boolean removeForbiddenAccountVisibility(Employee employee){
-        return employee.getAccountType() == EmployeeType.EMPLOYEE ||
-                employee.getAccountType() == EmployeeType.ADMIN ||
-                employee.getAccountType() == EmployeeType.UNCONFIRMED;
-    }
-
-    public String addToCamperTableQuery(String[] fields) throws SQLException {
+    public String addToCamperTableQuery(String[] fields) {
       return "INSERT INTO camper VALUES('" + new ID().getId() + "','" +
                 fields[0] + "','" +
                 fields[1] + "')";
@@ -104,14 +60,16 @@ public class AdminDataManager implements MultiQuery {
                 fields[3] + "')";
     }
 
-    public String addToEmployeeTableQuery(String[] fields) {
+    public String addToEmployeeTableQuery(String[] fields) throws SQLException {
+        accountPermission(fields[2]);
        return "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
                 fields[0] + "','" +
                 fields[1] + "','" +
                 fields[2] + "')";
     }
 
-    public String editEmployeeTableQuery(int id, String[] fields) {
+    public String editEmployeeTableQuery(int id, String[] fields) throws SQLException {
+        accountPermission(fields[2]);
         return  "UPDATE employee SET " +
                 "username = '" + fields[0] + "'," +
                 "password = '" + fields[1] + "'," +
@@ -119,7 +77,12 @@ public class AdminDataManager implements MultiQuery {
                 "WHERE id = " + id + ";";
     }
 
-
+    private void accountPermission(String field) throws SQLException {
+        if (LoggedInAccountUtil.thisAccountType == EmployeeType.EMPLOYEE) {
+            if (field.equals("0") || field.equals("2") || field.equals("3"))
+                throw new SQLException("Permissions not granted to execute query");
+        }
+    }
 
     public String  editCamperTableQuery(int id, String[] fields) {
         return  "UPDATE camper SET " +
@@ -137,5 +100,6 @@ public class AdminDataManager implements MultiQuery {
                 "itemtype = '" + fields[3] + "' " +
                 "WHERE id = " + id + ";";
     }
+
 
 }
