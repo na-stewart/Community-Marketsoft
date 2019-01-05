@@ -1,10 +1,11 @@
 package AccountTypes.Vendor;
 
-import Interfaces.MultiQuery;
-import Manager.DataViewer;
-import Manager.DatabaseManager;
+import Data.DataViewer;
+import Interfaces.MultiReceive;
+import Data.DataManager;
 import javafx.scene.layout.GridPane;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -13,18 +14,13 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class VendorDataManager implements MultiQuery {
+public class VendorDataManager implements MultiReceive {
 
-    @Override
-    public void updateDatabase(String query) throws SQLException {
-        //Update's camper information to subtract balance
-    }
+    private DataManager databaseManager = new DataManager();
 
     @Override
     public void retrieveDatabaseData(DataViewer dataViewer) throws SQLException {
-        GridPane gridPane = (GridPane) dataViewer.getViewer();
-        //Retreive items and camper data.
-        //Retreive gridpane and update gridpane with panes that include database data.
+
 
     }
 }

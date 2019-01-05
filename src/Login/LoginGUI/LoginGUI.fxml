@@ -39,8 +39,8 @@
             </VBox>
             <HBox alignment="BOTTOM_CENTER" prefHeight="48.0" prefWidth="708.0" spacing="200.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#buttonActionEvent" prefHeight="46.0" prefWidth="99.0" text="Register" />
-                  <Button mnemonicParsing="false" onAction="#buttonActionEvent" prefHeight="46.0" prefWidth="99.0" text="Login" />
+                  <Button mnemonicParsing="false" onAction="#tryToLogin" prefHeight="46.0" prefWidth="99.0" text="Register" />
+                  <Button mnemonicParsing="false" onAction="#tryToLogin" prefHeight="46.0" prefWidth="99.0" text="Login" />
                </children>
             </HBox>
          </children>
