@@ -1,11 +1,9 @@
-package Manager;
+package Data;
 
 import DataSource.DataSource;
 import com.sun.rowset.CachedRowSetImpl;
-import sun.misc.Cache;
 
 import javax.sql.rowset.CachedRowSet;
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +15,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class DatabaseManager {
+public class DataManager {
 
     public ResultSet receiver(String query) throws SQLException {
         CachedRowSet cachedRowSet = new CachedRowSetImpl();
