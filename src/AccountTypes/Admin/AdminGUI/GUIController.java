@@ -7,6 +7,7 @@ import Data.Customers.EmployeeType;
 import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import org.controlsfx.dialog.ExceptionDialog;
 
+import javax.swing.*;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Random;
@@ -151,27 +153,25 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    private void eventListener(Event event){
-        if (event.getEventType().getName().equals("ACTION")){
-            String buttonText = ((Button) event.getSource()).getText();
-            isDeletingData = !buttonText.equals("Update");
-        } else if (event.getEventType().getName().equals("KEY_PRESSED")) {
-            KeyEvent keyEvent = (KeyEvent) event;
-            if (keyEvent.getCode() == KeyCode.ENTER)
-                isDeletingData = false;
-            else if (keyEvent.getCode() == KeyCode.BACK_SPACE)
-                isDeletingData = true;
-
+    private void keyListener(KeyEvent keyEvent){
+        if (keyEvent.getCode() == KeyCode.ENTER || keyEvent.getCode() == KeyCode.BACK_SPACE) {
+            isDeletingData = keyEvent.getCode() != KeyCode.ENTER;
+            tryToUpdate();
         }
-        tryToUpdate();
-      }
+    }
 
+    @FXML
+    private void buttonListener(ActionEvent event) {
+        String buttonText = ((Button) event.getSource()).getText();
+        isDeletingData = !buttonText.equals("Update");
+        tryToUpdate();
+    }
 
     private void tryToUpdate(){
         try {
             update();
-        } catch (SQLException | NullPointerException e) {
-            new ExceptionDialog(e).showAndWait();
+        } catch (Exception exception) {
+            new ExceptionDialog(exception).showAndWait();
         }
     }
 

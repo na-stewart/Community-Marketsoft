@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainPane" onKeyPressed="#eventListener" prefHeight="830.0" prefWidth="1301.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
+<AnchorPane fx:id="mainPane" onKeyPressed="#keyListener" prefHeight="830.0" prefWidth="1301.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Admin.AdminGUI.GUIController">
     <children>
         <ImageView fx:id="banner" fitHeight="145.0" fitWidth="1301.0">
             <image>
@@ -58,12 +58,12 @@
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" onAction="#eventListener" prefHeight="48.0" prefWidth="102.0" text="Update">
+                                                <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="48.0" prefWidth="102.0" text="Update">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>
                                                 </Button>
-                                    <Button mnemonicParsing="false" onAction="#eventListener" prefHeight="48.0" prefWidth="102.0" text="Delete">
+                                    <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="48.0" prefWidth="102.0" text="Delete">
                                        <font>
                                           <Font size="22.0" />
                                        </font>
@@ -151,12 +151,12 @@
                               </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" onAction="#eventListener" prefHeight="48.0" prefWidth="102.0" text="Update">
+                                                <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="48.0" prefWidth="102.0" text="Update">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>
                                                 </Button>
-                                    <Button mnemonicParsing="false" onAction="#eventListener" prefHeight="48.0" prefWidth="102.0" text="Delete">
+                                    <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="48.0" prefWidth="102.0" text="Delete">
                                        <font>
                                           <Font size="22.0" />
                                        </font>
@@ -223,12 +223,12 @@
                                         </VBox>
                                         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                             <children>
-                                                <Button mnemonicParsing="false" onAction="#eventListener" prefHeight="48.0" prefWidth="102.0" text="Update">
+                                                <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="48.0" prefWidth="102.0" text="Update">
                                                     <font>
                                                         <Font size="22.0" />
                                                     </font>
                                                 </Button>
-                                    <Button mnemonicParsing="false" onAction="#eventListener" prefHeight="48.0" prefWidth="102.0" text="Delete">
+                                    <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="48.0" prefWidth="102.0" text="Delete">
                                        <font>
                                           <Font size="22.0" />
                                        </font>
