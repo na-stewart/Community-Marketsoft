@@ -11,11 +11,11 @@ Screen Shots:
 
 Data Manager:
 
-![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/camper.PNG)
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/camperTable.PNG)
 
-![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/item.PNG)
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/itemTable.PNG)
 
-![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/account.PNG)
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/itemTable.PNG)
 
 Vendor Interface(early image): 
 
