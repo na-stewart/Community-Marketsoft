@@ -71,8 +71,9 @@ public class GUIController implements Initializable {
     }
 
     private void refreshData(){
-        tryToPopulateCamper();
         tryToPopulateTilePane();
+        tryToPopulateCamper();
+
 
     }
 
@@ -115,7 +116,6 @@ public class GUIController implements Initializable {
             vendorDataManager.getSelectedItems().remove(selectedItems.getSelectionModel().getSelectedIndex());
         else {
             displayCheckoutDialog();
-            vendorDataManager.getSelectedItems().clear();
         }
         selectedItems.setItems(vendorDataManager.getSelectedItems());
     }
@@ -131,6 +131,8 @@ public class GUIController implements Initializable {
             refreshData();
         }
     }
+
+
 
     @FXML
     private void tilePaneClickListener(){
@@ -201,7 +203,7 @@ public class GUIController implements Initializable {
                     protected void updateItem(Camper c, boolean bln) {
                         super.updateItem(c, bln);
                         if (c != null)
-                            setText(c.getId() + " : " + c.getName() + " : " + c.getBalance());
+                            setText(c.getId() + " : " + c.getName() + " : Balance: " + c.getBalance());
                         else
                             setText("");
                     }
@@ -210,7 +212,6 @@ public class GUIController implements Initializable {
             }
         };
     }
-
 
     private void setChoiceBox() {
         for (ItemType itemType : ItemType.values())

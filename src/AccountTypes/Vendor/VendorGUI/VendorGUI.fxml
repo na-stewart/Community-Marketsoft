@@ -19,7 +19,7 @@
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.58" prefHeight="703.0" prefWidth="1074.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <VBox alignment="CENTER" layoutX="88.0" layoutY="5.0" prefHeight="72.0" prefWidth="311.0" spacing="10.0">
          <children>
-            <Text fx:id="camperNameText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" textAlignment="CENTER">
+            <Text fx:id="camperNameText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Camper" textAlignment="CENTER">
                <font>
                   <Font name="Courier New Bold" size="22.0" />
                </font>

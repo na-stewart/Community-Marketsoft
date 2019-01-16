@@ -7,10 +7,12 @@ import Data.DataObjectBuilder;
 import Data.DataViewer;
 import Data.Item.Item;
 import Interfaces.MultiReceive;
+import com.sun.xml.internal.bind.v2.TODO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -25,6 +27,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author Aidan Stewart
@@ -137,17 +141,31 @@ public class VendorDataManager implements MultiReceive {
     }
 
     private void checkout() throws Exception {
-        if (total <= selectedCamper.getBalance()) {
-            for (Item items : selectedItems) {
-                if (items.getQuantity() > 0)
-                    items.setQuantity(items.getQuantity() - 1);
-                else
-                    throw new Exception("One or more of selected items are or will be out of stock! please try again!");
+        List<String> itemsNotCheckedOut = new ArrayList<>();
+        boolean checkoutWarning = false;
+        for (Item items : selectedItems) {
+            if (items.getPrice() < selectedCamper.getBalance() && items.getQuantity() > 0) {
+                items.setQuantity(items.getQuantity() - 1);
+                selectedCamper.setBalance(selectedCamper.getBalance() - items.getPrice());
+            } else{
+                itemsNotCheckedOut.add(items.getName());
+                checkoutWarning = true;
             }
-            selectedCamper.setBalance(selectedCamper.getBalance() - total);
-            total = 0;
         }
+        if (checkoutWarning)
+            displayCheckoutFailureDialog(itemsNotCheckedOut);
+        selectedItems.clear();
     }
+
+    private void displayCheckoutFailureDialog(List<String> itemsNotCheckedOut){
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Checkout Failure");
+        alert.setHeaderText("Checkout Failure!");
+        alert.setContentText("The following items did not checkout due to the campers insufficient balance " +
+                "or the item is out of stock! \n" + itemsNotCheckedOut);
+        alert.showAndWait();
+    }
+
 
     public ObservableList<Item> getSelectedItems() {
         return selectedItems;
