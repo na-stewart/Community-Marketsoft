@@ -41,7 +41,6 @@ public class VendorDataManager implements MultiReceive {
     private ObservableList<Item> selectedItems = FXCollections.observableArrayList();
     private ObservableList<Camper> unfilteredCamperData = FXCollections.observableArrayList();
     private Camper selectedCamper;
-    private int total;
 
     @Override
     public void retrieveDatabaseData(DataViewer dataViewer) throws SQLException {
@@ -122,6 +121,7 @@ public class VendorDataManager implements MultiReceive {
     }
 
     public String getCheckoutText(){
+        int total = 0;
         StringBuilder stringBuilder = new StringBuilder("Are you sure you want to checkout?\n");
         stringBuilder.append("=========================================");
         for (Item items : selectedItems) {
