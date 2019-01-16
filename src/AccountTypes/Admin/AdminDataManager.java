@@ -7,25 +7,20 @@ import Data.DataObjectBuilder;
 import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
-import Data.DataManager;
+import Data.DataBaseManager;
 import Interfaces.MultiReceive;
 import Security.PassHash;
-import Util.LoggedInAccountUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 import org.controlsfx.control.table.TableFilter;
-import org.controlsfx.dialog.ExceptionDialog;
 
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * @Author Aidan Stewart
@@ -35,16 +30,16 @@ import java.util.Random;
  */
 public class AdminDataManager implements MultiReceive {
 
-    private DataManager databaseManager = new DataManager();
+    private DataBaseManager databaseManager = new DataBaseManager();
 
     @Override
     public void retrieveDatabaseData(DataViewer dataViewer) throws SQLException {
-        ResultSet resultSet = databaseManager.receiver("SELECT * FROM " + dataViewer.getTableName());
+        ResultSet resultSet = databaseManager.receiver(dataViewer.getQuery());
         TableView tableView = (TableView) dataViewer.getNode();
         TableFilter.Builder tableFilter = TableFilter.forTableView(tableView);
         ObservableList observableList = FXCollections.observableArrayList();
         while(resultSet.next())
-            observableList.add(new DataObjectBuilder(resultSet).getData(dataViewer.getTableName()));
+            observableList.add(new DataObjectBuilder(resultSet).getData(dataViewer.getQuery()));
         tableView.setItems(observableList);
         tableFilter.apply();
         resultSet.close();
@@ -62,26 +57,21 @@ public class AdminDataManager implements MultiReceive {
     }
 
     public void addToCamperTableQuery(Camper camper) throws SQLException {
-      String query =  "INSERT INTO camper VALUES('" + camper.getId() + "','" +
-                camper.getName() + "','" +
+      String query =  "INSERT INTO camper VALUES('" + camper.getId() + "','" + camper.getName() + "','" +
                 camper.getBalance()+ "')";
       databaseManager.update(query);
     }
 
     public void addToItemTableQuery(Item item) throws SQLException {
-      String query = "INSERT INTO item VALUES('" + item.getId() + "','" +
-                item.getName() + "','" +
-                item.getPrice() + "','" +
-                item.getImageURL() + "','" +
-                ItemType.itemTypeToInt(item.getItemType()) + "')";
+      String query = "INSERT INTO item VALUES('" + item.getId() + "','" + item.getName() + "','" + item.getPrice() +
+                "','" + item.getQuantity() + "','"+ item.getImageURL() + "','" + ItemType.itemTypeToInt(item.getItemType()) + "')";
       databaseManager.update(query);
 
     }
 
     public void addToEmployeeTableQuery(Employee employee) throws SQLException {
         employee.requestPermissionToModifyEmployees();
-        String query = "INSERT INTO employee VALUES('" + employee.getId() + "','" +
-                employee.getUsername() + "','" +
+        String query = "INSERT INTO employee VALUES('" + employee.getId() + "','" + employee.getUsername() + "','" +
                 new PassHash().tryToGetSaltedHash(employee.getPassword()) + "','" +
                 EmployeeType.employeeTypeToInt(employee.getEmployeeType()) + "')";
         databaseManager.update(query);

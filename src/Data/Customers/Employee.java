@@ -1,6 +1,6 @@
 package Data.Customers;
 
-import Data.DataManager;
+import Data.DataBaseManager;
 import Security.PassHash;
 import Util.LoggedInAccountUtil;
 
@@ -17,7 +17,7 @@ public class Employee {
     private String username;
     private String password;
     private EmployeeType employeeType;
-    DataManager databaseManager = new DataManager();
+    DataBaseManager databaseManager = new DataBaseManager();
 
     public Employee(int ID, String username, String password, EmployeeType accountType) {
         this.id = ID;
@@ -51,11 +51,13 @@ public class Employee {
     public void setPassword(String password) throws SQLException {
         String passwordHashed =  new PassHash().tryToGetSaltedHash(password);
         databaseManager.update("UPDATE employee SET password = '" + passwordHashed +"' WHERE id =" + id + ";");
+        this.password = password;
     }
 
     public void setEmployeeType(EmployeeType employeeType) throws SQLException {
         int employeeTypeInt = EmployeeType.employeeTypeToInt(employeeType);
-        databaseManager.update("UPDATE employee SET accounttype = '" + employeeTypeInt +"' WHERE id =" + id + ";");
+        databaseManager.update("UPDATE employee SET employeetype = '" + employeeTypeInt +"' WHERE id =" + id + ";");
+        this.employeeType = employeeType;
     }
 
     public void requestPermissionToModifyEmployees() throws SQLException {

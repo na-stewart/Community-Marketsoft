@@ -23,7 +23,7 @@
                 </ImageView>
             </children>
         </StackPane>
-        <TabPane fx:id="tabPane" layoutY="145.0" onMouseClicked="#clearSelectionsOnClick" prefHeight="708.0" prefWidth="1301.0" style="-fx-effect: null;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="145.0">
+        <TabPane fx:id="tabPane" layoutY="145.0" onMousePressed="#clearSelectionsOnClick" prefHeight="708.0" prefWidth="1301.0" style="-fx-effect: null;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="145.0">
             <tabs>
                 <Tab text="Campers">
                     <content>
@@ -98,6 +98,7 @@
                                         <TableColumn fx:id="itemID" prefWidth="75.0" text="ID" />
                                         <TableColumn fx:id="itemName" prefWidth="75.0" text="Name" />
                               <TableColumn fx:id="price" prefWidth="75.0" text="Price" />
+                              <TableColumn fx:id="quantity" prefWidth="75.0" text="Quantity" />
                                         <TableColumn fx:id="imageURL" prefWidth="75.0" text="ImageURL" />
                               <TableColumn fx:id="category" prefWidth="75.0" text="Catagory" />
                                     </columns>
@@ -107,7 +108,7 @@
                                         <Font name="Mongolian Baiti" size="42.0" />
                                     </font>
                                 </Text>
-                                <VBox layoutX="67.0" layoutY="92.0" prefHeight="404.0" prefWidth="358.0" spacing="35.0">
+                                <VBox layoutX="67.0" layoutY="92.0" prefHeight="495.0" prefWidth="358.0" spacing="25.0">
                                     <children>
                                         <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
                                             <children>
@@ -129,6 +130,16 @@
                                                 <TextField fx:id="priceField" />
                                             </children>
                                         </VBox>
+                              <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Quantity">
+                                       <font>
+                                          <Font size="25.0" />
+                                       </font>
+                                    </Text>
+                                    <TextField fx:id="quantityField" />
+                                 </children>
+                              </VBox>
                                         <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">
                                             <children>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Image URL">
@@ -137,6 +148,7 @@
                                                     </font>
                                                 </Text>
                                                 <TextField fx:id="imageURLField" />
+                                    <Hyperlink onAction="#imageLink" text="Image" />
                                             </children>
                                         </VBox>
                               <VBox alignment="TOP_CENTER" prefHeight="78.0" prefWidth="314.0" spacing="8.0">

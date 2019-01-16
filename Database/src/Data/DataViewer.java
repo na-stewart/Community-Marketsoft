@@ -10,18 +10,19 @@ import javafx.scene.Node;
  */
 public class DataViewer {
     private Node node;
-    private String tableName;
+    private String query;
 
-    public DataViewer(Node node, String tableName) {
+    public DataViewer(Node node, String query) {
         this.node = node;
-        this.tableName = tableName;
+        this.query = query;
+    }
+
+    public String getQuery() {
+        return query;
     }
 
     public Node getNode() {
         return node;
     }
 
-    public String getTableName() {
-        return tableName;
-    }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" prefHeight="829.0" prefWidth="1141.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Vendor.VendorGUI.GUIController">
+   <children>
+      <ImageView fx:id="backgroundImage" fitHeight="829.0" fitWidth="1396.0">
+         <image>
+            <Image url="@Resources/retirement-party-067.jpg" />
+         </image>
+      </ImageView>
+      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.58" prefHeight="703.0" prefWidth="1074.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <VBox alignment="CENTER" layoutX="88.0" layoutY="5.0" prefHeight="72.0" prefWidth="311.0" spacing="10.0">
+         <children>
+            <Text fx:id="camperNameText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" textAlignment="CENTER">
+               <font>
+                  <Font name="Courier New Bold" size="22.0" />
+               </font>
+            </Text>
+         </children>
+      </VBox>
+      <StackPane layoutX="19.0" layoutY="6.0" prefHeight="17.0" prefWidth="858.0" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="-19.0" AnchorPane.topAnchor="6.0">
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Trader Bobs Emporium" textAlignment="CENTER">
+               <font>
+                  <Font name="Leelawadee UI" size="53.0" />
+               </font>
+            </Text>
+         </children>
+      </StackPane>
+      <StackPane layoutX="88.0" layoutY="5.0" prefHeight="71.0" prefWidth="311.0" visible="false" AnchorPane.leftAnchor="88.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0" />
+      <ListView fx:id="selectedItems" layoutX="37.0" layoutY="303.0" prefHeight="453.0" prefWidth="414.0" AnchorPane.bottomAnchor="73.0" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="303.0" />
+      <VBox fx:id="filterVbox" layoutX="37.0" layoutY="85.0" prefHeight="210.0" prefWidth="414.0" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="85.0">
+         <children>
+            <TextField fx:id="filterField" onKeyPressed="#filterFieldKeyListener" VBox.vgrow="NEVER" />
+            <ListView fx:id="camperListView" onKeyPressed="#camperTableViewKeyListener" onMousePressed="#camperTableViewClickListener" prefHeight="183.0" prefWidth="414.0" />
+         </children>
+      </VBox>
+      <HBox alignment="CENTER" layoutX="105.0" layoutY="769.0" prefHeight="46.0" prefWidth="277.0" spacing="50.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="105.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="53.0" prefWidth="98.0" text="Check Out">
+               <font>
+                  <Font size="16.0" />
+               </font></Button>
+            <Button mnemonicParsing="false" onAction="#buttonListener" prefHeight="46.0" prefWidth="92.0" text="Delete">
+               <font>
+                  <Font size="17.0" />
+               </font></Button>
+         </children>
+      </HBox>
+      <ChoiceBox fx:id="itemTypes" layoutX="486.0" layoutY="85.0" prefHeight="25.0" prefWidth="231.0" AnchorPane.topAnchor="85.0" />
+      <ScrollPane fx:id="itemScrollPane" hbarPolicy="NEVER" layoutX="486.0" layoutY="128.0" prefHeight="627.0" prefWidth="875.0" AnchorPane.bottomAnchor="74.0" AnchorPane.leftAnchor="486.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="128.0">
+         <content>
+            <TilePane fx:id="itemTilePane" hgap="30.0" onMousePressed="#tilePaneClickListener" prefHeight="155.0" prefWidth="859.0" tileAlignment="TOP_LEFT" vgap="30.0" />
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

@@ -8,7 +8,6 @@ import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -19,8 +18,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import org.controlsfx.dialog.ExceptionDialog;
-
-import javax.swing.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Random;
@@ -28,7 +28,6 @@ import java.util.ResourceBundle;
 
 /**
  * @Author Aidan Stewart
- * Sad Boi hours
  * @Year 2018
  * Copyright (c)
  * All rights reserved.
@@ -42,7 +41,7 @@ public class GUIController implements Initializable {
     private TabPane tabPane;
     @FXML
     private TextField nameField, balanceField, usernameField,
-            passwordField, priceField, imageURLField,  itemNameField;
+            passwordField, priceField, quantityField, imageURLField,  itemNameField;
     @FXML
     private ChoiceBox<EmployeeType> employeeTypes;
     @FXML
@@ -58,10 +57,10 @@ public class GUIController implements Initializable {
     @FXML
     private TableView<Item> itemTableView;
     @FXML
-    private TableColumn<Item, String> itemID, itemName, price, imageURL, category;
+    private TableColumn<Item, String> itemID, itemName, price, quantity, imageURL, category;
     private AdminDataManager adminDataManager = new AdminDataManager();
     private DataViewer[] dataViewers = new DataViewer[3];
-    boolean isDeletingData = false;
+    private boolean isDeletingData = false;
 
 
     @Override
@@ -82,9 +81,9 @@ public class GUIController implements Initializable {
 
     private void setDataViewers(){
         dataViewers = new DataViewer[]{
-                new DataViewer(camperTableView, "camper"),
-                new DataViewer(itemTableView, "item"),
-                new DataViewer(employeeTableView, "employee")
+                new DataViewer(camperTableView, "SELECT * FROM camper"),
+                new DataViewer(itemTableView, "SELECT * FROM item"),
+                new DataViewer(employeeTableView, "SELECT * FROM employee")
         };
     }
 
@@ -127,10 +126,11 @@ public class GUIController implements Initializable {
         employeeTypes.setValue(employee.getEmployeeType());
     }
 
-    private void setItemFields(){
+    private void setItemFields() {
         Item item = itemTableView.getSelectionModel().getSelectedItem();
         itemNameField.setText(item.getName());
         priceField.setText(String.valueOf(item.getPrice()));
+        quantityField.setText(String.valueOf(item.getQuantity()));
         imageURLField.setText(item.getImageURL());
         itemTypes.setValue(item.getItemType());
     }
@@ -167,11 +167,21 @@ public class GUIController implements Initializable {
         tryToUpdate();
     }
 
+    @FXML
+    private void imageLink(){
+        try {
+            Item item = itemTableView.getSelectionModel().getSelectedItem();
+            java.awt.Desktop.getDesktop().browse(new URI(item.getImageURL()));
+        } catch (IOException | URISyntaxException e) {
+            new ExceptionDialog(e).showAndWait();
+        }
+    }
+
     private void tryToUpdate(){
         try {
             update();
-        } catch (Exception exception) {
-            new ExceptionDialog(exception).showAndWait();
+        } catch (SQLException e) {
+            new ExceptionDialog(e).showAndWait();
         }
     }
 
@@ -216,7 +226,8 @@ public class GUIController implements Initializable {
     private void updateItem() throws SQLException {
         if (isTableNotSelected(itemTableView)) {
             adminDataManager.addToItemTableQuery(new Item(new Random().nextInt(999999), itemNameField.getText(),
-                    Integer.parseInt(priceField.getText()), imageURLField.getText(), itemTypes.getValue()));
+                    Integer.parseInt(priceField.getText()), Integer.parseInt(quantityField.getText()),
+                    imageURLField.getText(), itemTypes.getValue()));
         } else {
             Item item = itemTableView.getSelectionModel().getSelectedItem();
             if (isDeletingData)
@@ -225,6 +236,7 @@ public class GUIController implements Initializable {
                 item.setName(itemNameField.getText());
                 item.setPrice(Integer.parseInt(priceField.getText()));
                 item.setImageURL(imageURLField.getText());
+                item.setQuantity(Integer.parseInt(quantityField.getText()));
                 item.setItemType(itemTypes.getValue());
             }
         }
@@ -242,8 +254,9 @@ public class GUIController implements Initializable {
                 adminDataManager.tryToDeleteRow("employee", employee.getId());
             else{
                 employee.setUsername(usernameField.getText());
-                employee.setPassword(passwordField.getText());
                 employee.setEmployeeType(employeeTypes.getValue());
+                if (!passwordField.getText().isEmpty())
+                    employee.setPassword(passwordField.getText());
             }
 
         }
@@ -268,6 +281,7 @@ public class GUIController implements Initializable {
         itemNameField.setText("");
         priceField.setText("");
         imageURLField.setText("");
+        quantityField.setText("");
         itemTypes.setValue(null);
     }
 
@@ -294,6 +308,7 @@ public class GUIController implements Initializable {
         itemID.setCellValueFactory(new PropertyValueFactory<>("id"));
         itemName.setCellValueFactory(new PropertyValueFactory<>("name"));
         price.setCellValueFactory(new PropertyValueFactory<>("price"));
+        quantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         imageURL.setCellValueFactory(new PropertyValueFactory<>("imageURL"));
         category.setCellValueFactory(new PropertyValueFactory<>("itemType"));
     }

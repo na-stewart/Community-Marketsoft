@@ -33,9 +33,10 @@ public class DataObjectBuilder {
         int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
         int price = resultSet.getInt("price");
+        int quantity = resultSet.getInt("quantity");
         String imageUrl = resultSet.getString("imageurl");
         ItemType itemType = ItemType.intToItemType(resultSet.getInt("itemtype"));
-        return new Item(id, name, price, imageUrl, itemType);
+        return new Item(id, name, price, quantity,imageUrl, itemType);
 
     }
 
@@ -47,15 +48,13 @@ public class DataObjectBuilder {
         return new Employee(id, username, password, accountType);
     }
 
-    public Object getData(String tableType) throws SQLException {
-        switch (tableType) {
-            case "employee":
-                return employeeData();
-            case "item":
-                return itemData();
-            case "camper":
-                return camperData();
-        }
+    public Object getData(String query) throws SQLException {
+        if (query.contains("employee"))
+            return employeeData();
+        else if (query.contains("item"))
+            return itemData();
+        else if (query.contains("camper"))
+            return camperData();
         return null;
     }
 }

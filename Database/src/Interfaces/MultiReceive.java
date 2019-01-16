@@ -12,6 +12,5 @@ import java.sql.SQLException;
  * All rights reserved.
  */
 public interface MultiReceive {
-    // TODO: 12/27/2018 Remove dataviewer object, seems useless at this point. Instead pass object and table.  
     void retrieveDatabaseData(DataViewer dataViewer) throws SQLException;
 }

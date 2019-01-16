@@ -4,7 +4,7 @@ import Data.Customers.EmployeeType;
 import GUILoader.GUI;
 
 import Interfaces.MonoQuery;
-import Data.DataManager;
+import Data.DataBaseManager;
 import Util.LoggedInAccountUtil;
 import javafx.scene.control.Alert;
 import Security.PassHash;
@@ -19,7 +19,7 @@ import java.util.Random;
  * All rights reserved.
  */
 public class Login implements MonoQuery {
-    private DataManager manager = new DataManager();
+    private DataBaseManager manager = new DataBaseManager();
     private String user;
     private String pass;
     private PassHash passHash = new PassHash();
@@ -71,6 +71,7 @@ public class Login implements MonoQuery {
                 && EmployeeType.intToEmployeeType(resultSet.getInt("employeetype")) != EmployeeType.UNCONFIRMED &&
                 passHash.tryToCheckHash(pass, resultSet.getString(3));
     }
+
 
     private void login(ResultSet resultSet) throws SQLException {
         setLoggedInAccountInfo(resultSet);

@@ -15,7 +15,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class DataManager {
+public class DataBaseManager {
 
     public ResultSet receiver(String query) throws SQLException {
         CachedRowSet cachedRowSet = new CachedRowSetImpl();
