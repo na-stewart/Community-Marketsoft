@@ -15,7 +15,7 @@ Data Manager:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/accountTable.PNG)
 
-Vendor Interface(early image): 
+Vendor Interface:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/vendor.PNG)
 
