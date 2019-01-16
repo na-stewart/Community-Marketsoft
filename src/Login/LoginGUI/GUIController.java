@@ -10,6 +10,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import org.controlsfx.dialog.ExceptionDialog;
+
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -43,14 +45,21 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    private void buttonActionEvent(ActionEvent event) throws SQLException {
+    private void tryToLogin(ActionEvent event) throws SQLException {
         String buttonText = ((Button) event.getSource()).getText();
+        try{
+            tryToLogin(buttonText);
+        }catch (SQLException e){
+            new ExceptionDialog(e).showAndWait();
+        }
+    }
+
+    private void tryToLogin(String buttonName) throws SQLException {
         Login login = new Login(username.getText(), password.getText());
-        if (buttonText.equals("Login"))
+        if (buttonName.equals("Login"))
             login.retrieveDatabaseData();
         else
             login.updateDatabase();
-
     }
 
     private void bindBackgroundImage(){

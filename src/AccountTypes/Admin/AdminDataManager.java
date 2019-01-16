@@ -3,22 +3,29 @@ package AccountTypes.Admin;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
 import Data.Customers.EmployeeType;
-import Data.DataObjectSupplier;
-import Data.ID;
+import Data.DataObjectBuilder;
+import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
-import Manager.DataViewer;
-import Manager.DatabaseManager;
-import Interfaces.MultiQuery;
+import Data.DataManager;
+import Interfaces.MultiReceive;
+import Security.PassHash;
 import Util.LoggedInAccountUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
+import org.controlsfx.control.table.TableFilter;
+import org.controlsfx.dialog.ExceptionDialog;
 
 
-import javax.security.auth.login.AccountException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * @Author Aidan Stewart
@@ -26,79 +33,59 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class AdminDataManager implements MultiQuery {
+public class AdminDataManager implements MultiReceive {
 
-    private DatabaseManager databaseManager = new DatabaseManager();
-
-    @Override
-    public void updateDatabase(String query) throws SQLException {
-        databaseManager.update(query);
-    }
+    private DataManager databaseManager = new DataManager();
 
     @Override
     public void retrieveDatabaseData(DataViewer dataViewer) throws SQLException {
-        ResultSet resultSet = databaseManager.receiver("SELECT * FROM " + dataViewer.getTableType().name().toLowerCase());
-        TableView tableView = (TableView) dataViewer.getViewer();
+        ResultSet resultSet = databaseManager.receiver("SELECT * FROM " + dataViewer.getTableName());
+        TableView tableView = (TableView) dataViewer.getNode();
+        TableFilter.Builder tableFilter = TableFilter.forTableView(tableView);
         ObservableList observableList = FXCollections.observableArrayList();
         while(resultSet.next())
-            observableList.add(new DataObjectSupplier(resultSet).getData(dataViewer.getTableType()));
+            observableList.add(new DataObjectBuilder(resultSet).getData(dataViewer.getTableName()));
         tableView.setItems(observableList);
+        tableFilter.apply();
         resultSet.close();
     }
 
-    public String addToCamperTableQuery(String[] fields) {
-      return "INSERT INTO camper VALUES('" + new ID().getId() + "','" +
-                fields[0] + "','" +
-                fields[1] + "')";
-    }
-
-    public String addToItemTableQuery(String[] fields) {
-        return "INSERT INTO item VALUES('" + new ID().getId() + "','" +
-                fields[0] + "','" +
-                fields[1] + "','" +
-                fields[2] + "','" +
-                fields[3] + "')";
-    }
-
-    public String addToEmployeeTableQuery(String[] fields) throws SQLException {
-        accountPermission(fields[2]);
-       return "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
-                fields[0] + "','" +
-                fields[1] + "','" +
-                fields[2] + "')";
-    }
-
-    public String editEmployeeTableQuery(int id, String[] fields) throws SQLException {
-        accountPermission(fields[2]);
-        return  "UPDATE employee SET " +
-                "username = '" + fields[0] + "'," +
-                "password = '" + fields[1] + "'," +
-                "accounttype = '" + fields[2] + "' " +
-                "WHERE id = " + id + ";";
-    }
-
-    private void accountPermission(String field) throws SQLException {
-        if (LoggedInAccountUtil.thisAccountType == EmployeeType.EMPLOYEE) {
-            if (field.equals("0") || field.equals("1") || field.equals("3"))
-                throw new SQLException("Permission not granted to execute query.");
+    public void tryToDeleteRow(String tableName, int id) throws SQLException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete this row?");
+        ButtonType buttonTypeOne = new ButtonType("Delete");
+        alert.getButtonTypes().setAll(buttonTypeOne);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOne) {
+            String query = "DELETE FROM " + tableName + " WHERE id = '" + id + "'";
+            databaseManager.update(query);
         }
     }
 
-    public String  editCamperTableQuery(int id, String[] fields) {
-        return  "UPDATE camper SET " +
-                "name = '" + fields[0] + "'," +
-                "balance = '" + fields[1] + "' " +
-                "WHERE id = " + id + ";";
+    public void addToCamperTableQuery(Camper camper) throws SQLException {
+      String query =  "INSERT INTO camper VALUES('" + camper.getId() + "','" +
+                camper.getName() + "','" +
+                camper.getBalance()+ "')";
+      databaseManager.update(query);
+    }
+
+    public void addToItemTableQuery(Item item) throws SQLException {
+      String query = "INSERT INTO item VALUES('" + item.getId() + "','" +
+                item.getName() + "','" +
+                item.getPrice() + "','" +
+                item.getImageURL() + "','" +
+                ItemType.itemTypeToInt(item.getItemType()) + "')";
+      databaseManager.update(query);
 
     }
 
-    public String editItemTableQuery(int id, String[] fields) {
-        return  "UPDATE item SET " +
-                "name = '" + fields[0] + "'," +
-                "price = '" + fields[1] + "'," +
-                "imageurl = '" + fields[2] + "'," +
-                "itemtype = '" + fields[3] + "' " +
-                "WHERE id = " + id + ";";
+    public void addToEmployeeTableQuery(Employee employee) throws SQLException {
+        employee.requestPermissionToModifyEmployees();
+        String query = "INSERT INTO employee VALUES('" + employee.getId() + "','" +
+                employee.getUsername() + "','" +
+                new PassHash().tryToGetSaltedHash(employee.getPassword()) + "','" +
+                EmployeeType.employeeTypeToInt(employee.getEmployeeType()) + "')";
+        databaseManager.update(query);
     }
-    
+
+
 }

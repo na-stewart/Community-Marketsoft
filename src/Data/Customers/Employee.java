@@ -1,5 +1,11 @@
 package Data.Customers;
 
+import Data.DataManager;
+import Security.PassHash;
+import Util.LoggedInAccountUtil;
+
+import java.sql.SQLException;
+
 /**
  * @Author Aidan Stewart
  * @Year 2018
@@ -10,13 +16,14 @@ public class Employee {
     private int id;
     private String username;
     private String password;
-    private EmployeeType accountType;
+    private EmployeeType employeeType;
+    DataManager databaseManager = new DataManager();
 
     public Employee(int ID, String username, String password, EmployeeType accountType) {
         this.id = ID;
         this.password = password;
         this.username = username;
-        this.accountType = accountType;
+        this.employeeType = accountType;
 
     }
 
@@ -32,7 +39,30 @@ public class Employee {
         return username;
     }
 
-    public EmployeeType getAccountType() {
-        return accountType;
+    public EmployeeType getEmployeeType() {
+        return employeeType;
+    }
+
+
+    public void setUsername(String username) throws SQLException {
+        databaseManager.update("UPDATE employee SET username = '" + username + "' WHERE id =" + id + ";");
+    }
+
+    public void setPassword(String password) throws SQLException {
+        String passwordHashed =  new PassHash().tryToGetSaltedHash(password);
+        databaseManager.update("UPDATE employee SET password = '" + passwordHashed +"' WHERE id =" + id + ";");
+    }
+
+    public void setEmployeeType(EmployeeType employeeType) throws SQLException {
+        int employeeTypeInt = EmployeeType.employeeTypeToInt(employeeType);
+        databaseManager.update("UPDATE employee SET accounttype = '" + employeeTypeInt +"' WHERE id =" + id + ";");
+    }
+
+    public void requestPermissionToModifyEmployees() throws SQLException {
+        if (LoggedInAccountUtil.thisAccountType == EmployeeType.EMPLOYEE) {
+            if (employeeType == EmployeeType.ADMIN || employeeType == EmployeeType.EMPLOYEE || employeeType == EmployeeType.UNCONFIRMED)
+                throw new SQLException("Permission not granted to execute query.");
+        }
     }
 }
+

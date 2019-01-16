@@ -1,17 +1,16 @@
 package Login;
 
 import Data.Customers.EmployeeType;
-import Data.ID;
 import GUILoader.GUI;
 
 import Interfaces.MonoQuery;
-import Manager.DatabaseManager;
+import Data.DataManager;
 import Util.LoggedInAccountUtil;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
 import Security.PassHash;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 /**
  * @Author Aidan Stewart
@@ -20,7 +19,7 @@ import java.sql.SQLException;
  * All rights reserved.
  */
 public class Login implements MonoQuery {
-    private DatabaseManager manager = new DatabaseManager();
+    private DataManager manager = new DataManager();
     private String user;
     private String pass;
     private PassHash passHash = new PassHash();
@@ -48,7 +47,7 @@ public class Login implements MonoQuery {
 
     @Override
     public void updateDatabase() throws SQLException {
-        String query = "INSERT INTO employee VALUES('" + new ID().getId() + "','" +
+        String query = "INSERT INTO employee VALUES('" + new Random().nextInt(999999) + "','" +
                 user + "','" +
                 passHash.tryToGetSaltedHash(pass)+ "','" +
                 '3' + "')";
@@ -58,18 +57,18 @@ public class Login implements MonoQuery {
 
     @Override
     public void retrieveDatabaseData() throws SQLException {
-        String query = "SELECT * FROM employee WHERE username='"+ user +"'";
-            ResultSet resultSet = manager.receiver(query);
-            if (canLogin(resultSet)) {
-                login(resultSet);
-            } else
-                displayAlertDialog(Alert.AlertType.ERROR, alertContexts(true));
-            resultSet.close();
+        String query = "SELECT * FROM employee WHERE username='" + user + "'";
+        ResultSet resultSet = manager.receiver(query);
+        if (canLogin(resultSet))
+            login(resultSet);
+        else
+            displayAlertDialog(Alert.AlertType.ERROR, alertContexts(true));
+        resultSet.close();
     }
 
     private boolean canLogin(ResultSet resultSet) throws SQLException {
         return resultSet.next()
-                && resultSet.getInt(4) != 3 &&
+                && EmployeeType.intToEmployeeType(resultSet.getInt("employeetype")) != EmployeeType.UNCONFIRMED &&
                 passHash.tryToCheckHash(pass, resultSet.getString(3));
     }
 

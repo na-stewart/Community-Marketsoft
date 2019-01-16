@@ -20,7 +20,7 @@ public enum EmployeeType {
             case 3:
                 return UNCONFIRMED;
         }
-        return null;
+        return UNCONFIRMED;
     }
 
     public static int employeeTypeToInt(EmployeeType accountType){
@@ -34,6 +34,6 @@ public enum EmployeeType {
             case UNCONFIRMED:
                 return 3;
         }
-        return 0;
+        return 3;
     }
 }

@@ -1,15 +1,14 @@
 package AccountTypes.Admin.AdminGUI;
 
-import Data.Customers.EmployeeType;
 import AccountTypes.Admin.AdminDataManager;
-import Data.Item.Item;
 import Data.Customers.Camper;
 import Data.Customers.Employee;
+import Data.Customers.EmployeeType;
+import Data.DataViewer;
+import Data.Item.Item;
 import Data.Item.ItemType;
-import Manager.DataViewer;
-import Security.PassHash;
-import Tables.TableType;
-import Util.LoggedInAccountUtil;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -19,13 +18,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import org.controlsfx.control.table.TableFilter;
 import org.controlsfx.dialog.ExceptionDialog;
 
-import javax.security.auth.login.AccountException;
+import javax.swing.*;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Optional;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
@@ -62,16 +60,19 @@ public class GUIController implements Initializable {
     @FXML
     private TableColumn<Item, String> itemID, itemName, price, imageURL, category;
     private AdminDataManager adminDataManager = new AdminDataManager();
-    private DataViewer<TableView>[] dataViewers = new DataViewer[3];
-    private TableFilter.Builder[] tableFilters = new TableFilter.Builder[3];
+    private DataViewer[] dataViewers = new DataViewer[3];
+    boolean isDeletingData = false;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         banner.fitWidthProperty().bind(mainPane.widthProperty());
         setCellValueFactories();
+        setDataViewers();
         tryToPopulateAll();
         setChoiceBoxes();
     }
+
 
     private void setCellValueFactories() {
         setEmployeeColumns();
@@ -79,25 +80,21 @@ public class GUIController implements Initializable {
         setItemColumns();
     }
 
-    private void tryToPopulateAll() {
-        setTableViewers();
+    private void setDataViewers(){
+        dataViewers = new DataViewer[]{
+                new DataViewer(camperTableView, "camper"),
+                new DataViewer(itemTableView, "item"),
+                new DataViewer(employeeTableView, "employee")
+        };
+    }
+
+    private void tryToPopulateAll(){
         try {
             for (DataViewer dataViewer: dataViewers)
                 adminDataManager.retrieveDatabaseData(dataViewer);
-            for (int i = 0; i < tableFilters.length; i++) {
-                tableFilters[i] = TableFilter.forTableView((dataViewers[i].getViewer()));
-                tableFilters[i].apply();
-            }
         } catch (SQLException e) {
-            ExceptionDialog exceptionDialog = new ExceptionDialog(e);
-            exceptionDialog.showAndWait();
+            new ExceptionDialog(e).showAndWait();
         }
-    }
-
-    private void setTableViewers(){
-        dataViewers[0] = new DataViewer<>(TableType.CAMPER, camperTableView);
-        dataViewers[1] = new DataViewer<>(TableType.ITEM, itemTableView);
-        dataViewers[2] = new DataViewer<>(TableType.EMPLOYEE, employeeTableView);
     }
 
     private void setChoiceBoxes() {
@@ -107,40 +104,18 @@ public class GUIController implements Initializable {
             itemTypes.getItems().add(itemType);
     }
 
-
-    @FXML
-    private void clearSelectionsOnClick() {
-        if (!isTableRowNotSelected(employeeTableView) || !isTableRowNotSelected(camperTableView) || !isTableRowNotSelected(itemTableView)) {
-            for (DataViewer<TableView> dataViewer: dataViewers)
-                dataViewer.getViewer().getSelectionModel().clearSelection();
-            clearFields();
-        }
-    }
-
     @FXML
     private void tableViewClickListener(MouseEvent e) {
         String tableView = ((TableView) e.getSource()).getId();
         switch (tableView) {
             case "camperTableView":
                 setCamperFields();
-                if (e.getClickCount() == 2) {
-                    int cmpID = camperTableView.getSelectionModel().getSelectedItem().getId();
-                    tryToDeleteRow(dataViewers[0], cmpID);
-                }
                 break;
             case "itemTableView":
                 setItemFields();
-                if (e.getClickCount() == 2) {
-                    int itemId = itemTableView.getSelectionModel().getSelectedItem().getId();
-                    tryToDeleteRow(dataViewers[1], itemId);
-                }
                 break;
             case "employeeTableView":
                 setEmployeeFields();
-                if (e.getClickCount() == 2) {
-                    int empID = employeeTableView.getSelectionModel().getSelectedItem().getId();
-                    tryToDeleteRow(dataViewers[2], empID);
-                }
                 break;
         }
     }
@@ -149,7 +124,7 @@ public class GUIController implements Initializable {
         Employee employee = employeeTableView.getSelectionModel().getSelectedItem();
         usernameField.setText(employee.getUsername());
         passwordField.setText("");
-        employeeTypes.setValue(employee.getAccountType());
+        employeeTypes.setValue(employee.getEmployeeType());
     }
 
     private void setItemFields(){
@@ -166,105 +141,115 @@ public class GUIController implements Initializable {
         balanceField.setText(String.valueOf(camper.getBalance()));
     }
 
-    private void tryToDeleteRow(DataViewer dataViewer, int id){
-        try {
-            deleteRow(dataViewer, id);
-        } catch (SQLException e) {
-           new ExceptionDialog(e).showAndWait();
-        }
-    }
-    private void deleteRow(DataViewer dataViewer, int id) throws SQLException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete this row?");
-        ButtonType buttonTypeOne = new ButtonType("Delete");
-        alert.getButtonTypes().setAll(buttonTypeOne);
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == buttonTypeOne) {
-            String query = "DELETE FROM " + dataViewer.getTableType().name().toLowerCase() + " WHERE id = '" + id + "'";
-            adminDataManager.updateDatabase(query);
-            adminDataManager.retrieveDatabaseData(dataViewer);
+    @FXML
+    private void clearSelectionsOnClick() {
+        if (!isTableNotSelected(employeeTableView) || !isTableNotSelected(camperTableView) || !isTableNotSelected(itemTableView)) {
+            for (DataViewer dataViewer: dataViewers) {
+                TableView tableView = (TableView) dataViewer.getNode();
+                tableView.getSelectionModel().clearSelection();
+            }
             clearFields();
         }
     }
 
     @FXML
-    private void keyListener(KeyEvent keyEvent) throws SQLException {
-        if (keyEvent.getCode() == KeyCode.ENTER)
-            update();
+    private void keyListener(KeyEvent keyEvent){
+        if (keyEvent.getCode() == KeyCode.ENTER || keyEvent.getCode() == KeyCode.BACK_SPACE) {
+            isDeletingData = keyEvent.getCode() != KeyCode.ENTER;
+            tryToUpdate();
+        }
     }
 
     @FXML
+    private void buttonListener(ActionEvent event) {
+        String buttonText = ((Button) event.getSource()).getText();
+        isDeletingData = !buttonText.equals("Update");
+        tryToUpdate();
+    }
+
     private void tryToUpdate(){
         try {
             update();
-        } catch (Exception e) {
-            new ExceptionDialog(e).showAndWait();
+        } catch (Exception exception) {
+            new ExceptionDialog(exception).showAndWait();
         }
     }
 
     private void update() throws SQLException {
-        int tabPaneIndex = tabPane.getSelectionModel().getSelectedIndex();
-        switch (tabPaneIndex) {
-            case 0:
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        switch (tab.getText()) {
+            case "Campers":
                 updateCamper();
                 nameField.requestFocus();
                 adminDataManager.retrieveDatabaseData(dataViewers[0]);
-                tableFilters[0].apply();
                 break;
-            case 1:
+            case "Items":
                 updateItem();
                 itemNameField.requestFocus();
                 adminDataManager.retrieveDatabaseData(dataViewers[1]);
-                tableFilters[1].apply();
                 break;
-            case 2:
+            case "Employees":
                 updateEmployee();
                 usernameField.requestFocus();
                 adminDataManager.retrieveDatabaseData(dataViewers[2]);
-                tableFilters[2].apply();
                 break;
         }
         clearFields();
     }
 
     private void updateCamper() throws SQLException {
-        String[] fields = new String[]{nameField.getText(),
-                balanceField.getText()};
-        if (isTableRowNotSelected(camperTableView))
-            adminDataManager.updateDatabase(adminDataManager.addToCamperTableQuery(fields));
-        else {
-            int id = camperTableView.getSelectionModel().getSelectedItem().getId();
-            adminDataManager.updateDatabase(adminDataManager.editCamperTableQuery(id, fields));
+        if (isTableNotSelected(camperTableView) && !isDeletingData) {
+            adminDataManager.addToCamperTableQuery(new Camper(new Random().nextInt(99999), nameField.getText(),
+                    Integer.parseInt(balanceField.getText())));
+        } else {
+            Camper camper = camperTableView.getSelectionModel().getSelectedItem();
+            if (isDeletingData)
+                adminDataManager.tryToDeleteRow("camper", camper.getId());
+             else {
+                camper.setName(nameField.getText());
+                camper.setBalance(Integer.parseInt(balanceField.getText()));
+            }
+
         }
     }
 
     private void updateItem() throws SQLException {
-        int itemType = ItemType.itemTypeToInt(itemTypes.getValue());
-        String[] fields = new String[]{itemNameField.getText(), priceField.getText(), imageURLField.getText(),
-                String.valueOf(itemType)
-        };
-        if (isTableRowNotSelected(itemTableView))
-            adminDataManager.updateDatabase(adminDataManager.addToItemTableQuery(fields));
-        else {
-            int id = itemTableView.getSelectionModel().getSelectedItem().getId();
-            adminDataManager.updateDatabase(adminDataManager.editItemTableQuery(id, fields));
+        if (isTableNotSelected(itemTableView)) {
+            adminDataManager.addToItemTableQuery(new Item(new Random().nextInt(999999), itemNameField.getText(),
+                    Integer.parseInt(priceField.getText()), imageURLField.getText(), itemTypes.getValue()));
+        } else {
+            Item item = itemTableView.getSelectionModel().getSelectedItem();
+            if (isDeletingData)
+                adminDataManager.tryToDeleteRow("item", item.getId());
+            else {
+                item.setName(itemNameField.getText());
+                item.setPrice(Integer.parseInt(priceField.getText()));
+                item.setImageURL(imageURLField.getText());
+                item.setItemType(itemTypes.getValue());
+            }
         }
     }
+
 
     private void updateEmployee() throws SQLException {
-        int employeeType = EmployeeType.employeeTypeToInt(employeeTypes.getValue());
-        String fields[] = new String[]{usernameField.getText(),
-                new PassHash().tryToGetSaltedHash(passwordField.getText()),
-                String.valueOf(employeeType)
-        };
-        if (isTableRowNotSelected(employeeTableView))
-            adminDataManager.updateDatabase(adminDataManager.addToEmployeeTableQuery(fields));
-        else {
-            int id = employeeTableView.getSelectionModel().getSelectedItem().getId();
-            adminDataManager.updateDatabase(adminDataManager.editEmployeeTableQuery(id, fields));
+        if (isTableNotSelected(employeeTableView)) {
+            adminDataManager.addToEmployeeTableQuery(new Employee(new Random().nextInt(999999),
+                    usernameField.getText(), passwordField.getText(), employeeTypes.getValue()));
+        } else {
+            Employee employee = employeeTableView.getSelectionModel().getSelectedItem();
+            employee.requestPermissionToModifyEmployees();
+            if (isDeletingData)
+                adminDataManager.tryToDeleteRow("employee", employee.getId());
+            else{
+                employee.setUsername(usernameField.getText());
+                employee.setPassword(passwordField.getText());
+                employee.setEmployeeType(employeeTypes.getValue());
+            }
+
         }
     }
 
-    private boolean isTableRowNotSelected(TableView tableView) {
+    private boolean isTableNotSelected(TableView tableView) {
         return tableView.getSelectionModel().getSelectedItem() == null;
     }
 
@@ -296,7 +281,7 @@ public class GUIController implements Initializable {
         employeeID.setCellValueFactory(new PropertyValueFactory<>("id"));
         username.setCellValueFactory(new PropertyValueFactory<>("username"));
         password.setCellValueFactory(new PropertyValueFactory<>("password"));
-        accountType.setCellValueFactory(new PropertyValueFactory<>("accountType"));
+        accountType.setCellValueFactory(new PropertyValueFactory<>("employeeType"));
     }
 
     private void setCamperColumns() {
