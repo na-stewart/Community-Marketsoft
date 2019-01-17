@@ -66,8 +66,6 @@ public class VendorDataManager implements MultiReceive {
         while (resultSet.next())
             unfilteredCamperData.add((Camper) objBuilder.getData(dataViewer.getQuery()));
         listView.setItems(unfilteredCamperData);
-
-
     }
 
     private ItemVBox vBoxDbBuilder(Item item) {
@@ -90,7 +88,6 @@ public class VendorDataManager implements MultiReceive {
         vBox.getChildren().add(vBoxTextBuilder(item.getName()));
         vBox.getChildren().add(imageView(item.getImageURL()));
     }
-
 
     private Text vBoxTextBuilder(String data){
         Text text = new Text(data);

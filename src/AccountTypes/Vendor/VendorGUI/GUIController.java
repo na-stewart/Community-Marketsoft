@@ -20,7 +20,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import org.controlsfx.dialog.ExceptionDialog;
-
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -52,21 +51,17 @@ public class GUIController implements Initializable {
     @FXML
     private Text camperNameText;
     private VendorDataManager vendorDataManager = new VendorDataManager();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        itemTilePane.prefWidthProperty().bind(itemScrollPane.widthProperty());
         itemTypes.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> tryToPopulateTilePane());
+        itemTilePane.prefWidthProperty().bind(itemScrollPane.widthProperty());
+        filterField.textProperty().addListener(camperListViewFilter);
         bindBackgroundImage();
         setCellFactories();
         setChoiceBox();
         refreshData();
-        filterField.textProperty().addListener(camperListViewFilter);
-    }
 
-
-    private void bindBackgroundImage(){
-        backgroundImage.fitWidthProperty().bind(anchorPane.widthProperty());
-        backgroundImage.fitHeightProperty().bind(anchorPane.heightProperty());
     }
 
     private void refreshData(){
@@ -92,18 +87,6 @@ public class GUIController implements Initializable {
     }
 
 
-    private ChangeListener<String> camperListViewFilter = (observable, oldValue, newValue) -> {
-        FilteredList<Camper> filteredData = new FilteredList<>(vendorDataManager.getUnfilteredCamperData(), c -> true);
-        filteredData.setPredicate(camper -> {
-            String lowerCaseFilter = newValue.toLowerCase();
-            return !newValue.isEmpty() &&
-                    camper.getName().toLowerCase().startsWith(lowerCaseFilter) ||
-                    String.valueOf(camper.getId()).startsWith(lowerCaseFilter);
-        });
-        camperListView.setItems(filteredData);
-    };
-
-
     @FXML
    private void buttonListener(ActionEvent actionEvent) {
         String buttonText = ((Button) actionEvent.getSource()).getText();
@@ -111,6 +94,23 @@ public class GUIController implements Initializable {
             selectedItems.getItems().remove(selectedItems.getSelectionModel().getSelectedIndex());
         else
             displayCheckoutDialog();
+    }
+
+    private void displayCheckoutDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Checkout");
+        alert.setHeaderText("Checkout?");
+        alert.setContentText(vendorDataManager.getCheckoutText());
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK)
+            checkout();
+    }
+
+    private void checkout(){
+        vendorDataManager.tryToCheckOut();
+        vendorDataManager.setSelectedCamper(null);
+        camperNameText.setText("Selected Camper");
+        refreshData();
     }
 
     @FXML
@@ -148,27 +148,28 @@ public class GUIController implements Initializable {
         camperNameText.setText(camper.getName());
     }
 
-    private void displayCheckoutDialog() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Checkout");
-        alert.setHeaderText("Checkout?");
-        alert.setContentText(vendorDataManager.getCheckoutText());
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK)
-            checkout();
-    }
-
-    private void checkout(){
-        vendorDataManager.tryToCheckOut();
-        vendorDataManager.setSelectedCamper(null);
-        camperNameText.setText("Name");
-        refreshData();
-    }
 
     private void setCellFactories(){
         camperListView.setCellFactory(camperViewCallback());
         selectedItems.setCellFactory(selectedItemsTableViewCallback());
     }
+
+
+    private void bindBackgroundImage(){
+        backgroundImage.fitWidthProperty().bind(anchorPane.widthProperty());
+        backgroundImage.fitHeightProperty().bind(anchorPane.heightProperty());
+    }
+
+    private ChangeListener<String> camperListViewFilter = (observable, oldValue, newValue) -> {
+        FilteredList<Camper> filteredData = new FilteredList<>(vendorDataManager.getUnfilteredCamperData(), c -> true);
+        filteredData.setPredicate(camper -> {
+            String lowerCaseFilter = newValue.toLowerCase();
+            return !newValue.isEmpty() &&
+                    camper.getName().toLowerCase().startsWith(lowerCaseFilter) ||
+                    String.valueOf(camper.getId()).startsWith(lowerCaseFilter);
+        });
+        camperListView.setItems(filteredData);
+    };
 
     private Callback selectedItemsTableViewCallback(){
         return new Callback<ListView<Item>, ListCell<Item>>() {
