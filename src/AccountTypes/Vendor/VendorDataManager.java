@@ -61,11 +61,12 @@ public class VendorDataManager implements MultiReceive {
     }
 
     private void populateCampers(DataViewer dataViewer, ResultSet resultSet, DataObjectBuilder objBuilder) throws SQLException {
-        ListView listView = (ListView) dataViewer.getNode();
-        listView.getItems().clear();
+        ListView<Camper> listView = (ListView) dataViewer.getNode();
+        unfilteredCamperData.clear();
         while (resultSet.next())
-            listView.getItems().add(objBuilder.getData(dataViewer.getQuery()));
-        unfilteredCamperData.setAll(listView.getItems());
+            unfilteredCamperData.add((Camper) objBuilder.getData(dataViewer.getQuery()));
+        listView.setItems(unfilteredCamperData);
+
 
     }
 
@@ -128,7 +129,8 @@ public class VendorDataManager implements MultiReceive {
             stringBuilder.append(items.getName() + " : " + items.getPrice() + "\n");
             total += items.getPrice();
         }
-        stringBuilder.append("Your total is " + total + " and camper balance is " + selectedCamper.getBalance());
+        int remainingBalance = selectedCamper.getBalance() - total;
+        stringBuilder.append("Your total is " + total + " and camper remaining balance would be " + remainingBalance);
         return String.valueOf(stringBuilder);
     }
 
