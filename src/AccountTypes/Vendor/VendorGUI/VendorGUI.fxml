@@ -40,7 +40,7 @@
       <VBox fx:id="filterVbox" layoutX="37.0" layoutY="85.0" prefHeight="210.0" prefWidth="414.0" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="85.0">
          <children>
             <TextField fx:id="filterField" onKeyPressed="#filterFieldKeyListener" VBox.vgrow="NEVER" />
-            <TableView fx:id="camperTableView" prefHeight="200.0" prefWidth="200.0">
+            <TableView fx:id="camperTableView" onKeyPressed="#camperTableViewKeyListener" onMouseClicked="#camperTableViewClickListener" prefHeight="200.0" prefWidth="200.0">
               <columns>
                 <TableColumn fx:id="id" prefWidth="75.0" text="ID" />
                 <TableColumn fx:id="name" prefWidth="75.0" text="Name" />
