@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -45,7 +46,9 @@ public class GUIController implements Initializable {
     @FXML
     private ListView<Item> selectedItems;
     @FXML
-    private ListView<Camper> camperListView;
+    private TableView<Camper> camperTableView;
+    @FXML
+    private TableColumn<Camper, String> id, name, balance;
     @FXML
     private TextField filterField;
     @FXML
@@ -80,7 +83,7 @@ public class GUIController implements Initializable {
 
     private void tryToPopulateCamper(){
         try {
-            vendorDataManager.retrieveDatabaseData(new DataViewer(camperListView, "SELECT * FROM camper"));
+            vendorDataManager.retrieveDatabaseData(new DataViewer(camperTableView, "SELECT * FROM camper"));
         } catch (SQLException e) {
             new ExceptionDialog(e).showAndWait();
         }
@@ -121,8 +124,8 @@ public class GUIController implements Initializable {
     @FXML
     private void filterFieldKeyListener(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.DOWN) {
-            camperListView.requestFocus();
-            camperListView.getSelectionModel().select(0);
+            camperTableView.requestFocus();
+            camperTableView.getSelectionModel().select(0);
         }
     }
 
@@ -143,15 +146,21 @@ public class GUIController implements Initializable {
     }
 
     private void setSelectedCamper(){
-        Camper camper = camperListView.getSelectionModel().getSelectedItem();
+        Camper camper = camperTableView.getSelectionModel().getSelectedItem();
         vendorDataManager.setSelectedCamper(camper);
         camperNameText.setText(camper.getName());
     }
 
 
     private void setCellFactories(){
-        camperListView.setCellFactory(camperViewCallback());
+        setCamperTableViewCells();
         selectedItems.setCellFactory(selectedItemsTableViewCallback());
+    }
+
+    private void setCamperTableViewCells() {
+        id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        name.setCellValueFactory(new PropertyValueFactory<>("name"));
+        balance.setCellValueFactory(new PropertyValueFactory<>("balance"));
     }
 
     private void bindBackgroundImage(){
@@ -167,7 +176,7 @@ public class GUIController implements Initializable {
                     camper.getName().toLowerCase().startsWith(lowerCaseFilter) ||
                     String.valueOf(camper.getId()).startsWith(lowerCaseFilter);
         });
-        camperListView.setItems(filteredData);
+        camperTableView.setItems(filteredData);
     };
 
     private Callback selectedItemsTableViewCallback(){
@@ -189,24 +198,6 @@ public class GUIController implements Initializable {
         };
     }
 
-    private Callback camperViewCallback() {
-        return new Callback<ListView<Camper>, ListCell<Camper>>() {
-            @Override
-            public ListCell<Camper> call(ListView<Camper> p) {
-                ListCell<Camper> cell = new ListCell<Camper>() {
-                    @Override
-                    protected void updateItem(Camper c, boolean bln) {
-                        super.updateItem(c, bln);
-                        if (c != null)
-                            setText(c.getId() + " : " + c.getName() + " : Balance: " + c.getBalance());
-                        else
-                            setText("");
-                    }
-                };
-                return cell;
-            }
-        };
-    }
 
     private void setChoiceBox() {
         for (ItemType itemType : ItemType.values())

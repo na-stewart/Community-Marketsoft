@@ -14,6 +14,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
@@ -61,11 +62,11 @@ public class VendorDataManager implements MultiReceive {
     }
 
     private void populateCampers(DataViewer dataViewer, ResultSet resultSet, DataObjectBuilder objBuilder) throws SQLException {
-        ListView<Camper> listView = (ListView) dataViewer.getNode();
+        TableView<Camper> tableView = (TableView) dataViewer.getNode();
         unfilteredCamperData.clear();
         while (resultSet.next())
             unfilteredCamperData.add((Camper) objBuilder.getData(dataViewer.getQuery()));
-        listView.setItems(unfilteredCamperData);
+        tableView.setItems(unfilteredCamperData);
     }
 
     private ItemVBox vBoxDbBuilder(Item item) {

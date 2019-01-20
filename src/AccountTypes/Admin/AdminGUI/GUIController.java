@@ -170,8 +170,7 @@ public class GUIController implements Initializable {
     @FXML
     private void imageLink(){
         try {
-            Item item = itemTableView.getSelectionModel().getSelectedItem();
-            java.awt.Desktop.getDesktop().browse(new URI(item.getImageURL()));
+            java.awt.Desktop.getDesktop().browse(new URI(imageURLField.getText()));
         } catch (IOException | URISyntaxException e) {
             new ExceptionDialog(e).showAndWait();
         }
