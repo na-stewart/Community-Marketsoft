@@ -154,7 +154,6 @@ public class GUIController implements Initializable {
         selectedItems.setCellFactory(selectedItemsTableViewCallback());
     }
 
-
     private void bindBackgroundImage(){
         backgroundImage.fitWidthProperty().bind(anchorPane.widthProperty());
         backgroundImage.fitHeightProperty().bind(anchorPane.heightProperty());

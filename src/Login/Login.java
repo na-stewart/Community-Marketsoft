@@ -7,7 +7,8 @@ import Interfaces.MonoQuery;
 import Data.DataBaseManager;
 import Util.LoggedInAccountUtil;
 import javafx.scene.control.Alert;
-import Security.PassHash;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
@@ -22,8 +23,7 @@ public class Login implements MonoQuery {
     private DataBaseManager manager = new DataBaseManager();
     private String user;
     private String pass;
-    private PassHash passHash = new PassHash();
-
+    private StrongPasswordEncryptor strongPasswordEncryptor = new StrongPasswordEncryptor();
 
     public Login(String user, String pass) {
         this.user = user;
@@ -49,7 +49,7 @@ public class Login implements MonoQuery {
     public void updateDatabase() throws SQLException {
         String query = "INSERT INTO employee VALUES('" + new Random().nextInt(999999) + "','" +
                 user + "','" +
-                passHash.tryToGetSaltedHash(pass)+ "','" +
+        strongPasswordEncryptor.encryptPassword(pass)+ "','" +
                 '3' + "')";
         manager.update(query);
         displayAlertDialog(Alert.AlertType.INFORMATION, alertContexts(false));
@@ -69,7 +69,7 @@ public class Login implements MonoQuery {
     private boolean canLogin(ResultSet resultSet) throws SQLException {
         return resultSet.next()
                 && EmployeeType.intToEmployeeType(resultSet.getInt("employeetype")) != EmployeeType.UNCONFIRMED &&
-                passHash.tryToCheckHash(pass, resultSet.getString(3));
+                strongPasswordEncryptor.checkPassword(pass, resultSet.getString(3));
     }
 
 
@@ -80,7 +80,7 @@ public class Login implements MonoQuery {
 
     private void setLoggedInAccountInfo(ResultSet resultSet) throws SQLException {
         EmployeeType accountType = EmployeeType.intToEmployeeType(resultSet.getInt(4));
-        LoggedInAccountUtil.thisUsername = resultSet.getString(1);
+        LoggedInAccountUtil.thisUsername = resultSet.getString("username");
         LoggedInAccountUtil.thisAccountType = accountType;
     }
     private void openAccountInterface(){

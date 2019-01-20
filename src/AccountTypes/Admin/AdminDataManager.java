@@ -9,13 +9,13 @@ import Data.Item.Item;
 import Data.Item.ItemType;
 import Data.DataBaseManager;
 import Interfaces.MultiReceive;
-import Security.PassHash;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableView;
 import org.controlsfx.control.table.TableFilter;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
 
 import java.sql.ResultSet;
@@ -72,7 +72,7 @@ public class AdminDataManager implements MultiReceive {
     public void addToEmployeeTableQuery(Employee employee) throws SQLException {
         employee.requestPermissionToModifyEmployees();
         String query = "INSERT INTO employee VALUES('" + employee.getId() + "','" + employee.getUsername() + "','" +
-                new PassHash().tryToGetSaltedHash(employee.getPassword()) + "','" +
+                new StrongPasswordEncryptor().encryptPassword(employee.getPassword()) + "','" +
                 EmployeeType.employeeTypeToInt(employee.getEmployeeType()) + "')";
         databaseManager.update(query);
     }

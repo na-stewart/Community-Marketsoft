@@ -1,8 +1,8 @@
 package Data.Customers;
 
 import Data.DataBaseManager;
-import Security.PassHash;
 import Util.LoggedInAccountUtil;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import java.sql.SQLException;
 
@@ -49,7 +49,7 @@ public class Employee {
     }
 
     public void setPassword(String password) throws SQLException {
-        String passwordHashed =  new PassHash().tryToGetSaltedHash(password);
+        String passwordHashed =  new StrongPasswordEncryptor().encryptPassword(password);
         databaseManager.update("UPDATE employee SET password = '" + passwordHashed +"' WHERE id =" + id + ";");
         this.password = password;
     }
