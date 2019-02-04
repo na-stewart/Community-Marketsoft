@@ -19,6 +19,6 @@ Data Manager:
 
 Vendor Interface:
 
-![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/vendor.PNG)
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/NewCheckoutVendor.PNG)
 
-![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/checkoutVendor.PNG)
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/NewVendor.PNG)
