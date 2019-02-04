@@ -7,6 +7,8 @@ import Data.Customers.EmployeeType;
 import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
+import GUILoader.GUI;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -89,8 +91,9 @@ public class GUIController implements Initializable {
 
     private void tryToPopulateAll(){
         try {
-            for (DataViewer dataViewer: dataViewers)
+            for (DataViewer dataViewer: dataViewers) {
                 adminDataManager.retrieveDatabaseData(dataViewer);
+            }
         } catch (SQLException e) {
             new ExceptionDialog(e).showAndWait();
         }
@@ -163,8 +166,12 @@ public class GUIController implements Initializable {
     @FXML
     private void buttonListener(ActionEvent event) {
         String buttonText = ((Button) event.getSource()).getText();
-        isDeletingData = !buttonText.equals("Update");
-        tryToUpdate();
+        if (buttonText.equals("Logout"))
+            new GUI("Login/LoginGUI/LoginGUI.fxml");
+        else {
+            isDeletingData = !buttonText.equals("Update");
+            tryToUpdate();
+        }
     }
 
     @FXML
@@ -179,7 +186,7 @@ public class GUIController implements Initializable {
     private void tryToUpdate(){
         try {
             update();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             new ExceptionDialog(e).showAndWait();
         }
     }
@@ -211,14 +218,15 @@ public class GUIController implements Initializable {
             adminDataManager.addToCamperTableQuery(new Camper(new Random().nextInt(99999), nameField.getText(),
                     Integer.parseInt(balanceField.getText())));
         } else {
-            Camper camper = camperTableView.getSelectionModel().getSelectedItem();
-            if (isDeletingData)
-                adminDataManager.tryToDeleteRow("camper", camper.getId());
-             else {
-                camper.setName(nameField.getText());
-                camper.setBalance(Integer.parseInt(balanceField.getText()));
+            ObservableList<Camper> selectedCampers = camperTableView.getSelectionModel().getSelectedItems();
+            for (Camper camper : selectedCampers) {
+                if (isDeletingData)
+                    adminDataManager.tryToDeleteRow("camper", camper.getId());
+                else {
+                    camper.setName(nameField.getText());
+                    camper.setBalance(Integer.parseInt(balanceField.getText()));
+                }
             }
-
         }
     }
 
@@ -228,15 +236,17 @@ public class GUIController implements Initializable {
                     Integer.parseInt(priceField.getText()), Integer.parseInt(quantityField.getText()),
                     imageURLField.getText(), itemTypes.getValue()));
         } else {
-            Item item = itemTableView.getSelectionModel().getSelectedItem();
-            if (isDeletingData)
-                adminDataManager.tryToDeleteRow("item", item.getId());
-            else {
-                item.setName(itemNameField.getText());
-                item.setPrice(Integer.parseInt(priceField.getText()));
-                item.setImageURL(imageURLField.getText());
-                item.setQuantity(Integer.parseInt(quantityField.getText()));
-                item.setItemType(itemTypes.getValue());
+            ObservableList<Item> selectedItems = itemTableView.getSelectionModel().getSelectedItems();
+            for (Item item : selectedItems) {
+                if (isDeletingData)
+                    adminDataManager.tryToDeleteRow("item", item.getId());
+                else {
+                    item.setName(itemNameField.getText());
+                    item.setPrice(Integer.parseInt(priceField.getText()));
+                    item.setImageURL(imageURLField.getText());
+                    item.setQuantity(Integer.parseInt(quantityField.getText()));
+                    item.setItemType(itemTypes.getValue());
+                }
             }
         }
     }
@@ -247,15 +257,17 @@ public class GUIController implements Initializable {
             adminDataManager.addToEmployeeTableQuery(new Employee(new Random().nextInt(999999),
                     usernameField.getText(), passwordField.getText(), employeeTypes.getValue()));
         } else {
-            Employee employee = employeeTableView.getSelectionModel().getSelectedItem();
-            employee.requestPermissionToModifyEmployees();
-            if (isDeletingData)
-                adminDataManager.tryToDeleteRow("employee", employee.getId());
-            else{
-                employee.setUsername(usernameField.getText());
-                employee.setEmployeeType(employeeTypes.getValue());
-                if (!passwordField.getText().isEmpty())
-                    employee.setPassword(passwordField.getText());
+            ObservableList<Employee> selectedItems = employeeTableView.getSelectionModel().getSelectedItems();
+            for (Employee employee : selectedItems) {
+                employee.requestPermissionToModifyEmployees();
+                if (isDeletingData)
+                    adminDataManager.tryToDeleteRow("employee", employee.getId());
+                else {
+                    employee.setUsername(usernameField.getText());
+                    employee.setEmployeeType(employeeTypes.getValue());
+                    if (!passwordField.getText().isEmpty())
+                        employee.setPassword(passwordField.getText());
+                }
             }
 
         }

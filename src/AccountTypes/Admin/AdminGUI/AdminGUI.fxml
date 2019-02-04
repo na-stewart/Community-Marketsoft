@@ -255,5 +255,6 @@
                 </Tab>
             </tabs>
         </TabPane>
+      <Button layoutX="1233.0" layoutY="16.0" mnemonicParsing="false" onAction="#buttonListener" text="Logout" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="16.0" />
     </children>
 </AnchorPane>

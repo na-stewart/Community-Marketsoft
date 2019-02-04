@@ -20,6 +20,7 @@ public class GUI {
     public GUI(String path) {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource(path)));
+            Main.mainStage.close();
             Main.mainStage.setScene(new Scene(root));
             Main.mainStage.setTitle("Trader Bobs Emporium");
             Main.mainStage.show();

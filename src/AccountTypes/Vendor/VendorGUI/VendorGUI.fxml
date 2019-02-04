@@ -70,5 +70,6 @@
             <TilePane fx:id="itemTilePane" hgap="30.0" onMousePressed="#tilePaneClickListener" prefHeight="155.0" prefWidth="859.0" tileAlignment="TOP_LEFT" vgap="30.0" />
          </content>
       </ScrollPane>
+      <Button layoutX="1330.0" layoutY="14.0" mnemonicParsing="false" onAction="#buttonListener" text="Logout" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="14.0" />
    </children>
 </AnchorPane>

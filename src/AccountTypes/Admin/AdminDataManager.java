@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import org.controlsfx.control.table.TableFilter;
 import org.jasypt.util.password.StrongPasswordEncryptor;
@@ -36,6 +37,7 @@ public class AdminDataManager implements MultiReceive {
     public void retrieveDatabaseData(DataViewer dataViewer) throws SQLException {
         ResultSet resultSet = databaseManager.receiver(dataViewer.getQuery());
         TableView tableView = (TableView) dataViewer.getNode();
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableFilter.Builder tableFilter = TableFilter.forTableView(tableView);
         ObservableList observableList = FXCollections.observableArrayList();
         while(resultSet.next())
@@ -46,14 +48,8 @@ public class AdminDataManager implements MultiReceive {
     }
 
     public void tryToDeleteRow(String tableName, int id) throws SQLException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete this row?");
-        ButtonType buttonTypeOne = new ButtonType("Delete");
-        alert.getButtonTypes().setAll(buttonTypeOne);
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == buttonTypeOne) {
-            String query = "DELETE FROM " + tableName + " WHERE id = '" + id + "'";
-            databaseManager.update(query);
-        }
+        String query = "DELETE FROM " + tableName + " WHERE id = '" + id + "'";
+        databaseManager.update(query);
     }
 
     public void addToCamperTableQuery(Camper camper) throws SQLException {

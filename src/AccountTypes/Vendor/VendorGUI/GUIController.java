@@ -5,6 +5,7 @@ import Data.Customers.Camper;
 import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
+import GUILoader.GUI;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
@@ -93,10 +94,20 @@ public class GUIController implements Initializable {
     @FXML
    private void buttonListener(ActionEvent actionEvent) {
         String buttonText = ((Button) actionEvent.getSource()).getText();
-        if (buttonText.equals("Delete"))
-            selectedItems.getItems().remove(selectedItems.getSelectionModel().getSelectedIndex());
-        else
-            displayCheckoutDialog();
+        switch (buttonText){
+            case "Delete":
+                selectedItems.getItems().remove(selectedItems.getSelectionModel().getSelectedIndex());
+            case "Checkout":
+                displayCheckoutDialog();
+            case "Logout":
+                new GUI("Login/LoginGUI/LoginGUI.fxml");
+
+
+        }
+
+
+
+
     }
 
     private void displayCheckoutDialog() {
@@ -113,6 +124,7 @@ public class GUIController implements Initializable {
         vendorDataManager.tryToCheckOut();
         vendorDataManager.setSelectedCamper(null);
         camperNameText.setText("Selected Camper");
+        filterField.requestFocus();
         refreshData();
     }
 
