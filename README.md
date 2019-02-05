@@ -5,7 +5,7 @@ The projects tab will keep you updated of the current status.
 Many things are being added, edited, and removed as time goes on.
 https://github.com/sw1pe/Trader-Bobs-Emporium/projects
 
-A youtube demo is here: https://www.youtube.com/watch?v=777rz2_4Ogo&t=207s
+A youtube demo is here: https://www.youtube.com/watch?v=nfb_u9zSJzc
 
 Screen Shots:
 
