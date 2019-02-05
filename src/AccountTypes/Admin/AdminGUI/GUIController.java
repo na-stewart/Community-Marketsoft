@@ -1,9 +1,9 @@
 package AccountTypes.Admin.AdminGUI;
 
 import AccountTypes.Admin.AdminDataManager;
-import Data.Customers.Camper;
-import Data.Customers.Employee;
-import Data.Customers.EmployeeType;
+import Data.Users.Camper;
+import Data.Users.Employee;
+import Data.Users.EmployeeType;
 import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
@@ -122,27 +122,68 @@ public class GUIController implements Initializable {
         }
     }
 
-    private void setEmployeeFields() {
-        Employee employee = employeeTableView.getSelectionModel().getSelectedItem();
-        usernameField.setText(employee.getUsername());
-        passwordField.setText("");
-        employeeTypes.setValue(employee.getEmployeeType());
+    private void setCamperFields() {
+        if (oneItemSelected(camperTableView)) {
+            Camper camper = camperTableView.getSelectionModel().getSelectedItem();
+            nameField.setText(camper.getName());
+            balanceField.setText(String.valueOf(camper.getBalance()));
+        } else
+            clearCamperFields();
     }
 
     private void setItemFields() {
-        Item item = itemTableView.getSelectionModel().getSelectedItem();
-        itemNameField.setText(item.getName());
-        priceField.setText(String.valueOf(item.getPrice()));
-        quantityField.setText(String.valueOf(item.getQuantity()));
-        imageURLField.setText(item.getImageURL());
-        itemTypes.setValue(item.getItemType());
+        if (oneItemSelected(itemTableView)) {
+            Item item = itemTableView.getSelectionModel().getSelectedItem();
+            itemNameField.setText(item.getName());
+            priceField.setText(String.valueOf(item.getPrice()));
+            quantityField.setText(String.valueOf(item.getQuantity()));
+            imageURLField.setText(item.getImageURL());
+            itemTypes.setValue(item.getItemType());
+        } else
+            clearItemFields();
     }
 
-    private void setCamperFields() {
-        Camper camper = camperTableView.getSelectionModel().getSelectedItem();
-        nameField.setText(camper.getName());
-        balanceField.setText(String.valueOf(camper.getBalance()));
+
+    private void setEmployeeFields() {
+        if (oneItemSelected(employeeTableView)) {
+            Employee employee = employeeTableView.getSelectionModel().getSelectedItem();
+            usernameField.setText(employee.getUsername());
+            passwordField.setText("");
+            employeeTypes.setValue(employee.getEmployeeType());
+        } else
+            clearEmployeeFields();
     }
+
+    private boolean oneItemSelected(TableView tableView){
+        return tableView.getSelectionModel().getSelectedItems().size() == 1;
+    }
+
+    private void clearFields() {
+        clearCamperFields();
+        clearItemFields();
+        clearEmployeeFields();
+    }
+
+    private void clearCamperFields() {
+        nameField.setText("");
+        balanceField.setText("-1");
+    }
+
+    private void clearItemFields(){
+        itemNameField.setText("");
+        priceField.setText("-1");
+        imageURLField.setText("");
+        quantityField.setText("-1");
+        itemTypes.setValue(null);
+    }
+
+    private void clearEmployeeFields() {
+        usernameField.setText("");
+        passwordField.setText("");
+        employeeTypes.setValue(null);
+    }
+
+
 
     @FXML
     private void clearSelectionsOnClick() {
@@ -224,7 +265,7 @@ public class GUIController implements Initializable {
                     adminDataManager.tryToDeleteRow("camper", camper.getId());
                 else {
                     camper.setName(nameField.getText());
-                    camper.setBalance(Integer.parseInt(balanceField.getText()));
+                    camper.setBalanceWithString(Integer.parseInt(balanceField.getText()));
                 }
             }
         }
@@ -277,30 +318,6 @@ public class GUIController implements Initializable {
         return tableView.getSelectionModel().getSelectedItem() == null;
     }
 
-    private void clearFields() {
-        clearCamperFields();
-        clearItemFields();
-        clearEmployeeFields();
-    }
-
-    private void clearCamperFields() {
-        nameField.setText("");
-        balanceField.setText("");
-    }
-
-    private void clearItemFields(){
-        itemNameField.setText("");
-        priceField.setText("");
-        imageURLField.setText("");
-        quantityField.setText("");
-        itemTypes.setValue(null);
-    }
-
-    private void clearEmployeeFields() {
-        usernameField.setText("");
-        passwordField.setText("");
-        employeeTypes.setValue(null);
-    }
 
     private void setEmployeeColumns() {
         employeeID.setCellValueFactory(new PropertyValueFactory<>("id"));

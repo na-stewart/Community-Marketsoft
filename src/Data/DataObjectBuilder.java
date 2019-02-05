@@ -1,8 +1,8 @@
 package Data;
 
-import Data.Customers.Camper;
-import Data.Customers.Employee;
-import Data.Customers.EmployeeType;
+import Data.Users.Camper;
+import Data.Users.Employee;
+import Data.Users.EmployeeType;
 import Data.Item.Item;
 import Data.Item.ItemType;
 

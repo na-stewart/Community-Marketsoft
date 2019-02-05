@@ -1,4 +1,4 @@
-package Data.Customers;
+package Data.Users;
 
 import Data.DataBaseManager;
 
@@ -36,12 +36,16 @@ public class Camper {
     }
 
     public void setName(String name) throws SQLException {
-        databaseManager.update( "UPDATE camper SET name = '" + name + "' WHERE id =" + id + ";");
-        this.name = name;
+        if (!name.isEmpty()) {
+            databaseManager.update("UPDATE camper SET name = '" + name + "' WHERE id =" + id + ";");
+            this.name = name;
+        }
     }
 
-    public void setBalance(int balance) throws SQLException {
-        databaseManager.update("UPDATE camper SET balance = '" + balance + "' WHERE id =" + id + ";");
-        this.balance = balance;
+    public void setBalanceWithString(int balance) throws SQLException {
+        if (balance > -1) {
+            databaseManager.update("UPDATE camper SET balance = '" + balance + "' WHERE id =" + id + ";");
+            this.balance = balance;
+        }
     }
 }

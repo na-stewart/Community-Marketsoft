@@ -1,4 +1,4 @@
-package Data.Customers;
+package Data.Users;
 
 /**
  * @Author Aidan Stewart

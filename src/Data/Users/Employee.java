@@ -1,4 +1,4 @@
-package Data.Customers;
+package Data.Users;
 
 import Data.DataBaseManager;
 import Util.LoggedInAccountUtil;
@@ -45,19 +45,26 @@ public class Employee {
 
 
     public void setUsername(String username) throws SQLException {
-        databaseManager.update("UPDATE employee SET username = '" + username + "' WHERE id =" + id + ";");
+        if (!username.isEmpty()) {
+            databaseManager.update("UPDATE employee SET username = '" + username + "' WHERE id =" + id + ";");
+            this.username = username;
+        }
     }
 
     public void setPassword(String password) throws SQLException {
-        String passwordHashed =  new StrongPasswordEncryptor().encryptPassword(password);
-        databaseManager.update("UPDATE employee SET password = '" + passwordHashed +"' WHERE id =" + id + ";");
-        this.password = password;
+        if (!password.isEmpty()) {
+            String passwordHashed = new StrongPasswordEncryptor().encryptPassword(password);
+            databaseManager.update("UPDATE employee SET password = '" + passwordHashed + "' WHERE id =" + id + ";");
+            this.password = password;
+        }
     }
 
     public void setEmployeeType(EmployeeType employeeType) throws SQLException {
-        int employeeTypeInt = EmployeeType.employeeTypeToInt(employeeType);
-        databaseManager.update("UPDATE employee SET employeetype = '" + employeeTypeInt +"' WHERE id =" + id + ";");
-        this.employeeType = employeeType;
+        if (employeeType != null) {
+            int employeeTypeInt = EmployeeType.employeeTypeToInt(employeeType);
+            databaseManager.update("UPDATE employee SET employeetype = '" + employeeTypeInt + "' WHERE id =" + id + ";");
+            this.employeeType = employeeType;
+        }
     }
 
     public void requestPermissionToModifyEmployees() throws SQLException {

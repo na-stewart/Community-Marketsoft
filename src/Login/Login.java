@@ -1,6 +1,6 @@
 package Login;
 
-import Data.Customers.EmployeeType;
+import Data.Users.EmployeeType;
 import GUILoader.GUI;
 
 import Interfaces.MonoQuery;

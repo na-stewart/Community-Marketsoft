@@ -1,8 +1,8 @@
 package AccountTypes.Admin;
 
-import Data.Customers.Camper;
-import Data.Customers.Employee;
-import Data.Customers.EmployeeType;
+import Data.Users.Camper;
+import Data.Users.Employee;
+import Data.Users.EmployeeType;
 import Data.DataObjectBuilder;
 import Data.DataViewer;
 import Data.Item.Item;
@@ -11,8 +11,6 @@ import Data.DataBaseManager;
 import Interfaces.MultiReceive;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import org.controlsfx.control.table.TableFilter;
@@ -21,7 +19,6 @@ import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 
 /**
  * @Author Aidan Stewart

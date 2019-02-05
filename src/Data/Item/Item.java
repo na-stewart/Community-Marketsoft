@@ -55,30 +55,40 @@ public class Item {
 
 
     public void setName(String name) throws SQLException {
-        databaseManager.update("UPDATE item SET name = '" + name + "' WHERE id = " + id + ";");
-        this.name = name;
+        if (!name.isEmpty()) {
+            databaseManager.update("UPDATE item SET name = '" + name + "' WHERE id = " + id + ";");
+            this.name = name;
+        }
     }
 
     public void setPrice(int price) throws SQLException {
-        databaseManager.update("UPDATE item SET price = '" + price + "' WHERE id = " + id + ";");
-        this.price = price;
+        if (price > -1) {
+            databaseManager.update("UPDATE item SET price = '" + price + "' WHERE id = " + id + ";");
+            this.price = price;
+        }
     }
 
     public void setQuantity(int quantity) throws SQLException {
-        databaseManager.update("UPDATE item SET quantity = '" + quantity + "' WHERE id = " + id + ";");
-        this.quantity = quantity;
+        if (quantity > -1) {
+            databaseManager.update("UPDATE item SET quantity = '" + quantity + "' WHERE id = " + id + ";");
+            this.quantity = quantity;
+        }
 
 
     }
 
     public void setImageURL(String imageURL) throws SQLException {
-        databaseManager.update("UPDATE item SET imageurl = '" + imageURL + "' WHERE id = " + id + ";");
-        this.imageURL = imageURL;
+        if (!imageURL.isEmpty()) {
+            databaseManager.update("UPDATE item SET imageurl = '" + imageURL + "' WHERE id = " + id + ";");
+            this.imageURL = imageURL;
+        }
     }
 
     public void setItemType(ItemType itemType) throws SQLException {
-        int itemTypeInt = ItemType.itemTypeToInt(itemType);
-        databaseManager.update("UPDATE item SET itemtype = '" + itemTypeInt + "' WHERE id = " + id + ";");
-        this.itemType = itemType;
+        if (itemType != null) {
+            int itemTypeInt = ItemType.itemTypeToInt(itemType);
+            databaseManager.update("UPDATE item SET itemtype = '" + itemTypeInt + "' WHERE id = " + id + ";");
+            this.itemType = itemType;
+        }
     }
 }

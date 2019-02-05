@@ -1,7 +1,7 @@
 package AccountTypes.Vendor.VendorGUI;
 
 import AccountTypes.Vendor.VendorDataManager;
-import Data.Customers.Camper;
+import Data.Users.Camper;
 import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
@@ -97,10 +97,13 @@ public class GUIController implements Initializable {
         switch (buttonText){
             case "Delete":
                 selectedItems.getItems().remove(selectedItems.getSelectionModel().getSelectedIndex());
+                break;
             case "Checkout":
                 displayCheckoutDialog();
+                break;
             case "Logout":
                 new GUI("Login/LoginGUI/LoginGUI.fxml");
+                break;
 
 
         }

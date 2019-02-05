@@ -1,19 +1,17 @@
 package AccountTypes.Vendor;
 
 import AccountTypes.Vendor.Nodes.ItemVBox;
-import Data.Customers.Camper;
+import Data.Users.Camper;
 import Data.DataBaseManager;
 import Data.DataObjectBuilder;
 import Data.DataViewer;
 import Data.Item.Item;
 import Interfaces.MultiReceive;
-import com.sun.xml.internal.bind.v2.TODO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -146,7 +144,7 @@ public class VendorDataManager implements MultiReceive {
         for (Item items : selectedItems) {
             if (items.getPrice() <= selectedCamper.getBalance() && items.getQuantity() > 0) {
                 items.setQuantity(items.getQuantity() - 1);
-                selectedCamper.setBalance(selectedCamper.getBalance() - items.getPrice());
+                selectedCamper.setBalanceWithString(selectedCamper.getBalance() - items.getPrice());
             } else{
                 itemsNotCheckedOut.add(items.getName());
                 checkoutWarning = true;
