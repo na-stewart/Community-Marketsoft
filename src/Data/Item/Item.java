@@ -55,21 +55,21 @@ public class Item {
 
 
     public void setName(String name) throws SQLException {
-        if (!name.isEmpty()) {
+        if (!name.isEmpty() && !this.name.equals(name)) {
             databaseManager.update("UPDATE item SET name = '" + name + "' WHERE id = " + id + ";");
             this.name = name;
         }
     }
 
     public void setPrice(int price) throws SQLException {
-        if (price > -1) {
+        if (price > -1 && this.price != price) {
             databaseManager.update("UPDATE item SET price = '" + price + "' WHERE id = " + id + ";");
             this.price = price;
         }
     }
 
     public void setQuantity(int quantity) throws SQLException {
-        if (quantity > -1) {
+        if (quantity > -1 && this.quantity != quantity) {
             databaseManager.update("UPDATE item SET quantity = '" + quantity + "' WHERE id = " + id + ";");
             this.quantity = quantity;
         }
@@ -78,14 +78,14 @@ public class Item {
     }
 
     public void setImageURL(String imageURL) throws SQLException {
-        if (!imageURL.isEmpty()) {
+        if (!imageURL.isEmpty() && !this.imageURL.equals(imageURL)) {
             databaseManager.update("UPDATE item SET imageurl = '" + imageURL + "' WHERE id = " + id + ";");
             this.imageURL = imageURL;
         }
     }
 
     public void setItemType(ItemType itemType) throws SQLException {
-        if (itemType != null) {
+        if (itemType != null && this.itemType != itemType) {
             int itemTypeInt = ItemType.itemTypeToInt(itemType);
             databaseManager.update("UPDATE item SET itemtype = '" + itemTypeInt + "' WHERE id = " + id + ";");
             this.itemType = itemType;

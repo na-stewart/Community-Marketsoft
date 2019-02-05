@@ -45,14 +45,14 @@ public class Employee {
 
 
     public void setUsername(String username) throws SQLException {
-        if (!username.isEmpty()) {
+        if (!username.isEmpty() && !this.username.equals(username) ) {
             databaseManager.update("UPDATE employee SET username = '" + username + "' WHERE id =" + id + ";");
             this.username = username;
         }
     }
 
     public void setPassword(String password) throws SQLException {
-        if (!password.isEmpty()) {
+        if (!password.isEmpty() && !this.password.equals(password)) {
             String passwordHashed = new StrongPasswordEncryptor().encryptPassword(password);
             databaseManager.update("UPDATE employee SET password = '" + passwordHashed + "' WHERE id =" + id + ";");
             this.password = password;
@@ -60,7 +60,7 @@ public class Employee {
     }
 
     public void setEmployeeType(EmployeeType employeeType) throws SQLException {
-        if (employeeType != null) {
+        if (employeeType != null && this.employeeType != employeeType) {
             int employeeTypeInt = EmployeeType.employeeTypeToInt(employeeType);
             databaseManager.update("UPDATE employee SET employeetype = '" + employeeTypeInt + "' WHERE id =" + id + ";");
             this.employeeType = employeeType;

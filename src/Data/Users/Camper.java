@@ -36,14 +36,14 @@ public class Camper {
     }
 
     public void setName(String name) throws SQLException {
-        if (!name.isEmpty()) {
+        if (!name.isEmpty() && !this.name.equals(name)) {
             databaseManager.update("UPDATE camper SET name = '" + name + "' WHERE id =" + id + ";");
             this.name = name;
         }
     }
 
     public void setBalanceWithString(int balance) throws SQLException {
-        if (balance > -1) {
+        if (balance > -1 && this.balance != balance) {
             databaseManager.update("UPDATE camper SET balance = '" + balance + "' WHERE id =" + id + ";");
             this.balance = balance;
         }

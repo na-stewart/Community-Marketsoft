@@ -127,8 +127,10 @@ public class GUIController implements Initializable {
             Camper camper = camperTableView.getSelectionModel().getSelectedItem();
             nameField.setText(camper.getName());
             balanceField.setText(String.valueOf(camper.getBalance()));
-        } else
+        } else {
             clearCamperFields();
+            balanceField.setText("-1");
+        }
     }
 
     private void setItemFields() {
@@ -139,8 +141,11 @@ public class GUIController implements Initializable {
             quantityField.setText(String.valueOf(item.getQuantity()));
             imageURLField.setText(item.getImageURL());
             itemTypes.setValue(item.getItemType());
-        } else
+        } else {
             clearItemFields();
+            priceField.setText("-1");
+            quantityField.setText("-1");
+        }
     }
 
 
@@ -166,14 +171,14 @@ public class GUIController implements Initializable {
 
     private void clearCamperFields() {
         nameField.setText("");
-        balanceField.setText("-1");
+        balanceField.setText("");
     }
 
     private void clearItemFields(){
         itemNameField.setText("");
-        priceField.setText("-1");
+        priceField.setText("");
         imageURLField.setText("");
-        quantityField.setText("-1");
+        quantityField.setText("");
         itemTypes.setValue(null);
     }
 

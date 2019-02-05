@@ -98,7 +98,7 @@ public class GUIController implements Initializable {
             case "Delete":
                 selectedItems.getItems().remove(selectedItems.getSelectionModel().getSelectedIndex());
                 break;
-            case "Checkout":
+            case "Check Out":
                 displayCheckoutDialog();
                 break;
             case "Logout":
