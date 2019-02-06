@@ -1,11 +1,10 @@
 # Trader Bobs Emporium
-Currently in development.
+Trader Bobs Emporium is an application for a summer camp. This camp has a store which you can buy items from. This application is to allow employees to manage the inventory of the store and their values, and also campers within the camp and the amount of digital currency they have which is bought by the parents. Then the vendor (aka retail) interface is used in-store when selling items to campers. They used google tables before which people hated and even before that they did it on paper. I decided to take the opportunity to improve my skills and add to my resume by creating a customized, efficient, and usable system for them.﻿
 
-The projects tab will keep you updated of the current status.
-Many things are being added, edited, and removed as time goes on.
+
 https://github.com/sw1pe/Trader-Bobs-Emporium/projects
 
-A youtube demo is here: https://www.youtube.com/watch?v=777rz2_4Ogo&t=207s
+A youtube demo is here: https://www.youtube.com/watch?v=nfb_u9zSJzc
 
 Screen Shots:
 
