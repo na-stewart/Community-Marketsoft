@@ -144,7 +144,7 @@ public class VendorDataManager implements MultiReceive {
         for (Item items : selectedItems) {
             if (items.getPrice() <= selectedCamper.getBalance() && items.getQuantity() > 0) {
                 items.setQuantity(items.getQuantity() - 1);
-                selectedCamper.setBalanceWithString(selectedCamper.getBalance() - items.getPrice());
+                selectedCamper.setBalance(selectedCamper.getBalance() - items.getPrice());
             } else{
                 itemsNotCheckedOut.add(items.getName());
                 checkoutWarning = true;

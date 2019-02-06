@@ -1,7 +1,6 @@
 package Data.Users;
 
 import Data.DataBaseManager;
-
 import java.sql.SQLException;
 
 /**
@@ -42,7 +41,7 @@ public class Camper {
         }
     }
 
-    public void setBalanceWithString(int balance) throws SQLException {
+    public void setBalance(int balance) throws SQLException {
         if (balance > -1 && this.balance != balance) {
             databaseManager.update("UPDATE camper SET balance = '" + balance + "' WHERE id =" + id + ";");
             this.balance = balance;

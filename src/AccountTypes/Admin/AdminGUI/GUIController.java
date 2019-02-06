@@ -127,10 +127,8 @@ public class GUIController implements Initializable {
             Camper camper = camperTableView.getSelectionModel().getSelectedItem();
             nameField.setText(camper.getName());
             balanceField.setText(String.valueOf(camper.getBalance()));
-        } else {
+        } else
             clearCamperFields();
-            balanceField.setText("-1");
-        }
     }
 
     private void setItemFields() {
@@ -141,11 +139,8 @@ public class GUIController implements Initializable {
             quantityField.setText(String.valueOf(item.getQuantity()));
             imageURLField.setText(item.getImageURL());
             itemTypes.setValue(item.getItemType());
-        } else {
+        } else
             clearItemFields();
-            priceField.setText("-1");
-            quantityField.setText("-1");
-        }
     }
 
 
@@ -270,7 +265,8 @@ public class GUIController implements Initializable {
                     adminDataManager.tryToDeleteRow("camper", camper.getId());
                 else {
                     camper.setName(nameField.getText());
-                    camper.setBalanceWithString(Integer.parseInt(balanceField.getText()));
+                    if (!balanceField.getText().isEmpty())
+                        camper.setBalance(Integer.parseInt(balanceField.getText()));
                 }
             }
         }
@@ -288,16 +284,17 @@ public class GUIController implements Initializable {
                     adminDataManager.tryToDeleteRow("item", item.getId());
                 else {
                     item.setName(itemNameField.getText());
-                    item.setPrice(Integer.parseInt(priceField.getText()));
+                    if (!priceField.getText().isEmpty())
+                        item.setPrice(Integer.parseInt(priceField.getText()));
                     item.setImageURL(imageURLField.getText());
-                    item.setQuantity(Integer.parseInt(quantityField.getText()));
+                    if (!quantityField.getText().isEmpty())
+                        item.setQuantity(Integer.parseInt(quantityField.getText()));
                     item.setItemType(itemTypes.getValue());
                 }
             }
         }
     }
-
-
+    
     private void updateEmployee() throws SQLException {
         if (isTableNotSelected(employeeTableView)) {
             adminDataManager.addToEmployeeTableQuery(new Employee(new Random().nextInt(999999),
@@ -311,8 +308,7 @@ public class GUIController implements Initializable {
                 else {
                     employee.setUsername(usernameField.getText());
                     employee.setEmployeeType(employeeTypes.getValue());
-                    if (!passwordField.getText().isEmpty())
-                        employee.setPassword(passwordField.getText());
+                    employee.setPassword(passwordField.getText());
                 }
             }
 
