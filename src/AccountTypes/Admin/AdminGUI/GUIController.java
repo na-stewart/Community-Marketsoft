@@ -25,8 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * @Author Aidan Stewart
@@ -70,7 +69,7 @@ public class GUIController implements Initializable {
         banner.fitWidthProperty().bind(mainPane.widthProperty());
         setCellValueFactories();
         setDataViewers();
-        tryToPopulateAll();
+        autoRefreshTable();
         setChoiceBoxes();
     }
 
@@ -89,10 +88,22 @@ public class GUIController implements Initializable {
         };
     }
 
+    private void autoRefreshTable(){
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                tryToPopulateAll();
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 0, 5000);
+    }
+
     private void tryToPopulateAll(){
         try {
-            for (DataViewer dataViewer: dataViewers) {
-                adminDataManager.retrieveDatabaseData(dataViewer);
+            if (isNothingSelected()) {
+                for (DataViewer dataViewer : dataViewers)
+                    adminDataManager.retrieveDatabaseData(dataViewer);
             }
         } catch (SQLException e) {
             new ExceptionDialog(e).showAndWait();
@@ -187,7 +198,7 @@ public class GUIController implements Initializable {
 
     @FXML
     private void clearSelectionsOnClick() {
-        if (!isTableNotSelected(employeeTableView) || !isTableNotSelected(camperTableView) || !isTableNotSelected(itemTableView)) {
+        if (!isNothingSelected()) {
             for (DataViewer dataViewer: dataViewers) {
                 TableView tableView = (TableView) dataViewer.getNode();
                 tableView.getSelectionModel().clearSelection();
@@ -255,7 +266,7 @@ public class GUIController implements Initializable {
     }
 
     private void updateCamper() throws SQLException {
-        if (isTableNotSelected(camperTableView) && !isDeletingData) {
+        if (isNothingSelected() && !isDeletingData) {
             adminDataManager.addToCamperTableQuery(new Camper(new Random().nextInt(99999), nameField.getText(),
                     Integer.parseInt(balanceField.getText())));
         } else {
@@ -273,7 +284,7 @@ public class GUIController implements Initializable {
     }
 
     private void updateItem() throws SQLException {
-        if (isTableNotSelected(itemTableView)) {
+        if (isNothingSelected()) {
             adminDataManager.addToItemTableQuery(new Item(new Random().nextInt(999999), itemNameField.getText(),
                     Integer.parseInt(priceField.getText()), Integer.parseInt(quantityField.getText()),
                     imageURLField.getText(), itemTypes.getValue()));
@@ -294,9 +305,9 @@ public class GUIController implements Initializable {
             }
         }
     }
-    
+
     private void updateEmployee() throws SQLException {
-        if (isTableNotSelected(employeeTableView)) {
+        if (isNothingSelected()) {
             adminDataManager.addToEmployeeTableQuery(new Employee(new Random().nextInt(999999),
                     usernameField.getText(), passwordField.getText(), employeeTypes.getValue()));
         } else {
@@ -315,8 +326,10 @@ public class GUIController implements Initializable {
         }
     }
 
-    private boolean isTableNotSelected(TableView tableView) {
-        return tableView.getSelectionModel().getSelectedItem() == null;
+    private boolean isNothingSelected() {
+        return camperTableView.getSelectionModel().getSelectedItem() == null &&
+                itemTableView.getSelectionModel().getSelectedItem() == null &&
+                employeeTableView.getSelectionModel().getSelectedItem() == null;
     }
 
 
