@@ -265,7 +265,7 @@ public class GUIController implements Initializable {
         clearFields();
     }
 
-    //Intergers cant be checked as empty in setters so its checked in update method instead.
+    //Intergers cant be checked as empty in setters so its checked in update methods instead.
 
     private void updateCamper() throws SQLException {
         if (isNothingSelected() && !isDeletingData) {
