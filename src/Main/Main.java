@@ -21,7 +21,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         mainStage = stage;
         tryToConfigureDatabase();
-        new GUI("Login/LoginGUI/LoginGUI.fxml");
+        new GUI("App/Login/LoginGUI/LoginGUI.fxml");
     }
 
     private void tryToConfigureDatabase(){

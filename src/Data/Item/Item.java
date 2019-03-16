@@ -1,6 +1,6 @@
 package Data.Item;
 
-import Data.DataBaseManager;
+import Data.DatabaseQueryReceiver;
 
 import java.sql.SQLException;
 
@@ -17,7 +17,7 @@ public class Item {
     private int quantity;
     private String imageURL;
     private ItemType itemType;
-    private DataBaseManager databaseManager = new DataBaseManager();
+    private DatabaseQueryReceiver databaseManager = new DatabaseQueryReceiver();
 
     public Item(int id, String name, int price, int quantity, String imageURL, ItemType itemType) {
         this.id = id;
@@ -62,14 +62,16 @@ public class Item {
     }
 
     public void setPrice(int price) throws SQLException {
-        if (price > -1 && this.price != price) {
+        if (this.price != price) {
             databaseManager.update("UPDATE item SET price = '" + price + "' WHERE id = " + id + ";");
             this.price = price;
         }
     }
 
+    //Price and Quantity passes integer values so an empty value cannot be checked within setter.
+
     public void setQuantity(int quantity) throws SQLException {
-        if (quantity > -1 && this.quantity != quantity) {
+        if (this.quantity != quantity) {
             databaseManager.update("UPDATE item SET quantity = '" + quantity + "' WHERE id = " + id + ";");
             this.quantity = quantity;
         }

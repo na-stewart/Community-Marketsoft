@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" onKeyPressed="#keyActionEvent" prefHeight="543.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login.LoginGUI.GUIController">
+<AnchorPane fx:id="anchorPane" onKeyPressed="#keyActionEvent" prefHeight="543.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.Login.LoginGUI.GUIController">
    <children>
       <ImageView fx:id="backgroundImage" fitHeight="543.0" fitWidth="885.0">
          <image>
@@ -40,7 +40,7 @@
             <HBox alignment="BOTTOM_CENTER" prefHeight="48.0" prefWidth="708.0" spacing="200.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#tryToLogin" prefHeight="46.0" prefWidth="99.0" text="Register" />
-                  <Button mnemonicParsing="false" onAction="#tryToLogin" prefHeight="46.0" prefWidth="99.0" text="Login" />
+                  <Button mnemonicParsing="false" onAction="#tryToLogin" prefHeight="46.0" prefWidth="99.0" text="App.Login" />
                </children>
             </HBox>
          </children>

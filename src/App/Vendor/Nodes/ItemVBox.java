@@ -1,4 +1,4 @@
-package AccountTypes.Vendor.Nodes;
+package App.Vendor.Nodes;
 
 import Data.Item.Item;
 import javafx.scene.layout.VBox;

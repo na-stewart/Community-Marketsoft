@@ -1,6 +1,6 @@
-package Login.LoginGUI;
+package App.Login.LoginGUI;
 
-import Login.Login;
+import App.Login.Login;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -56,7 +56,7 @@ public class GUIController implements Initializable {
 
     private void tryToLogin(String buttonName) throws SQLException {
         Login login = new Login(username.getText(), password.getText());
-        if (buttonName.equals("Login"))
+        if (buttonName.equals("App/Login"))
             login.retrieveDatabaseData();
         else
             login.updateDatabase();

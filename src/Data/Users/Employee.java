@@ -1,6 +1,6 @@
 package Data.Users;
 
-import Data.DataBaseManager;
+import Data.DatabaseQueryReceiver;
 import Util.LoggedInAccountUtil;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
@@ -17,7 +17,7 @@ public class Employee {
     private String username;
     private String password;
     private EmployeeType employeeType;
-    DataBaseManager databaseManager = new DataBaseManager();
+    DatabaseQueryReceiver databaseManager = new DatabaseQueryReceiver();
 
     public Employee(int ID, String username, String password, EmployeeType accountType) {
         this.id = ID;

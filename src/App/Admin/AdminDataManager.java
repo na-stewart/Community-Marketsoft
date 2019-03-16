@@ -1,4 +1,4 @@
-package AccountTypes.Admin;
+package App.Admin;
 
 import Data.Users.Camper;
 import Data.Users.Employee;
@@ -7,7 +7,7 @@ import Data.DataObjectBuilder;
 import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
-import Data.DataBaseManager;
+import Data.DatabaseQueryReceiver;
 import Interfaces.MultiReceive;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,11 +28,11 @@ import java.sql.SQLException;
  */
 public class AdminDataManager implements MultiReceive {
 
-    private DataBaseManager databaseManager = new DataBaseManager();
+    private DatabaseQueryReceiver databaseQueryReceiver = new DatabaseQueryReceiver();
 
     @Override
     public void retrieveDatabaseData(DataViewer dataViewer) throws SQLException {
-        ResultSet resultSet = databaseManager.receiver(dataViewer.getQuery());
+        ResultSet resultSet = databaseQueryReceiver.receiver(dataViewer.getQuery());
         TableView tableView = (TableView) dataViewer.getNode();
         tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableFilter.Builder tableFilter = TableFilter.forTableView(tableView);
@@ -46,19 +46,19 @@ public class AdminDataManager implements MultiReceive {
 
     public void tryToDeleteRow(String tableName, int id) throws SQLException {
         String query = "DELETE FROM " + tableName + " WHERE id = '" + id + "'";
-        databaseManager.update(query);
+        databaseQueryReceiver.update(query);
     }
 
     public void addToCamperTableQuery(Camper camper) throws SQLException {
       String query =  "INSERT INTO camper VALUES('" + camper.getId() + "','" + camper.getName() + "','" +
                 camper.getBalance()+ "')";
-      databaseManager.update(query);
+      databaseQueryReceiver.update(query);
     }
 
     public void addToItemTableQuery(Item item) throws SQLException {
       String query = "INSERT INTO item VALUES('" + item.getId() + "','" + item.getName() + "','" + item.getPrice() +
                 "','" + item.getQuantity() + "','"+ item.getImageURL() + "','" + ItemType.itemTypeToInt(item.getItemType()) + "')";
-      databaseManager.update(query);
+      databaseQueryReceiver.update(query);
 
     }
 
@@ -67,7 +67,7 @@ public class AdminDataManager implements MultiReceive {
         String query = "INSERT INTO employee VALUES('" + employee.getId() + "','" + employee.getUsername() + "','" +
                 new StrongPasswordEncryptor().encryptPassword(employee.getPassword()) + "','" +
                 EmployeeType.employeeTypeToInt(employee.getEmployeeType()) + "')";
-        databaseManager.update(query);
+        databaseQueryReceiver.update(query);
     }
 
 

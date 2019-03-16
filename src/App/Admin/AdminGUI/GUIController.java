@@ -1,6 +1,6 @@
-package AccountTypes.Admin.AdminGUI;
+package App.Admin.AdminGUI;
 
-import AccountTypes.Admin.AdminDataManager;
+import App.Admin.AdminDataManager;
 import Data.Users.Camper;
 import Data.Users.Employee;
 import Data.Users.EmployeeType;
@@ -95,8 +95,8 @@ public class GUIController implements Initializable {
                 tryToPopulateAll();
             }
         };
-        Timer timer = new Timer();
-        timer.schedule(task, 0, 5000);
+
+        new Timer().schedule(task, 0, 3000);
     }
 
     private void tryToPopulateAll(){
@@ -219,7 +219,7 @@ public class GUIController implements Initializable {
     private void buttonListener(ActionEvent event) {
         String buttonText = ((Button) event.getSource()).getText();
         if (buttonText.equals("Logout"))
-            new GUI("Login/LoginGUI/LoginGUI.fxml");
+            new GUI("App/Login/LoginGUI/LoginGUI.fxml");
         else {
             isDeletingData = !buttonText.equals("Update");
             tryToUpdate();
@@ -265,6 +265,8 @@ public class GUIController implements Initializable {
         clearFields();
     }
 
+    //Intergers cant be checked as empty in setters so its checked in update method instead.
+
     private void updateCamper() throws SQLException {
         if (isNothingSelected() && !isDeletingData) {
             adminDataManager.addToCamperTableQuery(new Camper(new Random().nextInt(99999), nameField.getText(),
@@ -295,12 +297,12 @@ public class GUIController implements Initializable {
                     adminDataManager.tryToDeleteRow("item", item.getId());
                 else {
                     item.setName(itemNameField.getText());
+                    item.setImageURL(imageURLField.getText());
+                    item.setItemType(itemTypes.getValue());
                     if (!priceField.getText().isEmpty())
                         item.setPrice(Integer.parseInt(priceField.getText()));
-                    item.setImageURL(imageURLField.getText());
                     if (!quantityField.getText().isEmpty())
                         item.setQuantity(Integer.parseInt(quantityField.getText()));
-                    item.setItemType(itemTypes.getValue());
                 }
             }
         }
@@ -322,7 +324,6 @@ public class GUIController implements Initializable {
                     employee.setPassword(passwordField.getText());
                 }
             }
-
         }
     }
 

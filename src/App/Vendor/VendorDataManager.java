@@ -1,8 +1,8 @@
-package AccountTypes.Vendor;
+package App.Vendor;
 
-import AccountTypes.Vendor.Nodes.ItemVBox;
+import App.Vendor.Nodes.ItemVBox;
 import Data.Users.Camper;
-import Data.DataBaseManager;
+import Data.DatabaseQueryReceiver;
 import Data.DataObjectBuilder;
 import Data.DataViewer;
 import Data.Item.Item;
@@ -18,9 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import org.controlsfx.dialog.ExceptionDialog;
-
 import javax.imageio.ImageIO;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -36,7 +34,7 @@ import java.util.List;
  * All rights reserved.
  */
 public class VendorDataManager implements MultiReceive {
-    private DataBaseManager databaseManager = new DataBaseManager();
+    private DatabaseQueryReceiver databaseManager = new DatabaseQueryReceiver();
     private ObservableList<Item> selectedItems = FXCollections.observableArrayList();
     private ObservableList<Camper> unfilteredCamperData = FXCollections.observableArrayList();
     private Camper selectedCamper;
@@ -97,8 +95,8 @@ public class VendorDataManager implements MultiReceive {
     private ImageView imageView(String url) {
         ImageView imageView = new ImageView();
         new Thread(() -> imageView.setImage(SwingFXUtils.toFXImage(getImage(url), null))).start();
-        imageView.setFitWidth(200);
-        imageView.setFitHeight(220);
+        imageView.setFitWidth(210);
+        imageView.setFitHeight(225);
         return imageView;
     }
 
@@ -108,7 +106,7 @@ public class VendorDataManager implements MultiReceive {
             image = ImageIO.read(new URL(url));
         } catch (Exception ex){
             try {
-                String path = "/AccountTypes/Vendor/VendorGUI/Resources/MTC Tree Poster.jpg";
+                String path = "/App/Vendor/VendorGUI/Resources/MTC Tree Poster.jpg";
                 image = ImageIO.read(getClass().getResourceAsStream(path));
             } catch (IOException e) {
                 e.printStackTrace();

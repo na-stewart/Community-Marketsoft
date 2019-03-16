@@ -1,10 +1,10 @@
-package Login;
+package App.Login;
 
 import Data.Users.EmployeeType;
 import GUILoader.GUI;
 
 import Interfaces.MonoQuery;
-import Data.DataBaseManager;
+import Data.DatabaseQueryReceiver;
 import Util.LoggedInAccountUtil;
 import javafx.scene.control.Alert;
 import org.jasypt.util.password.StrongPasswordEncryptor;
@@ -20,7 +20,7 @@ import java.util.Random;
  * All rights reserved.
  */
 public class Login implements MonoQuery {
-    private DataBaseManager manager = new DataBaseManager();
+    private DatabaseQueryReceiver manager = new DatabaseQueryReceiver();
     private String user;
     private String pass;
     private StrongPasswordEncryptor strongPasswordEncryptor = new StrongPasswordEncryptor();
@@ -85,9 +85,9 @@ public class Login implements MonoQuery {
     }
     private void openAccountInterface(){
         if (employeeInterfaceConditionsMet())
-            new GUI("AccountTypes/Admin/AdminGUI/AdminGUI.fxml");
+            new GUI("App/Admin/AdminGUI/AdminGUI.fxml");
         else
-            new GUI("AccountTypes/Vendor/VendorGUI/VendorGUI.fxml");
+            new GUI("App/Vendor/VendorGUI/VendorGUI.fxml");
     }
 
     private boolean employeeInterfaceConditionsMet(){

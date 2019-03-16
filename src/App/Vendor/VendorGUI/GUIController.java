@@ -1,6 +1,6 @@
-package AccountTypes.Vendor.VendorGUI;
+package App.Vendor.VendorGUI;
 
-import AccountTypes.Vendor.VendorDataManager;
+import App.Vendor.VendorDataManager;
 import Data.Users.Camper;
 import Data.DataViewer;
 import Data.Item.Item;
@@ -65,7 +65,6 @@ public class GUIController implements Initializable {
         setCellFactories();
         setChoiceBox();
         refreshData();
-
     }
 
     private void refreshData(){
@@ -90,7 +89,6 @@ public class GUIController implements Initializable {
         }
     }
 
-
     @FXML
    private void buttonListener(ActionEvent actionEvent) {
         String buttonText = ((Button) actionEvent.getSource()).getText();
@@ -102,15 +100,9 @@ public class GUIController implements Initializable {
                 displayCheckoutDialog();
                 break;
             case "Logout":
-                new GUI("Login/LoginGUI/LoginGUI.fxml");
+                new GUI("App/Login/LoginGUI/LoginGUI.fxml");
                 break;
-
-
         }
-
-
-
-
     }
 
     private void displayCheckoutDialog() {

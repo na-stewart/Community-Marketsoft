@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" prefHeight="829.0" prefWidth="1141.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AccountTypes.Vendor.VendorGUI.GUIController">
+<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" prefHeight="829.0" prefWidth="1141.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.Vendor.VendorGUI.GUIController">
    <children>
       <ImageView fx:id="backgroundImage" fitHeight="829.0" fitWidth="1396.0">
          <image>

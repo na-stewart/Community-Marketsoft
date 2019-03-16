@@ -1,6 +1,6 @@
 package Data.Users;
 
-import Data.DataBaseManager;
+import Data.DatabaseQueryReceiver;
 import java.sql.SQLException;
 
 /**
@@ -13,7 +13,7 @@ public class Camper {
     private int id;
     private String name;
     private int balance;
-    private DataBaseManager databaseManager = new DataBaseManager();
+    private DatabaseQueryReceiver databaseManager = new DatabaseQueryReceiver();
 
 
     public Camper(int id, String name, int balance) {
@@ -42,7 +42,7 @@ public class Camper {
     }
 
     public void setBalance(int balance) throws SQLException {
-        if (balance > -1 && this.balance != balance) {
+        if (this.balance != balance) {
             databaseManager.update("UPDATE camper SET balance = '" + balance + "' WHERE id =" + id + ";");
             this.balance = balance;
         }
