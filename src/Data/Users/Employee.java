@@ -17,7 +17,7 @@ public class Employee {
     private String username;
     private String password;
     private EmployeeType employeeType;
-    DatabaseQueryReceiver databaseManager = new DatabaseQueryReceiver();
+    private DatabaseQueryReceiver databaseQueryReceiver = new DatabaseQueryReceiver();
 
     public Employee(int ID, String username, String password, EmployeeType accountType) {
         this.id = ID;
@@ -45,24 +45,24 @@ public class Employee {
 
 
     public void setUsername(String username) throws SQLException {
-        if (!username.isEmpty() && !this.username.equals(username) ) {
-            databaseManager.update("UPDATE employee SET username = '" + username + "' WHERE id =" + id + ";");
+        if (!this.username.equals(username) && !username.isEmpty()) {
+            databaseQueryReceiver.update("UPDATE employee SET username = '" + username + "' WHERE id =" + id + ";");
             this.username = username;
         }
     }
 
     public void setPassword(String password) throws SQLException {
-        if (!password.isEmpty() && !this.password.equals(password)) {
+        if (!this.password.equals(password) && !password.isEmpty()) {
             String passwordHashed = new StrongPasswordEncryptor().encryptPassword(password);
-            databaseManager.update("UPDATE employee SET password = '" + passwordHashed + "' WHERE id =" + id + ";");
+            databaseQueryReceiver.update("UPDATE employee SET password = '" + passwordHashed + "' WHERE id =" + id + ";");
             this.password = password;
         }
     }
 
     public void setEmployeeType(EmployeeType employeeType) throws SQLException {
-        if (employeeType != null && this.employeeType != employeeType) {
+        if (this.employeeType != employeeType && employeeType != null) {
             int employeeTypeInt = EmployeeType.employeeTypeToInt(employeeType);
-            databaseManager.update("UPDATE employee SET employeetype = '" + employeeTypeInt + "' WHERE id =" + id + ";");
+            databaseQueryReceiver.update("UPDATE employee SET employeetype = '" + employeeTypeInt + "' WHERE id =" + id + ";");
             this.employeeType = employeeType;
         }
     }

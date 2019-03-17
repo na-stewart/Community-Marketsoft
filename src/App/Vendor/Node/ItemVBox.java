@@ -1,4 +1,4 @@
-package App.Vendor.Nodes;
+package App.Vendor.Node;
 
 import Data.Item.Item;
 import javafx.scene.layout.VBox;

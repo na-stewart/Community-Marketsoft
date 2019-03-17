@@ -13,7 +13,7 @@ public class Camper {
     private int id;
     private String name;
     private int balance;
-    private DatabaseQueryReceiver databaseManager = new DatabaseQueryReceiver();
+    private DatabaseQueryReceiver databaseQueryReceiver = new DatabaseQueryReceiver();
 
 
     public Camper(int id, String name, int balance) {
@@ -35,16 +35,18 @@ public class Camper {
     }
 
     public void setName(String name) throws SQLException {
-        if (!name.isEmpty() && !this.name.equals(name)) {
-            databaseManager.update("UPDATE camper SET name = '" + name + "' WHERE id =" + id + ";");
+        if (!this.name.equals(name)) {
+            databaseQueryReceiver.update("UPDATE camper SET name = '" + name + "' WHERE id =" + id + ";");
             this.name = name;
         }
     }
 
     public void setBalance(int balance) throws SQLException {
         if (this.balance != balance) {
-            databaseManager.update("UPDATE camper SET balance = '" + balance + "' WHERE id =" + id + ";");
+            databaseQueryReceiver.update("UPDATE camper SET balance = '" + balance + "' WHERE id =" + id + ";");
             this.balance = balance;
         }
     }
+
+
 }

@@ -8,7 +8,7 @@ import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
 import Data.DatabaseQueryReceiver;
-import Interfaces.MultiReceive;
+import Interfaces.MultiQuery;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SelectionMode;
@@ -26,7 +26,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class AdminDataManager implements MultiReceive {
+public class AdminDataManager implements MultiQuery {
 
     private DatabaseQueryReceiver databaseQueryReceiver = new DatabaseQueryReceiver();
 
@@ -34,7 +34,6 @@ public class AdminDataManager implements MultiReceive {
     public void retrieveDatabaseData(DataViewer dataViewer) throws SQLException {
         ResultSet resultSet = databaseQueryReceiver.receiver(dataViewer.getQuery());
         TableView tableView = (TableView) dataViewer.getNode();
-        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableFilter.Builder tableFilter = TableFilter.forTableView(tableView);
         ObservableList observableList = FXCollections.observableArrayList();
         while(resultSet.next())

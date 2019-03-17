@@ -48,13 +48,13 @@ public class GUIController implements Initializable {
     private void tryToLogin(ActionEvent event) throws SQLException {
         String buttonText = ((Button) event.getSource()).getText();
         try{
-            tryToLogin(buttonText);
+            login(buttonText);
         }catch (SQLException e){
             new ExceptionDialog(e).showAndWait();
         }
     }
 
-    private void tryToLogin(String buttonName) throws SQLException {
+    private void login(String buttonName) throws SQLException {
         Login login = new Login(username.getText(), password.getText());
         if (buttonName.equals("App/Login"))
             login.retrieveDatabaseData();

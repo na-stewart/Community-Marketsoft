@@ -1,12 +1,12 @@
 package App.Vendor;
 
-import App.Vendor.Nodes.ItemVBox;
+import App.Vendor.Node.ItemVBox;
 import Data.Users.Camper;
 import Data.DatabaseQueryReceiver;
 import Data.DataObjectBuilder;
 import Data.DataViewer;
 import Data.Item.Item;
-import Interfaces.MultiReceive;
+import Interfaces.MultiQuery;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -33,15 +33,15 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class VendorDataManager implements MultiReceive {
-    private DatabaseQueryReceiver databaseManager = new DatabaseQueryReceiver();
+public class VendorDataManager implements MultiQuery {
+    private DatabaseQueryReceiver databaseQueryReceiver = new DatabaseQueryReceiver();
     private ObservableList<Item> selectedItems = FXCollections.observableArrayList();
     private ObservableList<Camper> unfilteredCamperData = FXCollections.observableArrayList();
     private Camper selectedCamper;
 
     @Override
     public void retrieveDatabaseData(DataViewer dataViewer) throws SQLException {
-        ResultSet resultSet = databaseManager.receiver(dataViewer.getQuery());
+        ResultSet resultSet = databaseQueryReceiver.receiver(dataViewer.getQuery());
         DataObjectBuilder objBuilder = new DataObjectBuilder(resultSet);
         if (dataViewer.getQuery().contains("item"))
             populateItems(dataViewer, resultSet, objBuilder);

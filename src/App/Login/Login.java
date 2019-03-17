@@ -20,7 +20,7 @@ import java.util.Random;
  * All rights reserved.
  */
 public class Login implements MonoQuery {
-    private DatabaseQueryReceiver manager = new DatabaseQueryReceiver();
+    private DatabaseQueryReceiver databaseQueryReceiver = new DatabaseQueryReceiver();
     private String user;
     private String pass;
     private StrongPasswordEncryptor strongPasswordEncryptor = new StrongPasswordEncryptor();
@@ -48,17 +48,15 @@ public class Login implements MonoQuery {
     @Override
     public void updateDatabase() throws SQLException {
         String query = "INSERT INTO employee VALUES('" + new Random().nextInt(999999) + "','" +
-                user + "','" +
-        strongPasswordEncryptor.encryptPassword(pass)+ "','" +
-                '3' + "')";
-        manager.update(query);
+                user + "','" + strongPasswordEncryptor.encryptPassword(pass)+ "','" + '3' + "')";
+        databaseQueryReceiver.update(query);
         displayAlertDialog(Alert.AlertType.INFORMATION, alertContexts(false));
     }
 
     @Override
     public void retrieveDatabaseData() throws SQLException {
         String query = "SELECT * FROM employee WHERE username='" + user + "'";
-        ResultSet resultSet = manager.receiver(query);
+        ResultSet resultSet = databaseQueryReceiver.receiver(query);
         if (canLogin(resultSet))
             login(resultSet);
         else

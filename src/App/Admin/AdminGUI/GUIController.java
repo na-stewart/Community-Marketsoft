@@ -265,7 +265,7 @@ public class GUIController implements Initializable {
         clearFields();
     }
 
-    //Intergers cant be checked as empty in setters so its checked in update methods instead.
+
 
     private void updateCamper() throws SQLException {
         if (isNothingSelected() && !isDeletingData) {
@@ -276,13 +276,17 @@ public class GUIController implements Initializable {
             for (Camper camper : selectedCampers) {
                 if (isDeletingData)
                     adminDataManager.tryToDeleteRow("camper", camper.getId());
-                else {
-                    camper.setName(nameField.getText());
-                    if (!balanceField.getText().isEmpty())
-                        camper.setBalance(Integer.parseInt(balanceField.getText()));
-                }
+                else
+                   editCamper(camper);
             }
         }
+    }
+
+    private void editCamper(Camper camper) throws SQLException {
+        if (!nameField.getText().isEmpty())
+            camper.setName(nameField.getText());
+        if (!balance.getText().isEmpty())
+            camper.setBalance(Integer.parseInt(balanceField.getText()));
     }
 
     private void updateItem() throws SQLException {
@@ -296,16 +300,23 @@ public class GUIController implements Initializable {
                 if (isDeletingData)
                     adminDataManager.tryToDeleteRow("item", item.getId());
                 else {
-                    item.setName(itemNameField.getText());
-                    item.setImageURL(imageURLField.getText());
-                    item.setItemType(itemTypes.getValue());
-                    if (!priceField.getText().isEmpty())
-                        item.setPrice(Integer.parseInt(priceField.getText()));
-                    if (!quantityField.getText().isEmpty())
-                        item.setQuantity(Integer.parseInt(quantityField.getText()));
+                  editItem(item);
                 }
             }
         }
+    }
+
+    private void editItem(Item item) throws SQLException {
+        if (itemNameField.getText().isEmpty())
+            item.setName(itemNameField.getText());
+        else if (imageURLField.getText().isEmpty())
+            item.setImageURL(imageURLField.getText());
+        else if (itemTypes.getValue() != null)
+            item.setItemType(itemTypes.getValue());
+        else if (!priceField.getText().isEmpty())
+            item.setPrice(Integer.parseInt(priceField.getText()));
+        else if (!quantityField.getText().isEmpty())
+            item.setQuantity(Integer.parseInt(quantityField.getText()));
     }
 
     private void updateEmployee() throws SQLException {
@@ -319,12 +330,19 @@ public class GUIController implements Initializable {
                 if (isDeletingData)
                     adminDataManager.tryToDeleteRow("employee", employee.getId());
                 else {
-                    employee.setUsername(usernameField.getText());
-                    employee.setEmployeeType(employeeTypes.getValue());
-                    employee.setPassword(passwordField.getText());
+                    editEmployee(employee);
                 }
             }
         }
+    }
+
+    private void editEmployee(Employee employee) throws SQLException {
+        if (!nameField.getText().isEmpty())
+            employee.setUsername(usernameField.getText());
+        else if (employeeTypes.getValue() != null)
+            employee.setEmployeeType(employeeTypes.getValue());
+        else if (!passwordField.getText().isEmpty())
+            employee.setPassword(passwordField.getText());
     }
 
     private boolean isNothingSelected() {
