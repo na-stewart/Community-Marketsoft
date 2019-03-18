@@ -36,11 +36,11 @@
          </children>
       </StackPane>
       <StackPane layoutX="88.0" layoutY="5.0" prefHeight="71.0" prefWidth="311.0" visible="false" AnchorPane.leftAnchor="88.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0" />
-      <ListView fx:id="selectedItems" layoutX="37.0" layoutY="303.0" prefHeight="453.0" prefWidth="414.0" AnchorPane.bottomAnchor="73.0" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="303.0" />
-      <VBox fx:id="filterVbox" layoutX="37.0" layoutY="85.0" prefHeight="210.0" prefWidth="414.0" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="85.0">
+      <ListView fx:id="selectedItems" layoutX="37.0" layoutY="620.0" prefHeight="136.0" prefWidth="414.0" AnchorPane.bottomAnchor="73.0" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="620.0" />
+      <VBox fx:id="filterVbox" layoutX="37.0" layoutY="85.0" prefHeight="525.0" prefWidth="414.0" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="85.0">
          <children>
             <TextField fx:id="filterField" onKeyPressed="#filterFieldKeyListener" VBox.vgrow="NEVER" />
-            <TableView fx:id="camperTableView" onKeyPressed="#camperTableViewKeyListener" onMouseClicked="#camperTableViewClickListener" prefHeight="200.0" prefWidth="200.0">
+            <TableView fx:id="camperTableView" onKeyPressed="#camperTableViewKeyListener" onMouseClicked="#camperTableViewClickListener" prefHeight="549.0" prefWidth="414.0">
               <columns>
                 <TableColumn fx:id="id" prefWidth="75.0" text="ID" />
                 <TableColumn fx:id="name" prefWidth="75.0" text="Name" />

@@ -43,10 +43,13 @@ public class AdminDataManager implements MultiQuery {
         resultSet.close();
     }
 
+
+
     public void tryToDeleteRow(String tableName, int id) throws SQLException {
         String query = "DELETE FROM " + tableName + " WHERE id = '" + id + "'";
         databaseQueryReceiver.update(query);
     }
+
 
     public void addToCamperTableQuery(Camper camper) throws SQLException {
       String query =  "INSERT INTO camper VALUES('" + camper.getId() + "','" + camper.getName() + "','" +

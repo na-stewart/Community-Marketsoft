@@ -99,7 +99,7 @@ public class GUIController implements Initializable {
         new Timer().schedule(task, 0, 3000);
     }
 
-    private void tryToPopulateAll(){
+    private void tryToPopulateAll() {
         try {
             if (isNothingSelected()) {
                 for (DataViewer dataViewer : dataViewers)
@@ -265,8 +265,6 @@ public class GUIController implements Initializable {
         clearFields();
     }
 
-
-
     private void updateCamper() throws SQLException {
         if (isNothingSelected() && !isDeletingData) {
             adminDataManager.addToCamperTableQuery(new Camper(new Random().nextInt(99999), nameField.getText(),
@@ -276,17 +274,13 @@ public class GUIController implements Initializable {
             for (Camper camper : selectedCampers) {
                 if (isDeletingData)
                     adminDataManager.tryToDeleteRow("camper", camper.getId());
-                else
-                   editCamper(camper);
+                else {
+                    camper.setName(nameField.getText());
+                    camper.setBalance(Integer.parseInt(balanceField.getText()));
+                }
+
             }
         }
-    }
-
-    private void editCamper(Camper camper) throws SQLException {
-        if (!nameField.getText().isEmpty())
-            camper.setName(nameField.getText());
-        if (!balance.getText().isEmpty())
-            camper.setBalance(Integer.parseInt(balanceField.getText()));
     }
 
     private void updateItem() throws SQLException {
@@ -300,25 +294,16 @@ public class GUIController implements Initializable {
                 if (isDeletingData)
                     adminDataManager.tryToDeleteRow("item", item.getId());
                 else {
-                  editItem(item);
+                    item.setName(itemNameField.getText());
+                    item.setImageURL(imageURLField.getText());
+                    item.setItemType(itemTypes.getValue());
+                    item.setPrice(Integer.parseInt(priceField.getText()));
+                    item.setQuantity(Integer.parseInt(quantityField.getText()));
                 }
             }
         }
     }
-
-    private void editItem(Item item) throws SQLException {
-        if (!itemNameField.getText().isEmpty())
-            item.setName(itemNameField.getText());
-        else if (!imageURLField.getText().isEmpty())
-            item.setImageURL(imageURLField.getText());
-        else if (itemTypes.getValue() != null)
-            item.setItemType(itemTypes.getValue());
-        else if (!priceField.getText().isEmpty())
-            item.setPrice(Integer.parseInt(priceField.getText()));
-        else if (!quantityField.getText().isEmpty())
-            item.setQuantity(Integer.parseInt(quantityField.getText()));
-    }
-
+    
     private void updateEmployee() throws SQLException {
         if (isNothingSelected()) {
             adminDataManager.addToEmployeeTableQuery(new Employee(new Random().nextInt(999999),
@@ -330,19 +315,12 @@ public class GUIController implements Initializable {
                 if (isDeletingData)
                     adminDataManager.tryToDeleteRow("employee", employee.getId());
                 else {
-                    editEmployee(employee);
+                    employee.setUsername(usernameField.getText());
+                    employee.setEmployeeType(employeeTypes.getValue());
+                    employee.setPassword(passwordField.getText());
                 }
             }
         }
-    }
-
-    private void editEmployee(Employee employee) throws SQLException {
-        if (!nameField.getText().isEmpty())
-            employee.setUsername(usernameField.getText());
-        else if (employeeTypes.getValue() != null)
-            employee.setEmployeeType(employeeTypes.getValue());
-        else if (!passwordField.getText().isEmpty())
-            employee.setPassword(passwordField.getText());
     }
 
     private boolean isNothingSelected() {
