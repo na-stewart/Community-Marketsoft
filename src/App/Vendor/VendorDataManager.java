@@ -54,7 +54,7 @@ public class VendorDataManager implements MultiQuery {
         TilePane tilePane = (TilePane) dataViewer.getNode();
         tilePane.getChildren().clear();
         while (resultSet.next())
-            tilePane.getChildren().add(vBoxDbBuilder((Item) objBuilder.getData(dataViewer.getQuery())));
+            tilePane.getChildren().add(vBoxBuilder((Item) objBuilder.getData(dataViewer.getQuery())));
     }
 
     private void populateCampers(DataViewer dataViewer, ResultSet resultSet, DataObjectBuilder objBuilder) throws SQLException {
@@ -65,7 +65,7 @@ public class VendorDataManager implements MultiQuery {
         tableView.setItems(unfilteredCamperData);
     }
 
-    private ItemVBox vBoxDbBuilder(Item item) {
+    private ItemVBox vBoxBuilder(Item item) {
         ItemVBox vBox = new ItemVBox(item);
         addChildren(vBox, item);
         vBox.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {

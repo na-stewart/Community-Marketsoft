@@ -307,9 +307,9 @@ public class GUIController implements Initializable {
     }
 
     private void editItem(Item item) throws SQLException {
-        if (itemNameField.getText().isEmpty())
+        if (!itemNameField.getText().isEmpty())
             item.setName(itemNameField.getText());
-        else if (imageURLField.getText().isEmpty())
+        else if (!imageURLField.getText().isEmpty())
             item.setImageURL(imageURLField.getText());
         else if (itemTypes.getValue() != null)
             item.setItemType(itemTypes.getValue());
