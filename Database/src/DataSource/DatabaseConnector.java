@@ -17,11 +17,12 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public final class DataSource {
+public final class DatabaseConnector {
 
     private static HikariConfig config = new HikariConfig();
-    private static HikariDataSource ds;
     private static DbConfigManager dbConfigManager = new DbConfigManager();
+    public static HikariDataSource ds;
+
 
     public static Connection getConnection() throws SQLException {
         return ds.getConnection();

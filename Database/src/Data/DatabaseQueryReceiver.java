@@ -1,6 +1,6 @@
 package Data;
 
-import DataSource.DataSource;
+import DataSource.DatabaseConnector;
 import com.sun.rowset.CachedRowSetImpl;
 
 import javax.sql.rowset.CachedRowSet;
@@ -15,11 +15,11 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class DataBaseManager {
+public class DatabaseQueryReceiver {
 
     public ResultSet receiver(String query) throws SQLException {
         CachedRowSet cachedRowSet = new CachedRowSetImpl();
-        Connection connection = DataSource.getConnection();
+        Connection connection = DatabaseConnector.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         cachedRowSet.populate(preparedStatement.executeQuery());
         connection.close();
@@ -29,7 +29,7 @@ public class DataBaseManager {
 
 
     public void update(String query) throws SQLException {
-        Connection connection = DataSource.getConnection();
+        Connection connection = DatabaseConnector.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.execute();
         preparedStatement.close();

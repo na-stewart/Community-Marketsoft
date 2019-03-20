@@ -23,6 +23,7 @@ public class GUI {
             Main.mainStage.setScene(new Scene(root));
             Main.mainStage.setTitle("Trader Bobs Emporium");
             Main.mainStage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
 

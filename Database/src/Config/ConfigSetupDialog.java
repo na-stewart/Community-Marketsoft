@@ -1,12 +1,8 @@
 package Config;
 
-import Data.DataBaseManager;
-import DataSource.DataSource;
+import DataSource.DatabaseConnector;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import org.controlsfx.dialog.ExceptionDialog;
 
@@ -33,7 +29,7 @@ public class ConfigSetupDialog {
 
     private void firstSetDialogGraphics() {
         dialog.setTitle("Database Credential Setup");
-        dialog.setHeaderText("Database Login");
+        dialog.setHeaderText("Database");
         nextCreateGrid();
     }
 
@@ -48,10 +44,10 @@ public class ConfigSetupDialog {
         ip.setPromptText("Ip");
         username.setPromptText("Username");
         password.setPromptText("Password");
-        addNodes();
+        addNodesToGrid();
     }
 
-    private void addNodes() {
+    private void addNodesToGrid() {
         grid.add(new Label("IP:"), 0, 0);
         grid.add(ip, 1, 0);
         grid.add(new Label("Username:"), 0, 1);
@@ -67,8 +63,6 @@ public class ConfigSetupDialog {
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
         dialog.getDialogPane().setContent(grid);
         setUpButtonListener(loginButtonType);
-
-
     }
 
     private void setUpButtonListener(ButtonType buttonType) {
@@ -81,7 +75,7 @@ public class ConfigSetupDialog {
     private void tryToSetupConfig() {
         try {
             new DbConfigManager().generateConfiguration(ip.getText(), username.getText(), password.getText());
-            DataSource.configSetup();
+            DatabaseConnector.configSetup();
         } catch (IOException | PropertyException e) {
             new ExceptionDialog(e).showAndWait();
         }

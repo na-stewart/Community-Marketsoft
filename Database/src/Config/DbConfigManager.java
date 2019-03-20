@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 public class DbConfigManager {
     private Properties properties = new Properties();
-    private String path = System.getProperty("user.home") + File.separator  + "config.properties";
+    private String path = System.getProperty("user.home") + File.separator  + "trader_bobs_config.properties";
 
     void generateConfiguration(String ip, String username, String password) throws IOException {
         properties.setProperty("ip", ip);

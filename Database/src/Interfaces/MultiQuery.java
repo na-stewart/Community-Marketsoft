@@ -11,6 +11,6 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public interface MultiReceive {
+public interface MultiQuery {
     void retrieveDatabaseData(DataViewer dataViewer) throws SQLException;
 }

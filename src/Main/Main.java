@@ -1,13 +1,14 @@
 package Main;
 
 import Config.ConfigSetupDialog;
-import DataSource.DataSource;
+import DataSource.DatabaseConnector;
 import GUILoader.GUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
-
 import javax.xml.bind.PropertyException;
+import javax.xml.crypto.Data;
 import java.io.IOException;
+
 
 /**
  * @Author Aidan Stewart
@@ -20,13 +21,14 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         mainStage = stage;
+        mainStage.setOnCloseRequest(c -> System.exit(0));
         tryToConfigureDatabase();
         new GUI("App/Login/LoginGUI/LoginGUI.fxml");
     }
 
     private void tryToConfigureDatabase(){
         try {
-            DataSource.configSetup();
+            DatabaseConnector.configSetup();
         } catch (IOException | PropertyException e) {
             new ConfigSetupDialog();
         }
