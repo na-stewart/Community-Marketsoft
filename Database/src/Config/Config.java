@@ -13,7 +13,7 @@ import java.util.Properties;
  * Copyright (c)
  * All rights reserved.
  */
-public class DbConfigManager {
+public class Config {
     private Properties properties = new Properties();
     private String path = System.getProperty("user.home") + File.separator  + "trader_bobs_config.properties";
 
@@ -24,11 +24,8 @@ public class DbConfigManager {
         properties.store(new FileOutputStream(path), null);
     }
 
-    public String getConfig(String key) throws PropertyException, IOException {
+    public String getConfig(String key) throws IOException {
         properties.load(new FileInputStream(path));
-        if (key.equals("ip") || key.equals("username") || key.equals("password"))
-            return properties.getProperty(key);
-        else
-            throw new PropertyException("Invalid Property Key");
+        return properties.getProperty(key);
     }
 }

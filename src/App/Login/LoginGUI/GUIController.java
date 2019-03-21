@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  * @Author Aidan Stewart
  * @Year 2018
  * Copyright (c)
- * All rights reserved.
+ * All rights reserved.s
  */
 public class GUIController implements Initializable {
 
@@ -45,7 +45,7 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    private void tryToLogin(ActionEvent event) throws SQLException {
+    private void tryToLogin(ActionEvent event) {
         String buttonText = ((Button) event.getSource()).getText();
         try{
             login(buttonText);

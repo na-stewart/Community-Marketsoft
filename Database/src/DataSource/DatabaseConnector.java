@@ -1,11 +1,10 @@
 package DataSource;
 
-import Config.DbConfigManager;
+import Config.Config;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.xml.bind.PropertyException;
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,7 +19,7 @@ import java.sql.SQLException;
 public final class DatabaseConnector {
 
     private static HikariConfig config = new HikariConfig();
-    private static DbConfigManager dbConfigManager = new DbConfigManager();
+    private static Config dbConfigManager = new Config();
     public static HikariDataSource ds;
 
 

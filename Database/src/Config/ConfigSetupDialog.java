@@ -74,7 +74,7 @@ public class ConfigSetupDialog {
 
     private void tryToSetupConfig() {
         try {
-            new DbConfigManager().generateConfiguration(ip.getText(), username.getText(), password.getText());
+            new Config().generateConfiguration(ip.getText(), username.getText(), password.getText());
             DatabaseConnector.configSetup();
         } catch (IOException | PropertyException e) {
             new ExceptionDialog(e).showAndWait();

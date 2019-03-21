@@ -8,10 +8,9 @@ import Data.DataViewer;
 import Data.Item.Item;
 import Data.Item.ItemType;
 import Data.DatabaseQueryReceiver;
-import Interfaces.MultiQuery;
+import Interfaces.DataReceiver;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import org.controlsfx.control.table.TableFilter;
 import org.jasypt.util.password.StrongPasswordEncryptor;
@@ -26,7 +25,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class AdminDataManager implements MultiQuery {
+public class AdminDataManager implements DataReceiver {
 
     private DatabaseQueryReceiver databaseQueryReceiver = new DatabaseQueryReceiver();
 
@@ -43,8 +42,6 @@ public class AdminDataManager implements MultiQuery {
         resultSet.close();
     }
 
-
-
     public void tryToDeleteRow(String tableName, int id) throws SQLException {
         String query = "DELETE FROM " + tableName + " WHERE id = '" + id + "'";
         databaseQueryReceiver.update(query);
@@ -52,9 +49,9 @@ public class AdminDataManager implements MultiQuery {
 
 
     public void addToCamperTableQuery(Camper camper) throws SQLException {
-      String query =  "INSERT INTO camper VALUES('" + camper.getId() + "','" + camper.getName() + "','" +
-                camper.getBalance()+ "')";
-      databaseQueryReceiver.update(query);
+        String query = "INSERT INTO camper VALUES('" + camper.getId() + "','" + camper.getName() + "','" +
+                camper.getBalance() + "')";
+        databaseQueryReceiver.update(query);
     }
 
     public void addToItemTableQuery(Item item) throws SQLException {
