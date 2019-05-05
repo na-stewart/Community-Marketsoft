@@ -14,7 +14,7 @@ public class DatabaseUtil {
     public static ResultSet REQUEST_RESULTSET(String query) throws SQLException {
         CachedRowSet cachedRowSet = new CachedRowSetImpl();
         Connection connection = DatabaseConnector.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + query);
         cachedRowSet.populate(preparedStatement.executeQuery());
         connection.close();
         preparedStatement.close();

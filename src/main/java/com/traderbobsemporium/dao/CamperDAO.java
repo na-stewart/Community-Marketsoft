@@ -11,16 +11,19 @@ import java.util.List;
 public class CamperDAO implements AbstractDAO<Camper> {
     @Override
     public Camper get(long id) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULTSET("SELECT * FROM camper WHERE id =" + id);
-        return new Camper(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getInt("balance"));
+        ResultSet resultSet = DatabaseUtil.REQUEST_RESULTSET("camper WHERE id =" + id);
+        Camper camper = new Camper(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getInt("balance"));
+        resultSet.close();
+        return camper;
     }
 
     @Override
     public List<Camper> getAll() throws SQLException {
         List<Camper> campers = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULTSET("SELECT * FROM camper");
+        ResultSet resultSet = DatabaseUtil.REQUEST_RESULTSET("camper");
         while (resultSet.next())
             campers.add(new Camper(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getInt("balance")));
+        resultSet.close();
         return campers;
     }
 
@@ -39,7 +42,7 @@ public class CamperDAO implements AbstractDAO<Camper> {
     }
 
     @Override
-    public void delete(Camper camper) {
-
+    public void delete(long id) throws SQLException {
+        DatabaseUtil.UPDATE("DELETE FROM camper WHERE id = '" + id + "'");
     }
 }
