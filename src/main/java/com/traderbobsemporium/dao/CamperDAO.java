@@ -8,7 +8,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @Author Aidan Stewart
+ * @Year 2019
+ * Copyright (c)
+ * All rights reserved.
+ */
 public class CamperDAO implements AbstractDAO<Camper> {
+
     @Override
     public Camper get(long id) throws SQLException {
         ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("camper WHERE id =" + id);

@@ -10,6 +10,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @Author Aidan Stewart
+ * @Year 2019
+ * Copyright (c)
+ * All rights reserved.
+ */
 public class ItemDAO implements AbstractDAO<Item> {
 
     @Override

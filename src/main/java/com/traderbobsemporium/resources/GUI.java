@@ -8,6 +8,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * @Author Aidan Stewart
+ * @Year 2019
+ * Copyright (c)
+ * All rights reserved.
+ */
 public class GUI {
     private Stage stage = new Stage();
 

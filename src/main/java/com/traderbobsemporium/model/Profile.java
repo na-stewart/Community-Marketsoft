@@ -1,5 +1,11 @@
 package main.java.com.traderbobsemporium.model;
 
+/**
+ * @Author Aidan Stewart
+ * @Year 2019
+ * Copyright (c)
+ * All rights reserved.
+ */
 public class Profile {
     private long id;
     private String name;

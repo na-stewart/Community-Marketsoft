@@ -4,6 +4,12 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * @Author Aidan Stewart
+ * @Year 2019
+ * Copyright (c)
+ * All rights reserved.
+ */
 public class Item extends Profile {
     private URL imageURL;
     private int price;

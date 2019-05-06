@@ -4,8 +4,13 @@ package main.java.com.traderbobsemporium.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * @Author Aidan Stewart
+ * @Year 2019
+ * Copyright (c)
+ * All rights reserved.
+ */
 public class Camper extends Profile {
-
     private int balance;
 
     public Camper(long id, String name, int balance) {

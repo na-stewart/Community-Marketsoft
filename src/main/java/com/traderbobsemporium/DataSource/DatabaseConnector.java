@@ -2,13 +2,17 @@ package main.java.com.traderbobsemporium.datasource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.realm.jdbc.JdbcRealm;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DatabaseConnector {
     private static HikariConfig config = new HikariConfig();
-    public static HikariDataSource ds;
+    private static HikariDataSource ds;
+
+
 
 
     public static Connection getConnection() throws SQLException {
@@ -24,4 +28,6 @@ public class DatabaseConnector {
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         ds = new HikariDataSource(config);
     }
+
+
 }
