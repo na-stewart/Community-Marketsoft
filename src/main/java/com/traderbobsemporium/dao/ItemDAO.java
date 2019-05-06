@@ -1,6 +1,7 @@
 package main.java.com.traderbobsemporium.dao;
 
 import main.java.com.traderbobsemporium.model.Item;
+import main.java.com.traderbobsemporium.model.ItemType;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
 import java.net.MalformedURLException;
@@ -41,9 +42,10 @@ public class ItemDAO implements AbstractDAO<Item> {
         item.setName(params[0]);
         item.setImageURL(new URL(params[1]));
         item.setPrice(Integer.parseInt(params[2]));
+        item.setItemType(ItemType.valueOf(params[3]));
         DatabaseUtil.UPDATE("UPDATE item SET name = '" + item.getName() + "'," +
-                "url = '" + item.getImageURL() + "'," + "price = '" + item.getPrice()
-                + "' WHERE id =" + item.getId() + ";");
+                "url = '" + item.getImageURL() + "'," + "price = '" + item.getPrice() + "',"
+                + "itemType = '" + ItemType.itemTypeToInt(item.getItemType()) +"' WHERE id =" + item.getId() + ";");
     }
 
     @Override

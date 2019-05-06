@@ -19,17 +19,6 @@ import org.controlsfx.dialog.ExceptionDialog;
 public class Authenticator {
 
 
-
-
-/*
-    private JdbcRealm realm(){
-        JdbcRealm realm = new JdbcRealm();
-        realm.setDataSource(DatabaseConnector.ds);
-        realm.setAuthenticationQuery("SELECT password FROM account WHERE username = ?");
-        realm.setUserRolesQuery("SELECT accountType FROM account WHERE username = ?");
-        return realm;
-    }
-    */
     public boolean isLoggedIn(String username, String password) {
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         try {
@@ -44,10 +33,6 @@ public class Authenticator {
         }
         return false;
     }
-
-
-
-
 
     private void displayError(String errorLog){
         Alert alert = new Alert(Alert.AlertType.ERROR);

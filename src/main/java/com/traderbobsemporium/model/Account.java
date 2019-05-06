@@ -13,9 +13,9 @@ public class Account extends Profile {
 
     private String password;
     private String permissions;
-    private AccountRoles accountRoles;
+    private AccountRole accountRoles;
 
-    public Account(long id, String name, String password, String permissions, AccountRoles accountRoles) {
+    public Account(long id, String name, String password, String permissions, AccountRole accountRoles) {
         super(id, name);
         this.password = password;
         this.permissions = permissions;
@@ -26,7 +26,7 @@ public class Account extends Profile {
         super(resultSet.getLong("id"), resultSet.getString("username"));
         this.password = resultSet.getString("password");
         this.permissions = resultSet.getString("permissions");
-        this.accountRoles = AccountRoles.intToAccountRole(resultSet.getInt("accountRole"));
+        this.accountRoles = AccountRole.intToAccountRole(resultSet.getInt("accountRole"));
     }
 
     public String getPermissions() {
@@ -37,11 +37,11 @@ public class Account extends Profile {
         this.permissions = permissions;
     }
 
-    public AccountRoles getAccountRoles() {
+    public AccountRole getAccountRole() {
         return accountRoles;
     }
 
-    public void setAccountRoles(AccountRoles accountRoles) {
+    public void setAccountRoles(AccountRole accountRoles) {
         this.accountRoles = accountRoles;
     }
 

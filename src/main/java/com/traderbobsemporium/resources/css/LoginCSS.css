@@ -1,5 +1,8 @@
 .text-field {
-  -fx-border-color: grey;
-  -fx-border width: 0 0 1 0; // top, right, bottom, left
-  -fx-background-color: transparent;
+    -fx-background-color: -fx-text-box-border, -fx-background ;
+    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-background-radius: 0 ;
+}
+.text-field:focused {
+    -fx-background-color: -fx-focus-color, -fx-background ;
 }

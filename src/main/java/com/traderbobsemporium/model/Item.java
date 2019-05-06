@@ -13,17 +13,28 @@ import java.sql.SQLException;
 public class Item extends Profile {
     private URL imageURL;
     private int price;
+    private ItemType itemType;
 
-    public Item(long id, String name, URL imageURL, int price) {
+    public Item(long id, String name, URL imageURL, int price, ItemType itemType) {
         super(id, name);
         this.imageURL = imageURL;
         this.price = price;
+        this.itemType = itemType;
     }
 
     public Item (ResultSet resultSet) throws SQLException {
         super(resultSet.getLong("id"), resultSet.getString("name"));
         this.imageURL = resultSet.getURL("imageURL");
         this.price = resultSet.getInt("price");
+        this.itemType = ItemType.intToItemType(resultSet.getInt("itemType"));
+    }
+
+    public ItemType getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(ItemType itemType) {
+        this.itemType = itemType;
     }
 
     public URL getImageURL() {

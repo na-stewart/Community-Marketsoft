@@ -6,10 +6,10 @@ package main.java.com.traderbobsemporium.model;
  * Copyright (c)
  * All rights reserved.
  */
-public enum AccountRoles {
+public enum AccountRole {
     EMPLOYEE, RETAILER, UNCONFIRMED;
 
-    public static AccountRoles intToAccountRole(int accountTypeInt){
+    public static AccountRole intToAccountRole(int accountTypeInt){
         switch (accountTypeInt){
             case 0:
                 return EMPLOYEE;
@@ -21,7 +21,7 @@ public enum AccountRoles {
         return UNCONFIRMED;
     }
 
-    public static int accountRoleToInt(AccountRoles accountType){
+    public static int accountRoleToInt(AccountRole accountType){
         switch (accountType) {
             case EMPLOYEE:
                 return 0;
