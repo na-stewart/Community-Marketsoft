@@ -1,8 +1,6 @@
 package main.java.com.traderbobsemporium.util;
-
 import com.sun.rowset.CachedRowSetImpl;
-import main.java.com.traderbobsemporium.DataSource.DatabaseConnector;
-
+import main.java.com.traderbobsemporium.datasource.DatabaseConnector;
 import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +9,7 @@ import java.sql.SQLException;
 
 public class DatabaseUtil {
 
-    public static ResultSet REQUEST_RESULTSET(String query) throws SQLException {
+    public static ResultSet REQUEST_RESULT_SET(String query) throws SQLException {
         CachedRowSet cachedRowSet = new CachedRowSetImpl();
         Connection connection = DatabaseConnector.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + query);

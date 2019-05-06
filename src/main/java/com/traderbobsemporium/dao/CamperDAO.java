@@ -11,8 +11,8 @@ import java.util.List;
 public class CamperDAO implements AbstractDAO<Camper> {
     @Override
     public Camper get(long id) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULTSET("camper WHERE id =" + id);
-        Camper camper = new Camper(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getInt("balance"));
+        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("camper WHERE id =" + id);
+        Camper camper = new Camper(resultSet);
         resultSet.close();
         return camper;
     }
@@ -20,9 +20,9 @@ public class CamperDAO implements AbstractDAO<Camper> {
     @Override
     public List<Camper> getAll() throws SQLException {
         List<Camper> campers = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULTSET("camper");
+        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("camper");
         while (resultSet.next())
-            campers.add(new Camper(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getInt("balance")));
+            campers.add(new Camper(resultSet));
         resultSet.close();
         return campers;
     }

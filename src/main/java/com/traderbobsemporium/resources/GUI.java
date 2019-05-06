@@ -1,4 +1,4 @@
-package main.java.com.traderbobsemporium.application;
+package main.java.com.traderbobsemporium.resources;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

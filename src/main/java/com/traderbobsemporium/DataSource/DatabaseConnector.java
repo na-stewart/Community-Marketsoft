@@ -1,10 +1,8 @@
-package main.java.com.traderbobsemporium.DataSource;
+package main.java.com.traderbobsemporium.datasource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import javax.xml.bind.PropertyException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -17,8 +15,8 @@ public class DatabaseConnector {
         return ds.getConnection();
     }
 
-    public static void configSetup() throws IOException, PropertyException {
-        config.setJdbcUrl("jdbc:mysql://" + "localhost" + ":3306/traderbobsemporium");
+    public static void configSetup() {
+        config.setJdbcUrl("jdbc:mysql://" + "localhost" + ":3306/traderbobsemporium2.0");
         config.setUsername("root");
         config.setPassword("root");
         config.addDataSourceProperty("cachePrepStmts", "true");

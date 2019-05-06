@@ -1,6 +1,8 @@
 package main.java.com.traderbobsemporium.model;
 
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Item extends Profile {
     private URL imageURL;
@@ -10,6 +12,12 @@ public class Item extends Profile {
         super(id, name);
         this.imageURL = imageURL;
         this.price = price;
+    }
+
+    public Item (ResultSet resultSet) throws SQLException {
+        super(resultSet.getLong("id"), resultSet.getString("name"));
+        this.imageURL = resultSet.getURL("imageURL");
+        this.price = resultSet.getInt("price");
     }
 
     public URL getImageURL() {

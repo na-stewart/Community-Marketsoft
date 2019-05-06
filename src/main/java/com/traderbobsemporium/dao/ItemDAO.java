@@ -1,6 +1,5 @@
 package main.java.com.traderbobsemporium.dao;
 
-import main.java.com.traderbobsemporium.model.Camper;
 import main.java.com.traderbobsemporium.model.Item;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
@@ -15,9 +14,8 @@ public class ItemDAO implements AbstractDAO<Item> {
 
     @Override
     public Item get(long id) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULTSET("item WHERE id =" + id);
-        Item item = new Item(resultSet.getLong("id"), resultSet.getString("name"),
-                resultSet.getURL("url"), resultSet.getInt("price"));
+        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("item WHERE id =" + id);
+        Item item = new Item(resultSet);
         resultSet.close();
         return item;
     }
@@ -25,10 +23,9 @@ public class ItemDAO implements AbstractDAO<Item> {
     @Override
     public List<Item> getAll() throws SQLException {
         List<Item> items = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULTSET("item");
+        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("item");
         while (resultSet.next())
-            items.add(new Item(resultSet.getLong("id"), resultSet.getString("name"),
-                    resultSet.getURL("url"), resultSet.getInt("price")));
+            items.add(new Item(resultSet));
         resultSet.close();
         return items;
     }
@@ -39,8 +36,8 @@ public class ItemDAO implements AbstractDAO<Item> {
         item.setImageURL(new URL(params[1]));
         item.setPrice(Integer.parseInt(params[2]));
         DatabaseUtil.UPDATE("UPDATE item SET name = '" + item.getName() + "'," +
-                "url = '" + item.getImageURL() + "'," +
-                "price = '" + item.getPrice() + "' WHERE id =" + item.getId() + ";");
+                "url = '" + item.getImageURL() + "'," + "price = '" + item.getPrice()
+                + "' WHERE id =" + item.getId() + ";");
     }
 
     @Override
