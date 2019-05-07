@@ -2,7 +2,6 @@ package main.java.com.traderbobsemporium.util;
 import com.sun.rowset.CachedRowSetImpl;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import main.java.com.traderbobsemporium.auth.AuthSetup;
 
 import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
@@ -16,7 +15,7 @@ public class DatabaseUtil {
     public static HikariDataSource DATA_SOURCE;
 
 
-    public static void configSetup() {
+    public static void CONFIG_SETUP() {
         CONFIG.setJdbcUrl("jdbc:mysql://" + "localhost" + ":3306/traderbobsemporium2.0");
         CONFIG.setUsername("root");
         CONFIG.setPassword("root");
@@ -24,7 +23,6 @@ public class DatabaseUtil {
         CONFIG.addDataSourceProperty("prepStmtCacheSize", "250");
         CONFIG.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         DATA_SOURCE = new HikariDataSource(CONFIG);
-        new AuthSetup().setSubjectSecurityManager();
     }
 
     public static ResultSet REQUEST_RESULT_SET(String query) throws SQLException {
