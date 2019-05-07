@@ -1,6 +1,9 @@
 package main.java.com.traderbobsemporium.util;
 import com.sun.rowset.CachedRowSetImpl;
-import main.java.com.traderbobsemporium.datasource.DatabaseConnector;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import main.java.com.traderbobsemporium.auth.AuthSetup;
+
 import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,9 +12,24 @@ import java.sql.SQLException;
 
 public class DatabaseUtil {
 
+    private static HikariConfig CONFIG = new HikariConfig();
+    public static HikariDataSource DATA_SOURCE;
+
+
+    public static void configSetup() {
+        CONFIG.setJdbcUrl("jdbc:mysql://" + "localhost" + ":3306/traderbobsemporium2.0");
+        CONFIG.setUsername("root");
+        CONFIG.setPassword("root");
+        CONFIG.addDataSourceProperty("cachePrepStmts", "true");
+        CONFIG.addDataSourceProperty("prepStmtCacheSize", "250");
+        CONFIG.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        DATA_SOURCE = new HikariDataSource(CONFIG);
+        new AuthSetup().setSubjectSecurityManager();
+    }
+
     public static ResultSet REQUEST_RESULT_SET(String query) throws SQLException {
         CachedRowSet cachedRowSet = new CachedRowSetImpl();
-        Connection connection = DatabaseConnector.getConnection();
+        Connection connection = DATA_SOURCE.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + query);
         cachedRowSet.populate(preparedStatement.executeQuery());
         connection.close();
@@ -21,7 +39,7 @@ public class DatabaseUtil {
 
 
     public static void UPDATE(String query) throws SQLException {
-        Connection connection = DatabaseConnector.getConnection();
+        Connection connection = DATA_SOURCE.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.execute();
         preparedStatement.close();
