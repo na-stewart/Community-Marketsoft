@@ -14,13 +14,13 @@ Screen Shots:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/2.0/Images/Login.PNG)
 
-Data Manager:
+# Data Manager (old) :
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/itemTableSelected.PNG)
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/accountTable.PNG)
 
-Vendor Interface:
+# Vendor Interface (old) :
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/NewCheckoutVendor.PNG)
 
