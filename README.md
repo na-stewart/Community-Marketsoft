@@ -10,7 +10,9 @@ A youtube demo is here: https://www.youtube.com/watch?v=nfb_u9zSJzc
 
 Screen Shots:
 
-![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/login.PNG)
+#Improved login!
+
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/2.0/Images/Login.PNG)
 
 Data Manager:
 
