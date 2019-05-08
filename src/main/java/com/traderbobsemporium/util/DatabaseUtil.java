@@ -9,11 +9,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DatabaseUtil {
+public final class DatabaseUtil {
 
     private static HikariConfig CONFIG = new HikariConfig();
     public static HikariDataSource DATA_SOURCE;
 
+    private DatabaseUtil(){
+
+    }
 
     public static void CONFIG_SETUP() {
         CONFIG.setJdbcUrl("jdbc:mysql://" + "localhost" + ":3306/traderbobsemporium2.0");

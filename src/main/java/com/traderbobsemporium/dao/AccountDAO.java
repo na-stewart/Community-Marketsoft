@@ -43,7 +43,7 @@ public class AccountDAO implements AbstractDAO<Account> {
         account.setPermissions(params[3]);
         DatabaseUtil.UPDATE("UPDATE account SET username = '" + account.getName() + "'," +
                 "password = '" + account.getPassword() + "'," +
-                "accountRole = '" + AccountRole.accountRoleToInt(account.getAccountRole()) + "'," +
+                "accountRole = '" + account.getAccountRole().name() + "'," +
                 "permissions = '" + account.getPermissions() + "'" +
                 " WHERE id =" + account.getId() + ";");
     }
@@ -51,7 +51,7 @@ public class AccountDAO implements AbstractDAO<Account> {
     @Override
     public void add(Account account) throws SQLException {
         DatabaseUtil.UPDATE("INSERT INTO account VALUES('" + account.getId() + "','" + account.getName() + "','" +
-                account.getPassword() + "','" + AccountRole.accountRoleToInt(account.getAccountRole()) + "','" +
+                account.getPassword() + "','" + account.getAccountRole().name() + "','" +
                 account.getPermissions() + "')");
     }
 

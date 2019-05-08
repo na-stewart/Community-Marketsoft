@@ -14,12 +14,14 @@ import java.io.IOException;
  * All rights reserved.
  */
 public class GUI {
-    private Stage stage = new Stage();
+    private final Stage stage = new Stage();
     private Scene scene;
     private String path;
+    private String name;
 
-    public GUI(String path) {
+    public GUI(String path, String name) {
         this.path = path;
+        this.name = name;
         scene = new Scene(root());
     }
 
@@ -38,8 +40,8 @@ public class GUI {
         stage.show();
     }
 
-    public Scene getScene() {
-        return scene;
+    public String getName() {
+        return name;
     }
 
     public Stage getStage(){

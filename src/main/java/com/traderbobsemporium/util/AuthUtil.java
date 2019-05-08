@@ -15,8 +15,11 @@ import org.apache.shiro.realm.jdbc.JdbcRealm;
  * Copyright (c)
  * All rights reserved.
  */
-public class AuthUtil {
+public final class AuthUtil {
 
+    private AuthUtil(){
+
+    }
 
     public static void INIT_AUTH(){
         DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();

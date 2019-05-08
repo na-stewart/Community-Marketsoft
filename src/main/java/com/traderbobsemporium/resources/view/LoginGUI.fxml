@@ -8,49 +8,25 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="543.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="anchorPane" prefHeight="640.0" prefWidth="1183.0" style="-fx-background-color: #7D953F;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.traderbobsemporium.controllers.LoginController">
    <children>
-      <ImageView fx:id="backgroundImage" fitHeight="543.0" fitWidth="885.0">
+      <Pane layoutX="774.0" layoutY="39.0" prefHeight="570.0" prefWidth="366.0" style="-fx-background-color: white;" stylesheets="@../css/LoginCSS.css" AnchorPane.bottomAnchor="38.0" AnchorPane.rightAnchor="43.0">
+         <children>
+            <TextField fx:id="usernameField" layoutX="32.0" layoutY="173.0" prefHeight="31.0" prefWidth="303.0" promptText="username" />
+            <Text layoutX="134.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign In">
+               <font>
+                  <Font name="Calibri Light" size="37.0" />
+               </font>
+            </Text>
+            <Button layoutX="28.0" layoutY="385.0" mnemonicParsing="false" onAction="#login" prefHeight="31.0" prefWidth="309.0" style="-fx-background-radius: 0; -fx-background-color: #C6C6B5;" text="Login" />
+            <Hyperlink layoutX="120.0" layoutY="479.0" text="Register New Account" />
+            <PasswordField fx:id="passwordField" layoutX="29.0" layoutY="294.0" prefHeight="31.0" prefWidth="309.0" promptText="password" />
+         </children>
+      </Pane>
+      <ImageView fitHeight="647.0" fitWidth="724.0">
          <image>
             <Image url="@../Images/2869952188041c352fc4c5077cb91e14.jpg" />
          </image>
       </ImageView>
-      <VBox layoutX="89.0" layoutY="119.0" prefHeight="347.0" prefWidth="708.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="77.0" AnchorPane.leftAnchor="89.0" AnchorPane.rightAnchor="88.0" AnchorPane.topAnchor="119.0">
-         <children>
-            <VBox alignment="CENTER" fillWidth="false" prefHeight="135.0" prefWidth="708.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
-                     <font>
-                        <Font name="System Bold" size="26.0" />
-                     </font>
-                  </Text>
-                  <TextField fx:id="username" prefHeight="31.0" prefWidth="462.0" />
-               </children>
-            </VBox>
-            <VBox alignment="CENTER" fillWidth="false" prefHeight="125.0" prefWidth="708.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
-                     <font>
-                        <Font name="System Bold" size="26.0" />
-                     </font>
-                  </Text>
-                  <PasswordField fx:id="password" prefHeight="31.0" prefWidth="469.0" />
-               </children>
-            </VBox>
-            <HBox alignment="BOTTOM_CENTER" prefHeight="48.0" prefWidth="708.0" spacing="200.0">
-               <children>
-               </children>
-            </HBox>
-         </children>
-      </VBox>
-      <StackPane layoutX="162.0" layoutY="-7.0" prefHeight="126.0" prefWidth="537.0" AnchorPane.leftAnchor="162.0" AnchorPane.rightAnchor="186.0" AnchorPane.topAnchor="-7.0">
-         <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Trader Bobs Emporium" textAlignment="CENTER">
-               <font>
-                  <Font name="Leelawadee UI" size="53.0" />
-               </font>
-            </Text>
-         </children>
-      </StackPane>
    </children>
 </AnchorPane>

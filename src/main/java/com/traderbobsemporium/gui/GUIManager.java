@@ -11,12 +11,24 @@ import java.util.List;
  */
 public class GUIManager {
     private static GUIManager instance;
-    private List<GUI> guiList = new ArrayList<>();
+    private final List<GUI> guiList = new ArrayList<>();
+
+    private GUIManager(){
+
+    }
 
     public static GUIManager getInstance() {
         if (instance == null)
             instance = new GUIManager();
         return instance;
+    }
+
+    public GUI getGUIByName(String name){
+        for (GUI gui : guiList){
+            if (gui.getName().equals(name))
+                return gui;
+        }
+        return null;
     }
 
     public List<GUI> getGuiList() {

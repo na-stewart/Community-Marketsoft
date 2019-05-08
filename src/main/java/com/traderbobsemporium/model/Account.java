@@ -26,7 +26,7 @@ public class Account extends Profile {
         super(resultSet.getLong("id"), resultSet.getString("username"));
         this.password = resultSet.getString("password");
         this.permissions = resultSet.getString("permissions");
-        this.accountRoles = AccountRole.intToAccountRole(resultSet.getInt("accountRole"));
+        this.accountRoles = AccountRole.valueOf(resultSet.getString("accountRole"));
     }
 
     public String getPermissions() {
