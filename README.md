@@ -10,7 +10,7 @@ A youtube demo is here: https://www.youtube.com/watch?v=nfb_u9zSJzc
 
 Screen Shots:
 
-#Improved login!
+# Improved login!
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/2.0/Images/Login.PNG)
 
