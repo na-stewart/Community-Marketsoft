@@ -1,6 +1,8 @@
-package loggers;
+package main.java.com.traderbobsemporium.loggers;
 
 import main.java.com.traderbobsemporium.model.Profile;
+
+import java.util.List;
 
 /**
  * @Author Aidan Stewart
@@ -8,6 +10,7 @@ import main.java.com.traderbobsemporium.model.Profile;
  * Copyright (c)
  * All rights reserved.
  */
-public interface Logger {
-    public void log(Profile profile, ActivityType activityType);
+public interface Logger<T> {
+    void log(String[] params, ActivityType activityType);
+    List<T> getLoggers();
 }

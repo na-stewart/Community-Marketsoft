@@ -1,4 +1,4 @@
-package loggers;
+package main.java.com.traderbobsemporium.loggers;
 
 /**
  * @Author Aidan Stewart
@@ -7,5 +7,5 @@ package loggers;
  * All rights reserved.
  */
 public enum ActivityType {
-    ADD, UPDATE, DELETE, REGISTER
+    ADD, UPDATE, DELETE, REGISTER, TRANSACTION, LOGIN
 }

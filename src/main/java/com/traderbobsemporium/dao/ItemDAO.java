@@ -45,7 +45,7 @@ public class ItemDAO implements AbstractDAO<Item> {
         item.setItemType(ItemType.valueOf(params[3]));
         DatabaseUtil.UPDATE("UPDATE item SET name = '" + item.getName() + "'," +
                 "url = '" + item.getImageURL() + "'," + "price = '" + item.getPrice() + "',"
-                + "itemType = '" + ItemType.itemTypeToInt(item.getItemType()) +"' WHERE id =" + item.getId() + ";");
+                + "itemType = '" + item.getItemType().name() +"' WHERE id =" + item.getId() + ";");
     }
 
     @Override

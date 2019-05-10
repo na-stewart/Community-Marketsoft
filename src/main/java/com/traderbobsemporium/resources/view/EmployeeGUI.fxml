@@ -13,7 +13,7 @@
 <!--https://www.flaticon.com/free-icon/account_1047792#term=account&page=1&position=3-->
 <!--https://www.flaticon.com/free-icon/home_1035850#term=dashboard&page=1&position=1-->
 
-<AnchorPane prefHeight="767.0" prefWidth="1119.0" style="-fx-background-color: #F2F1EC;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.traderbobsemporium.controllers.EmployeeController">
+<AnchorPane prefHeight="1077.0" prefWidth="1297.0" style="-fx-background-color: #F2F1EC;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.traderbobsemporium.controllers.EmployeeController">
    <children>
       <Pane prefHeight="522.0" prefWidth="175.0" style="-fx-background-color: #7D953F;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -78,74 +78,70 @@
          </children>
       </Pane>
       <Pane layoutX="175.0" prefHeight="49.0" prefWidth="673.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" />
-      <ScrollPane layoutX="175.0" layoutY="49.0" prefHeight="473.0" prefWidth="671.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="49.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="992.0" prefWidth="1130.0">
-               <children>
-                  <StackPane layoutX="44.0" layoutY="32.0" prefHeight="427.0" prefWidth="489.0" style="-fx-background-color: white;">
-                     <children>
-                        <AreaChart prefHeight="406.0" prefWidth="449.0">
-                          <xAxis>
-                            <CategoryAxis side="BOTTOM" />
-                          </xAxis>
-                          <yAxis>
-                            <NumberAxis side="LEFT" />
-                          </yAxis>
-                        </AreaChart>
-                     </children>
-                  </StackPane>
-                  <Text layoutX="233.0" layoutY="480.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Items Purchased">
-                     <font>
-                        <Font name="HoloLens MDL2 Assets" size="14.0" />
-                     </font>
-                  </Text>
-                  <StackPane layoutX="565.0" layoutY="32.0" prefHeight="427.0" prefWidth="489.0" style="-fx-background-color: white;">
-                     <children>
-                        <TableView prefHeight="200.0" prefWidth="200.0">
-                          <columns>
-                            <TableColumn prefWidth="75.0" text="Item Name" />
-                            <TableColumn prefWidth="75.0" text="Camper Name" />
-                              <TableColumn prefWidth="75.0" text="Quantity" />
-                              <TableColumn prefWidth="75.0" text="Balance Spent" />
-                              <TableColumn prefWidth="75.0" text="Date/Time" />
-                          </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
-                     </children>
-                  </StackPane>
-                  <Text layoutX="761.0" layoutY="480.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recent Purchases">
-                     <font>
-                        <Font name="HoloLens MDL2 Assets" size="14.0" />
-                     </font>
-                  </Text>
-                  <StackPane layoutX="44.0" layoutY="517.0" prefHeight="427.0" prefWidth="489.0" style="-fx-background-color: white;">
-                     <children>
-                        <TableView prefHeight="200.0" prefWidth="200.0">
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                           <columns>
-                              <TableColumn prefWidth="75.0" text="Username" />
-                              <TableColumn prefWidth="75.0" text="IP" />
-                              <TableColumn prefWidth="75.0" text="Mac" />
-                              <TableColumn prefWidth="75.0" text="Activity Type" />
-                              <TableColumn prefWidth="85.0" text="Affected Item" />
-                              <TableColumn prefWidth="74.0" text="Date/Time" />
-                           </columns>
-                        </TableView>
-                     </children>
-                  </StackPane>
-                  <Text layoutX="212.0" layoutY="967.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recent Account Activity">
-                     <font>
-                        <Font name="HoloLens MDL2 Assets" size="14.0" />
-                     </font>
-                  </Text>
-               </children>
-            </AnchorPane>
-        </content>
+      <ScrollPane layoutX="175.0" layoutY="49.0" prefHeight="473.0" prefWidth="671.0" style="-fx-background-color: #F2F1EC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="49.0">
+         <content>
+            <HBox prefHeight="100.0" prefWidth="200.0" />
+         </content>
       </ScrollPane>
-      <AnchorPane layoutX="175.0" layoutY="49.0" prefHeight="718.0" prefWidth="944.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="49.0" />
+      <StackPane prefHeight="452.0" prefWidth="528.0" style="-fx-background-color: white;">
+         <children>
+            <AreaChart prefHeight="406.0" prefWidth="449.0">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </AreaChart>
+         </children>
+      </StackPane>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Items Purchased">
+         <font>
+            <Font name="HoloLens MDL2 Assets" size="14.0" />
+         </font>
+      </Text>
+      <StackPane prefHeight="452.0" prefWidth="528.0" style="-fx-background-color: white;">
+         <children>
+            <TableView prefHeight="200.0" prefWidth="200.0">
+              <columns>
+                <TableColumn prefWidth="75.0" text="Camper Name" />
+                <TableColumn prefWidth="75.0" text="Item Name" />
+                  <TableColumn prefWidth="75.0" text="Quantity" />
+                  <TableColumn prefWidth="75.0" text="Balance Spent" />
+                  <TableColumn prefWidth="75.0" text="Date/Time" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+         </children>
+      </StackPane>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Recent Purchases">
+         <font>
+            <Font name="HoloLens MDL2 Assets" size="14.0" />
+         </font>
+      </Text>
+      <StackPane prefHeight="452.0" prefWidth="528.0" style="-fx-background-color: white;">
+         <children>
+            <TableView fx:id="accountActivityTableView" prefHeight="200.0" prefWidth="200.0">
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+               <columns>
+                  <TableColumn fx:id="usernameColumn" prefWidth="75.0" text="Username" />
+                  <TableColumn fx:id="ipColumn" prefWidth="75.0" text="IP" />
+                  <TableColumn fx:id="macColumn" prefWidth="75.0" text="Mac" />
+                  <TableColumn fx:id="activityTypeColumn" prefWidth="75.0" text="Activity Type" />
+                  <TableColumn fx:id="affectedItemColumn" prefWidth="85.0" text="Affected Item" />
+                  <TableColumn fx:id="dateTimeColumn" prefWidth="74.0" text="Date/Time" />
+               </columns>
+            </TableView>
+         </children>
+      </StackPane>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Recent Account Activity">
+         <font>
+            <Font name="HoloLens MDL2 Assets" size="14.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

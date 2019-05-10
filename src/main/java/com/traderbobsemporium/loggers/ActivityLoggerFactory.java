@@ -1,4 +1,6 @@
-package loggers;
+package main.java.com.traderbobsemporium.loggers;
+
+import com.sun.org.apache.regexp.internal.RE;
 
 /**
  * @Author Aidan Stewart
@@ -8,10 +10,12 @@ package loggers;
  */
 public class ActivityLoggerFactory {
 
+
     public Logger logger(String loggerType){
         if (loggerType.equals("AccountActivity")){
             return new AccountActivityLogger();
-        } else
-            return new PurchasesActivityLogger();
+        }// else
+            //return new PurchasesActivityLogger();
+        return null;
     }
 }

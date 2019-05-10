@@ -7,15 +7,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import loggers.ActivityLoggerFactory;
-import loggers.ActivityType;
 import main.java.com.traderbobsemporium.dao.AccountDAO;
 import main.java.com.traderbobsemporium.gui.GUIManager;
+import main.java.com.traderbobsemporium.loggers.ActivityLoggerFactory;
+import main.java.com.traderbobsemporium.loggers.ActivityType;
 import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.AccountRole;
 import main.java.com.traderbobsemporium.util.Util;
 import nl.captcha.Captcha;
 import nl.captcha.backgrounds.SquigglesBackgroundProducer;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 
 import java.net.URL;
@@ -34,11 +35,9 @@ public class RegisterController implements Initializable {
     @FXML
     private ImageView captchaView;
     @FXML
-    private TextField usernameField;
+    private TextField usernameField, captchaField;
     @FXML
     private PasswordField passwordField;
-    @FXML
-    private TextField captchaField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -77,9 +76,10 @@ public class RegisterController implements Initializable {
     private void register() throws SQLException {
         Account account = new Account(Util.NEW_ID, usernameField.getText(),
                 new DefaultPasswordService().encryptPassword(passwordField.getText()),
-                "noperm", AccountRole.UNCONFIRMED);
+                "none", AccountRole.UNCONFIRMED);
         new AccountDAO().add(account);
-        new ActivityLoggerFactory().logger("AccountActivity").log(account, ActivityType.REGISTER);
+        String[] loggerParams = new String[]{account.getName(), String.valueOf(account.getId())};
+        new ActivityLoggerFactory().logger("AccountActivity").log(loggerParams, ActivityType.REGISTER);
         Util.displayError("Your account has been registered! Please wait for your account to be " +
                 "assigned a designated role by the administrator.", Alert.AlertType.INFORMATION);
     }

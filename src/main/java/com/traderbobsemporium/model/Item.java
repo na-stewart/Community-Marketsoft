@@ -26,7 +26,7 @@ public class Item extends Profile {
         super(resultSet.getLong("id"), resultSet.getString("name"));
         this.imageURL = resultSet.getURL("imageURL");
         this.price = resultSet.getInt("price");
-        this.itemType = ItemType.intToItemType(resultSet.getInt("itemType"));
+        this.itemType = ItemType.valueOf(resultSet.getString("itemType"));
     }
 
     public ItemType getItemType() {

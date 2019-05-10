@@ -1,5 +1,7 @@
 package main.java.com.traderbobsemporium.auth;
 import javafx.scene.control.Alert;
+import main.java.com.traderbobsemporium.loggers.ActivityLoggerFactory;
+import main.java.com.traderbobsemporium.loggers.ActivityType;
 import main.java.com.traderbobsemporium.model.AccountRole;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
@@ -21,7 +23,6 @@ public class CredentialAuth {
     protected boolean credentialsAreValid(String username, String password) {
         try {
             subject.login(new UsernamePasswordToken(username, password));
-            System.out.println(SecurityUtils.getSubject().getPrincipal());
             authSubjectRole();
             return true;
         } catch (UnknownAccountException uae) {
