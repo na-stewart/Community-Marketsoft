@@ -2,6 +2,8 @@ package main.java.com.traderbobsemporium.util;
 
 import javafx.scene.control.Alert;
 
+import java.util.Random;
+
 /**
  * @Author Aidan Stewart
  * @Year 2019
@@ -9,6 +11,8 @@ import javafx.scene.control.Alert;
  * All rights reserved.
  */
 public final class Util {
+    public static final long NEW_ID = Math.abs(new Random().nextLong());
+
     private Util() {
 
     }

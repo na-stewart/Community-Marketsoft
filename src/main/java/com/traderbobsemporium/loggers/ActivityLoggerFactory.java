@@ -1,11 +1,5 @@
 package loggers;
 
-import loggers.AccountActivityLogger;
-import loggers.ActivityType;
-import loggers.Logger;
-import loggers.PurchasesActivityLogger;
-import main.java.com.traderbobsemporium.model.Profile;
-
 /**
  * @Author Aidan Stewart
  * @Year 2019

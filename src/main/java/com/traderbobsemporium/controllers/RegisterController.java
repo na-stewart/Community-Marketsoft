@@ -75,7 +75,7 @@ public class RegisterController implements Initializable {
     }
 
     private void register() throws SQLException {
-        Account account = new Account(new Random().nextLong(), usernameField.getText(),
+        Account account = new Account(Util.NEW_ID, usernameField.getText(),
                 new DefaultPasswordService().encryptPassword(passwordField.getText()),
                 "noperm", AccountRole.UNCONFIRMED);
         new AccountDAO().add(account);

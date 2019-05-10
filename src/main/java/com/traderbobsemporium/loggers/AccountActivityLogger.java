@@ -27,8 +27,8 @@ class AccountActivityLogger implements Logger {
     @Override
     public void log(Profile profile, ActivityType activityType) {
         try {
-            DatabaseUtil.UPDATE("INSERT INTO accountactivity VALUES('" + SecurityUtils.getSubject().getPrincipal() +
-                    "','" + ip() + "','" + mac() + "','" + activityType.name() + "','" + profile.getName() + ":" +
+            DatabaseUtil.UPDATE("INSERT INTO accountactivity VALUES('" + SecurityUtils.getSubject().getPrincipal()
+                    + "','" + ip() + "','" + mac() + "','" + activityType.name() + "','" + profile.getName() + ":" +
                     profile.getId() + "','" + dateTime() + "')");
         } catch (SQLException | UnknownHostException | SocketException e) {
            new ExceptionDialog(e).showAndWait();
