@@ -1,18 +1,10 @@
 package main.java.com.traderbobsemporium;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import main.java.com.traderbobsemporium.dao.AccountDAO;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
-import main.java.com.traderbobsemporium.model.Account;
-import main.java.com.traderbobsemporium.model.AccountRole;
 import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
-import org.apache.shiro.authc.credential.DefaultPasswordService;
-import org.apache.shiro.authc.credential.PasswordService;
-
-import java.sql.SQLException;
-import java.util.Random;
 
 /**
  * @Author Aidan Stewart
@@ -26,22 +18,13 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         DatabaseUtil.CONFIG_SETUP();
         AuthUtil.INIT_AUTH();
-        /*
-        try {
-            new AccountDAO().add(new Account(new Random().nextLong(),"test", new DefaultPasswordService().encryptPassword("test"), "admin", AccountRole.EMPLOYEE));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        */
-
         displayLogin();
     }
 
     private void displayLogin(){
         GUI loginGUI = new GUI("main/java/com/traderbobsemporium/resources/view/LoginGUI.fxml", "LoginGUI");
         GUIManager.getInstance().getGuiList().add(loginGUI);
-        loginGUI.getStage().setResizable(false);
-        loginGUI.getStage().sizeToScene();
+        loginGUI.getStage().setWidth(1300);
         loginGUI.display();
     }
 

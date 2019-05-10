@@ -56,7 +56,7 @@ public class AccountDAO implements AbstractDAO<Account> {
     }
 
     @Override
-    public void delete(long id) throws SQLException {
-        DatabaseUtil.UPDATE("DELETE FROM account WHERE id = '" + id + "'");
+    public void delete(Account account) throws SQLException {
+        DatabaseUtil.UPDATE("DELETE FROM account WHERE id = '" + account.getId() + "'");
     }
 }

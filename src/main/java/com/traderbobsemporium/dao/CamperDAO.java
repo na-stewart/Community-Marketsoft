@@ -1,5 +1,8 @@
 package main.java.com.traderbobsemporium.dao;
 
+import loggers.ActivityType;
+import loggers.ActivityLoggerFactory;
+import loggers.Logger;
 import main.java.com.traderbobsemporium.model.Camper;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
@@ -15,6 +18,8 @@ import java.util.List;
  * All rights reserved.
  */
 public class CamperDAO implements AbstractDAO<Camper> {
+
+    private Logger activityLoggerFactory = new ActivityLoggerFactory().logger("AccountActivity");
 
     @Override
     public Camper get(long id) throws SQLException {
@@ -49,7 +54,7 @@ public class CamperDAO implements AbstractDAO<Camper> {
     }
 
     @Override
-    public void delete(long id) throws SQLException {
-        DatabaseUtil.UPDATE("DELETE FROM camper WHERE id = '" + id + "'");
+    public void delete(Camper camper) throws SQLException {
+        DatabaseUtil.UPDATE("DELETE FROM camper WHERE id = '" + camper.getId() + "'");
     }
 }

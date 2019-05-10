@@ -55,7 +55,7 @@ public class ItemDAO implements AbstractDAO<Item> {
     }
 
     @Override
-    public void delete(long id) throws SQLException {
-        DatabaseUtil.UPDATE("DELETE FROM item WHERE id = '" + id + "'");
+    public void delete(Item item) throws SQLException {
+        DatabaseUtil.UPDATE("DELETE FROM item WHERE id = '" + item.getId() + "'");
     }
 }

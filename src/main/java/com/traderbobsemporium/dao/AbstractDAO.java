@@ -17,6 +17,6 @@ public interface AbstractDAO<T> {
     List<T> getAll() throws SQLException;
     void update(T t, String[] params) throws SQLException, MalformedURLException;
     void add(T t) throws SQLException;
-    void delete(long id) throws SQLException;
+    void delete(T t) throws SQLException;
 
 }

@@ -7,5 +7,5 @@ package main.java.com.traderbobsemporium.model;
  * All rights reserved.
  */
 public enum AccountRole {
-    EMPLOYEE, RETAILER, UNCONFIRMED;
+    EMPLOYEE, RETAILER, UNCONFIRMED, DISABLED;
 }
