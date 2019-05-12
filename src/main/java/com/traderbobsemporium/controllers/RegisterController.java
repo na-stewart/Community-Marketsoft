@@ -34,7 +34,6 @@ public class RegisterController implements Initializable {
     private Captcha captcha;
     @FXML
     private ImageView captchaView;
-    @FXML
     private TextField usernameField, captchaField;
     @FXML
     private PasswordField passwordField;

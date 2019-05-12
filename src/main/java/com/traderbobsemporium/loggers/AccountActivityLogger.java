@@ -1,10 +1,8 @@
 package main.java.com.traderbobsemporium.loggers;
 import main.java.com.traderbobsemporium.model.AccountActivity;
-import main.java.com.traderbobsemporium.model.Profile;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import org.apache.shiro.SecurityUtils;
 import org.controlsfx.dialog.ExceptionDialog;
-import org.omg.PortableInterceptor.ACTIVE;
 
 import java.net.*;
 import java.sql.ResultSet;
@@ -54,12 +52,13 @@ class AccountActivityLogger implements Logger<AccountActivity> {
     }
 
     @Override
-    public List<AccountActivity> getLoggers() {
+    public List<AccountActivity> getLogs() {
         List<AccountActivity> accountActivities = new ArrayList<>();
         try {
             ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("accountactivity");
-            accountActivities.add(new AccountActivity(resultSet));
-           // resultSet.close();
+            while (resultSet.next())
+                accountActivities.add(new AccountActivity(resultSet));
+            resultSet.close();
             return accountActivities;
         } catch (SQLException e) {
             new ExceptionDialog(e).showAndWait();

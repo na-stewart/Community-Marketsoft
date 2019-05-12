@@ -2,9 +2,16 @@ package main.java.com.traderbobsemporium.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.TilePane;
+import main.java.com.traderbobsemporium.gui.GUI;
+import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.loggers.ActivityLoggerFactory;
 import main.java.com.traderbobsemporium.loggers.Logger;
 import main.java.com.traderbobsemporium.model.AccountActivity;
@@ -28,18 +35,39 @@ public class EmployeeController implements Initializable {
             affectedItemColumn, dateTimeColumn;
     @SuppressWarnings("unchecked")
     private Logger<AccountActivity> accountActivity = new ActivityLoggerFactory().logger("AccountActivity");
+    @FXML
+    private ScrollPane dashboardScrollPane;
+    @FXML
+    private TilePane dashboardTilePane;
+    @FXML
+    private TextField panelXField, panelYField;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setCellValueFactory();
         populateAccountActivityTable();
+        dashboardTilePane.prefWidthProperty().bind(dashboardScrollPane.widthProperty());
 
     }
 
     private void populateAccountActivityTable(){
-        for (AccountActivity accountActivity : accountActivity.getLoggers()){
+        for (AccountActivity accountActivity : accountActivity.getLogs()){
             accountActivityTableView.getItems().add(accountActivity);
+        }
+    }
+
+    @FXML
+    private void setFullScreen(){
+        GUI thisGUI = GUIManager.getInstance().getGUIByName("EmplGUI");
+        thisGUI.getStage().setFullScreen(!thisGUI.getStage().isFullScreen());
+    }
+
+    @FXML
+    private void setDashboardTileSizes(KeyEvent keyEvent){
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            dashboardTilePane.setPrefTileWidth(Double.parseDouble(panelXField.getText()));
+            dashboardTilePane.setPrefTileHeight(Double.parseDouble(panelYField.getText()));
         }
     }
 

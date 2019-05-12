@@ -29,14 +29,12 @@ public class AccountActivity {
     }
 
     public AccountActivity(ResultSet resultSet) throws SQLException {
-        if (resultSet.next()) {
             this.username = resultSet.getString("username");
             this.ip = resultSet.getString("ip");
             this.mac = resultSet.getString("mac");
             this.activityType = ActivityType.valueOf(resultSet.getString("activityType"));
             this.affectedItemName = resultSet.getString("affectedItem");
             this.dateTime = resultSet.getString("dateTime");
-        }
     }
 
     public String getUsername() {

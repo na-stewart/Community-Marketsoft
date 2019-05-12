@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface Logger<T> {
     void log(String[] params, ActivityType activityType);
-    List<T> getLoggers();
+    List<T> getLogs();
 }
