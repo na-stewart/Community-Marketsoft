@@ -1,8 +1,10 @@
 package main.java.com.traderbobsemporium.controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.BarChart;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -11,15 +13,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.TilePane;
+import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.dao.loggers.ActivityLoggerFactory;
 import main.java.com.traderbobsemporium.dao.loggers.Logger;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
-import org.controlsfx.dialog.ExceptionDialog;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**
@@ -45,20 +48,26 @@ public class EmployeeController implements Initializable {
     @FXML
     private TextField panelXField, panelYField;
     @FXML
-    private BarChart<String, Number> barChart;
+    private PieChart pieChart;
+
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setCellValueFactory();
-        populateAccountActivityTable();
+        loadDashboard();
         dashboardTilePane.prefWidthProperty().bind(dashboardScrollPane.widthProperty());
     }
 
     private void loadDashboard(){
-        populateAccountActivityTable();
+        try {
+            populateAccountActivityTable();
+            populateAccountActivityFrequency();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         //TODO below
-        populateAccountActivityFrequency();
+        //
         /*
         populatePurchasedItems();
         populatePurchasesActivityTable();
@@ -66,22 +75,43 @@ public class EmployeeController implements Initializable {
 
     }
 
-    private void populateAccountActivityTable(){
-        try {
+    private void populateAccountActivityTable() throws SQLException {
+
+
             for (AccountActivity accountActivity : accountActivity.getAll()){
                 accountActivityTableView.getItems().add(accountActivity);
             }
-        } catch (SQLException e) {
-            new ExceptionDialog(e).showAndWait();
+        }
+
+
+    private void populateAccountActivityFrequency() throws SQLException {
+        int frequency = 0;
+        ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
+        String[] activityTypes = Arrays.stream(ActivityType.class.getEnumConstants()).map(Enum::name).toArray(String[]::new);
+        AccountActivity[] accountActivities = accountActivity.getAll().toArray(new AccountActivity[0]);
+        for (String activityType : activityTypes) {
+            for (AccountActivity accountActivity : accountActivities) {
+                if (accountActivity.getActivityType().name().equals(activityType)) {
+                    frequency++;
+                }
+            }
+            data.add(new PieChart.Data(activityType, frequency));
+            frequency = 0;
+        }
+        removeUnusedData(data);
+        pieChart.setData(data);
+    }
+
+    private void removeUnusedData(ObservableList<PieChart.Data> data){
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getPieValue() == 0)
+                data.remove(i--);
         }
     }
 
 
-    private void populateAccountActivityFrequency(){
-
-    }
-
     private void populatePurchasesActivityTable(){
+
 
     }
 

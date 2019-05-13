@@ -1,6 +1,6 @@
 package main.java.com.traderbobsemporium.dao.loggers;
-import main.java.com.traderbobsemporium.model.AccountRole;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
+import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.model.Profile;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.Util;

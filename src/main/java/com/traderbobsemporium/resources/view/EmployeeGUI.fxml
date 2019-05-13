@@ -188,14 +188,7 @@
                               <Font name="HoloLens MDL2 Assets" size="14.0" />
                            </font>
                         </Text>
-                        <BarChart VBox.vgrow="ALWAYS">
-                          <xAxis>
-                            <CategoryAxis side="BOTTOM" />
-                          </xAxis>
-                          <yAxis>
-                            <NumberAxis side="LEFT" />
-                          </yAxis>
-                        </BarChart>
+                        <PieChart fx:id="pieChart" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="471.0" prefWidth="514.0" spacing="3.0" style="-fx-background-color: white;">

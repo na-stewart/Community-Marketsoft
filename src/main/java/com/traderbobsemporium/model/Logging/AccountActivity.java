@@ -1,6 +1,5 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
-import main.java.com.traderbobsemporium.dao.loggers.ActivityType;
 import main.java.com.traderbobsemporium.model.Profile;
 
 import java.sql.ResultSet;

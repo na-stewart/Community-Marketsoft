@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 import main.java.com.traderbobsemporium.dao.AccountDAO;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.dao.loggers.ActivityLoggerFactory;
-import main.java.com.traderbobsemporium.dao.loggers.ActivityType;
+import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.AccountRole;
 import main.java.com.traderbobsemporium.util.Util;
