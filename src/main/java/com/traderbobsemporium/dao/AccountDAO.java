@@ -15,7 +15,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class AccountDAO implements AbstractDAO<Account> {
+public class AccountDAO implements DAO<Account> {
 
     @Override
     public Account get(long id) throws SQLException {
@@ -56,7 +56,7 @@ public class AccountDAO implements AbstractDAO<Account> {
     }
 
     @Override
-    public void delete(Account account) throws SQLException {
-        DatabaseUtil.UPDATE("DELETE FROM account WHERE id = '" + account.getId() + "'");
+    public void delete(long id ) throws SQLException {
+        DatabaseUtil.UPDATE("DELETE FROM account WHERE id = '" + id  + "'");
     }
 }

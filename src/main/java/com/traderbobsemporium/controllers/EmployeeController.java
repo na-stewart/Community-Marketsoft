@@ -2,6 +2,7 @@ package main.java.com.traderbobsemporium.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -12,11 +13,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.TilePane;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
-import main.java.com.traderbobsemporium.loggers.ActivityLoggerFactory;
-import main.java.com.traderbobsemporium.loggers.Logger;
-import main.java.com.traderbobsemporium.model.AccountActivity;
+import main.java.com.traderbobsemporium.dao.loggers.ActivityLoggerFactory;
+import main.java.com.traderbobsemporium.dao.loggers.Logger;
+import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
+import org.controlsfx.dialog.ExceptionDialog;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -32,7 +35,7 @@ public class EmployeeController implements Initializable {
     private TableView<AccountActivity> accountActivityTableView;
     @FXML
     private TableColumn<AccountActivity, String> usernameColumn, ipColumn, macColumn, activityTypeColumn,
-            affectedItemColumn, dateTimeColumn;
+            affectedName, affectedID, dateTimeColumn;
     @SuppressWarnings("unchecked")
     private Logger<AccountActivity> accountActivity = new ActivityLoggerFactory().logger("AccountActivity");
     @FXML
@@ -41,6 +44,8 @@ public class EmployeeController implements Initializable {
     private TilePane dashboardTilePane;
     @FXML
     private TextField panelXField, panelYField;
+    @FXML
+    private BarChart<String, Number> barChart;
 
 
     @Override
@@ -48,14 +53,43 @@ public class EmployeeController implements Initializable {
         setCellValueFactory();
         populateAccountActivityTable();
         dashboardTilePane.prefWidthProperty().bind(dashboardScrollPane.widthProperty());
+    }
+
+    private void loadDashboard(){
+        populateAccountActivityTable();
+        //TODO below
+        populateAccountActivityFrequency();
+        /*
+        populatePurchasedItems();
+        populatePurchasesActivityTable();
+        */
 
     }
 
     private void populateAccountActivityTable(){
-        for (AccountActivity accountActivity : accountActivity.getLogs()){
-            accountActivityTableView.getItems().add(accountActivity);
+        try {
+            for (AccountActivity accountActivity : accountActivity.getAll()){
+                accountActivityTableView.getItems().add(accountActivity);
+            }
+        } catch (SQLException e) {
+            new ExceptionDialog(e).showAndWait();
         }
     }
+
+
+    private void populateAccountActivityFrequency(){
+
+    }
+
+    private void populatePurchasesActivityTable(){
+
+    }
+
+    private void populatePurchasedItems(){
+
+    }
+
+
 
     @FXML
     private void setFullScreen(){
@@ -76,7 +110,8 @@ public class EmployeeController implements Initializable {
         ipColumn.setCellValueFactory(new PropertyValueFactory<>("ip"));
         macColumn.setCellValueFactory(new PropertyValueFactory<>("mac"));
         activityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("activityType"));
-        affectedItemColumn.setCellValueFactory(new PropertyValueFactory<>("affectedItemName"));
+        affectedName.setCellValueFactory(new PropertyValueFactory<>("affectedItemName"));
+        affectedID.setCellValueFactory(new PropertyValueFactory<>("affectedItemId"));
         dateTimeColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
     }
 }

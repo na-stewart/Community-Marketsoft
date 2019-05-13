@@ -15,7 +15,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class CamperDAO implements AbstractDAO<Camper> {
+public class CamperDAO implements DAO<Camper> {
 
 
     @Override
@@ -51,7 +51,7 @@ public class CamperDAO implements AbstractDAO<Camper> {
     }
 
     @Override
-    public void delete(Camper camper) throws SQLException {
-        DatabaseUtil.UPDATE("DELETE FROM camper WHERE id = '" + camper.getId() + "'");
+    public void delete(long id) throws SQLException {
+        DatabaseUtil.UPDATE("DELETE FROM camper WHERE id = '" + id + "'");
     }
 }

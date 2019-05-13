@@ -1,4 +1,4 @@
-package main.java.com.traderbobsemporium.loggers;
+package main.java.com.traderbobsemporium.dao.loggers;
 
 /**
  * @Author Aidan Stewart

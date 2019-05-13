@@ -1,6 +1,7 @@
-package main.java.com.traderbobsemporium.model;
+package main.java.com.traderbobsemporium.model.Logging;
 
-import main.java.com.traderbobsemporium.loggers.ActivityType;
+import main.java.com.traderbobsemporium.dao.loggers.ActivityType;
+import main.java.com.traderbobsemporium.model.Profile;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,20 +13,24 @@ import java.sql.SQLException;
  * All rights reserved.
  */
 public class AccountActivity {
+    private long id;
     private String username;
     private String ip;
     private String mac;
     private ActivityType activityType;
+    private long affectedItemId;
     private String affectedItemName;
     private String dateTime;
 
-    public AccountActivity(String username, String ip, String mac, ActivityType activityType, String affectedItemName, String dateTime) {
+    public AccountActivity(long id, String username, String ip, String mac, ActivityType activityType, Profile profile, String dateTime) {
+        this.id = id;
         this.username = username;
         this.ip = ip;
         this.mac = mac;
         this.activityType = activityType;
         this.dateTime = dateTime;
-        this.affectedItemName = affectedItemName;
+        this.affectedItemName = profile.getName();
+        this.affectedItemId = profile.getId();
     }
 
     public AccountActivity(ResultSet resultSet) throws SQLException {
@@ -33,8 +38,27 @@ public class AccountActivity {
             this.ip = resultSet.getString("ip");
             this.mac = resultSet.getString("mac");
             this.activityType = ActivityType.valueOf(resultSet.getString("activityType"));
-            this.affectedItemName = resultSet.getString("affectedItem");
+            this.affectedItemId = resultSet.getLong("itemID");
+            this.affectedItemName = resultSet.getString("itemName");
             this.dateTime = resultSet.getString("dateTime");
+            this.affectedItemId = resultSet.getLong("itemID");
+            this.affectedItemName = resultSet.getString("itemName");
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getAffectedItemId() {
+        return affectedItemId;
+    }
+
+    public void setAffectedItemId(long affectedItemId) {
+        this.affectedItemId = affectedItemId;
     }
 
     public String getUsername() {

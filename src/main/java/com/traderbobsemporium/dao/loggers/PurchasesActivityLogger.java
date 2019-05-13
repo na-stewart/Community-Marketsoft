@@ -1,14 +1,4 @@
-package main.java.com.traderbobsemporium.loggers;
-import main.java.com.traderbobsemporium.model.Account;
-import main.java.com.traderbobsemporium.model.Camper;
-import main.java.com.traderbobsemporium.model.Profile;
-import main.java.com.traderbobsemporium.util.DatabaseUtil;
-import org.apache.shiro.SecurityUtils;
-import org.controlsfx.dialog.ExceptionDialog;
-
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
+package main.java.com.traderbobsemporium.dao.loggers;
 
 /**
  * @Author Aidan Stewart

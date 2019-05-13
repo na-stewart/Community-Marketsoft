@@ -13,11 +13,11 @@ import java.util.List;
  * All rights reserved.
  */
 // TODO: 5/12/2019 ABSTRACT CLASS INSTEAD OF INTERFACE 
-public interface AbstractDAO<T> {
+public interface DAO<T> {
     T get(long id) throws SQLException;
     List<T> getAll() throws SQLException;
     void update(T t, String[] params) throws SQLException, MalformedURLException;
     void add(T t) throws SQLException;
-    void delete(T t) throws SQLException;
+    void delete(long id) throws SQLException;
 
 }

@@ -17,7 +17,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class ItemDAO implements AbstractDAO<Item> {
+public class ItemDAO implements DAO<Item> {
 
     @Override
     public Item get(long id) throws SQLException {
@@ -55,7 +55,7 @@ public class ItemDAO implements AbstractDAO<Item> {
     }
 
     @Override
-    public void delete(Item item) throws SQLException {
-        DatabaseUtil.UPDATE("DELETE FROM item WHERE id = '" + item.getId() + "'");
+    public void delete(long id) throws SQLException {
+        DatabaseUtil.UPDATE("DELETE FROM item WHERE id = '" + id + "'");
     }
 }

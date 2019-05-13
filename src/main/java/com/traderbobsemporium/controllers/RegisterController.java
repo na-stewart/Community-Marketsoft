@@ -9,19 +9,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import main.java.com.traderbobsemporium.dao.AccountDAO;
 import main.java.com.traderbobsemporium.gui.GUIManager;
-import main.java.com.traderbobsemporium.loggers.ActivityLoggerFactory;
-import main.java.com.traderbobsemporium.loggers.ActivityType;
+import main.java.com.traderbobsemporium.dao.loggers.ActivityLoggerFactory;
+import main.java.com.traderbobsemporium.dao.loggers.ActivityType;
 import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.AccountRole;
 import main.java.com.traderbobsemporium.util.Util;
 import nl.captcha.Captcha;
 import nl.captcha.backgrounds.SquigglesBackgroundProducer;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
@@ -34,6 +32,7 @@ public class RegisterController implements Initializable {
     private Captcha captcha;
     @FXML
     private ImageView captchaView;
+    @FXML
     private TextField usernameField, captchaField;
     @FXML
     private PasswordField passwordField;
@@ -77,8 +76,7 @@ public class RegisterController implements Initializable {
                 new DefaultPasswordService().encryptPassword(passwordField.getText()),
                 "none", AccountRole.UNCONFIRMED);
         new AccountDAO().add(account);
-        String[] loggerParams = new String[]{account.getName(), String.valueOf(account.getId())};
-        new ActivityLoggerFactory().logger("AccountActivity").log(loggerParams, ActivityType.REGISTER);
+        new ActivityLoggerFactory().logger("AccountActivity").log(account, ActivityType.REGISTER);
         Util.displayError("Your account has been registered! Please wait for your account to be " +
                 "assigned a designated role by the administrator.", Alert.AlertType.INFORMATION);
     }
