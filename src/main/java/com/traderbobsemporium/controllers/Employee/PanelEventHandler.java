@@ -5,6 +5,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import main.java.com.traderbobsemporium.dao.DAO;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -41,38 +42,28 @@ abstract class PanelEventHandler implements EventHandler<Event> {
 
     private void onKeyEvent(KeyEvent keyEvent){
         try {
-            switch (keyEvent.getCode()) {
-                case ENTER:
-                    if (tableView.getSelectionModel().getSelectedItem() != null)
-                        update();
-                    else
-                        add();
-                    break;
-                case BACK_SPACE:
-                    delete();
-                    break;
-            }
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                if (tableView.getSelectionModel().getSelectedItem() != null)
+                    update();
+                else
+                    add();
+            } else
+                delete();
         } catch (Exception e){
             new ExceptionDialog(e).showAndWait();
         }
-
     }
 
     private void onActionEvent(ActionEvent actionEvent){
         String buttonText = ((Button) actionEvent.getSource()).getText();
         try {
-            switch (buttonText) {
-                case "Update":
-                    if (tableView.getSelectionModel().getSelectedItem() != null)
-                        update();
-                    else
-                        add();
-                    break;
-
-                case "Delete":
-                    delete();
-                    break;
-            }
+            if (buttonText.equals("Update")){
+                if (tableView.getSelectionModel().getSelectedItem() != null)
+                    update();
+                else
+                    add();
+            } else
+                delete();
         } catch (Exception e){
             new ExceptionDialog(e).showAndWait();
         }

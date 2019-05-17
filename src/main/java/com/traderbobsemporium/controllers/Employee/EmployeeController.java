@@ -52,7 +52,7 @@ public class EmployeeController implements Initializable {
     @FXML
     private TableView<AccountActivity> accountActivityTableView;
     @FXML
-    private TableColumn<AccountActivity, String> usernameColumn, ipColumn, macColumn, activityTypeColumn,
+    private TableColumn<AccountActivity, String> usernameActivityColumn, ipColumn, macColumn, activityTypeColumn,
             affectedName, affectedID, dateTimeColumnAccount;
     @FXML
     private TableView<PurchasesActivity> purchasesActivityTableView;
@@ -82,9 +82,13 @@ public class EmployeeController implements Initializable {
     @FXML
     private TableView<Account> accountTableView;
     @FXML
+    private TableColumn<Account, String> accountIdColumn, usernameColumn, passwordColumn, permissionsColumn, accountRoleColumn;
+    @FXML
     private TextField nameField, passwordField, permissionsField;
     @FXML
     private ChoiceBox<AccountRole> accountRoleChoiceBox;
+    @FXML
+    private Button accountUpdate, accountDelete;
 
 
 
@@ -93,7 +97,7 @@ public class EmployeeController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         panels = new GUIPanel[]{new GUIPanel(dashboardScrollPane, "Dashboard"),
-                new GUIPanel(campersAnchorPane, "Campers")};
+                new GUIPanel(campersAnchorPane, "Campers"), new GUIPanel(accountsAnchorPane, "Accounts")};
         setCellValueFactory();
         loadDashboard();
         createCamperPanelEventHandler();
@@ -292,7 +296,7 @@ public class EmployeeController implements Initializable {
 
 
     private void setCellValueFactory(){
-        usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        usernameActivityColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         ipColumn.setCellValueFactory(new PropertyValueFactory<>("ip"));
         macColumn.setCellValueFactory(new PropertyValueFactory<>("mac"));
         activityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("activityType"));
