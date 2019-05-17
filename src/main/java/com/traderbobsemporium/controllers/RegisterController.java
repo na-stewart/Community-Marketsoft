@@ -8,8 +8,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import main.java.com.traderbobsemporium.dao.AccountDAO;
+import main.java.com.traderbobsemporium.dao.DAO;
+import main.java.com.traderbobsemporium.dao.loggers.AccountActivityLogger;
+import main.java.com.traderbobsemporium.dao.loggers.Logger;
+import main.java.com.traderbobsemporium.factory.LoggerFactory;
 import main.java.com.traderbobsemporium.gui.GUIManager;
-import main.java.com.traderbobsemporium.dao.loggers.ActivityLoggerFactory;
+import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.AccountRole;
@@ -60,7 +64,7 @@ public class RegisterController implements Initializable {
         if (captcha.isCorrect(captchaField.getText())) {
             try {
                 register();
-                GUIManager.getInstance().getGUIByName("RegGUI").getStage().close();
+                GUIManager.getInstance().getByName("RegGUI").getStage().close();
             } catch (SQLException e) {
                 Util.displayError(e.getMessage(), Alert.AlertType.ERROR);
                 createCaptcha();
@@ -72,11 +76,12 @@ public class RegisterController implements Initializable {
     }
 
     private void register() throws SQLException {
-        Account account = new Account(Util.NEW_ID, usernameField.getText(),
+        Logger accountActivityLogger = new LoggerFactory().create("accountactivity");
+        Account account = new Account(Util.NEW_ID(), usernameField.getText(),
                 new DefaultPasswordService().encryptPassword(passwordField.getText()),
                 "none", AccountRole.UNCONFIRMED);
         new AccountDAO().add(account);
-        new ActivityLoggerFactory().logger("AccountActivity").log(account, ActivityType.REGISTER);
+        accountActivityLogger.log(new AccountActivity(Util.NEW_ID(), "null", ActivityType.REGISTER, account));
         Util.displayError("Your account has been registered! Please wait for your account to be " +
                 "assigned a designated role by the administrator.", Alert.AlertType.INFORMATION);
     }

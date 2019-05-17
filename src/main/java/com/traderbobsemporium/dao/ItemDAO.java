@@ -22,7 +22,9 @@ public class ItemDAO implements DAO<Item> {
     @Override
     public Item get(long id) throws SQLException {
         ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("item WHERE id =" + id);
-        Item item = new Item(resultSet);
+        Item item = null;
+        if (resultSet.next())
+            item = new Item(resultSet);
         resultSet.close();
         return item;
     }

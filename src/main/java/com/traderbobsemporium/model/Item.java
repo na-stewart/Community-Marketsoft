@@ -52,4 +52,14 @@ public class Item extends Profile {
     public void setPrice(int price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "name=" + getName() +
+                "imageURL=" + imageURL +
+                ", price=" + price +
+                ", itemType=" + itemType +
+                '}';
+    }
 }

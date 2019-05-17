@@ -21,7 +21,9 @@ public class CamperDAO implements DAO<Camper> {
     @Override
     public Camper get(long id) throws SQLException {
         ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("camper WHERE id =" + id);
-        Camper camper = new Camper(resultSet);
+        Camper camper = null;
+        if (resultSet.next())
+            camper = new Camper(resultSet);
         resultSet.close();
         return camper;
     }
@@ -43,6 +45,7 @@ public class CamperDAO implements DAO<Camper> {
         DatabaseUtil.UPDATE("UPDATE camper SET name = '" + camper.getName() + "'," +
                 "balance = '" + camper.getBalance() + "' WHERE id =" + camper.getId() + ";");
     }
+
 
     @Override
     public void add(Camper camper) throws SQLException {

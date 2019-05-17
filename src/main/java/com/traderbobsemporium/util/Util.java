@@ -2,6 +2,8 @@ package main.java.com.traderbobsemporium.util;
 
 import javafx.scene.control.Alert;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 /**
@@ -11,11 +13,21 @@ import java.util.Random;
  * All rights reserved.
  */
 public final class Util {
-    public static final long NEW_ID = Math.abs(new Random().nextLong());
+    private static final Random random = new Random();
 
     private Util() {
 
     }
+
+    public static long NEW_ID(){
+        return Math.abs(random.nextLong());
+    }
+
+    public static String dateTime(){
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+        return  LocalDateTime.now().format(myFormatObj);
+    }
+
 
     public static void displayError(String dialogText, Alert.AlertType alertType){
         Alert alert = new Alert(alertType);

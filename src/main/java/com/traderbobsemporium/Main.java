@@ -1,10 +1,14 @@
 package main.java.com.traderbobsemporium;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import main.java.com.traderbobsemporium.dao.AccountDAO;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
+import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+
+import java.sql.SQLException;
 
 /**
  * @Author Aidan Stewart

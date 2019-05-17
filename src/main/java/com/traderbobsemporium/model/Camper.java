@@ -31,4 +31,12 @@ public class Camper extends Profile {
     public void setBalance(int balance) {
         this.balance = balance;
     }
+
+    @Override
+    public String toString() {
+        return "Camper{" +
+                "name=" + getName() +
+                "balance=" + balance +
+                '}';
+    }
 }

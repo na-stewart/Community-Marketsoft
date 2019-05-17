@@ -20,7 +20,9 @@ public class AccountDAO implements DAO<Account> {
     @Override
     public Account get(long id) throws SQLException {
         ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("account WHERE id =" + id);
-        Account account = new Account(resultSet);
+        Account account = null;
+        if (resultSet.next())
+         account = new Account(resultSet);
         resultSet.close();
         return account;
     }

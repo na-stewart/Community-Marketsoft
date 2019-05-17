@@ -2,7 +2,6 @@ package main.java.com.traderbobsemporium.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -11,14 +10,9 @@ import main.java.com.traderbobsemporium.auth.CredentialAuth;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.model.AccountRole;
-import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.*;
-import org.apache.shiro.subject.Subject;
-import org.controlsfx.dialog.ExceptionDialog;
 
 
-import javax.security.auth.login.AccountLockedException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -56,7 +50,7 @@ public class LoginController extends CredentialAuth implements Initializable {
                 gui = new GUI("main/java/com/traderbobsemporium/resources/view/EmployeeGUI.fxml", "EmplGUI");
             else
                 gui = new GUI("main/java/com/traderbobsemporium/resources/view/RetailerGUI.fxml", "RetGUI");
-            guiManager.getGUIByName("LoginGUI").getStage().close();
+            guiManager.getByName("LoginGUI").getStage().close();
             guiManager.getGuiList().add(gui);
             gui.display();
         }

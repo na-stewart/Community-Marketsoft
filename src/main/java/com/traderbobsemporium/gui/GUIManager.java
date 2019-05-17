@@ -23,7 +23,14 @@ public class GUIManager {
         return instance;
     }
 
-    public GUI getGUIByName(String name){
+    public void closeByName(String name){
+        GUI gui = getByName(name);
+        guiList.remove(gui);
+        gui.getStage().close();
+
+    }
+
+    public GUI getByName(String name){
         for (GUI gui : guiList){
             if (gui.getName().equals(name))
                 return gui;

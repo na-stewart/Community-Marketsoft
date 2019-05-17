@@ -1,7 +1,9 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
 import main.java.com.traderbobsemporium.model.Profile;
+import main.java.com.traderbobsemporium.util.Util;
 
+import java.net.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -21,15 +23,15 @@ public class AccountActivity {
     private String affectedItemName;
     private String dateTime;
 
-    public AccountActivity(long id, String username, String ip, String mac, ActivityType activityType, Profile profile, String dateTime) {
+    public AccountActivity(long id, String username, ActivityType activityType, Profile profile) {
         this.id = id;
         this.username = username;
-        this.ip = ip;
-        this.mac = mac;
         this.activityType = activityType;
-        this.dateTime = dateTime;
+        this.dateTime = Util.dateTime();
         this.affectedItemName = profile.getName();
         this.affectedItemId = profile.getId();
+        this.ip = ip();
+        this.mac = mac();
     }
 
     public AccountActivity(ResultSet resultSet) throws SQLException {
@@ -43,6 +45,34 @@ public class AccountActivity {
             this.affectedItemId = resultSet.getLong("itemID");
             this.affectedItemName = resultSet.getString("itemName");
     }
+
+    private String ip() {
+        final DatagramSocket socket;
+        try {
+            socket = new DatagramSocket();
+            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            return socket.getLocalAddress().getHostAddress();
+        } catch (SocketException | UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String mac() {
+        byte[] mac;
+        try {
+            NetworkInterface network = NetworkInterface.getByInetAddress(InetAddress.getByName(ip()));
+            mac = network.getHardwareAddress();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < mac.length; i++)
+                sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+            return sb.toString();
+        } catch (SocketException | UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public long getId() {
         return id;
@@ -106,5 +136,18 @@ public class AccountActivity {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "AccountActivity{" +
+                "username='" + username + '\'' +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", activityType=" + activityType +
+                ", affectedItemId=" + affectedItemId +
+                ", affectedItemName='" + affectedItemName + '\'' +
+                ", dateTime='" + dateTime + '\'' +
+                '}';
     }
 }
