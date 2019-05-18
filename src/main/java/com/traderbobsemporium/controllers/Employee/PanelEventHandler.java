@@ -8,6 +8,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import main.java.com.traderbobsemporium.dao.DAO;
+import main.java.com.traderbobsemporium.model.Account;
+import main.java.com.traderbobsemporium.model.AccountRole;
+import main.java.com.traderbobsemporium.model.Profile;
+import main.java.com.traderbobsemporium.util.Util;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.controlsfx.dialog.ExceptionDialog;
 
 
@@ -22,14 +28,19 @@ import java.sql.SQLException;
  * All rights reserved.
  */
 abstract class PanelEventHandler implements EventHandler<Event> {
-    private TableView tableView;
+    private Profile profile;
 
+    @RequiresAuthentication
     abstract void add() throws SQLException;
-    abstract void update() throws SQLException, MalformedURLException;
+    @RequiresAuthentication
+    abstract void update() throws SQLException;
+    @RequiresAuthentication
     abstract void delete() throws SQLException;
+    @RequiresAuthentication
+    abstract void onSuccessfulEvent();
 
-    public PanelEventHandler(TableView tableView) {
-        this.tableView = tableView;
+    PanelEventHandler(TableView tableView) {
+        this.profile = (Profile) tableView.getSelectionModel().getSelectedItem();
     }
 
     void onEvent(Event event){
@@ -43,14 +54,18 @@ abstract class PanelEventHandler implements EventHandler<Event> {
     private void onKeyEvent(KeyEvent keyEvent){
         try {
             if (keyEvent.getCode() == KeyCode.ENTER) {
-                if (tableView.getSelectionModel().getSelectedItem() != null)
+                if (profile!= null)
                     update();
                 else
                     add();
-            } else
+                onSuccessfulEvent();
+            } else if (keyEvent.getCode() == KeyCode.DELETE) {
                 delete();
+                onSuccessfulEvent();
+            }
         } catch (Exception e){
             new ExceptionDialog(e).showAndWait();
+            e.printStackTrace();
         }
     }
 
@@ -58,14 +73,18 @@ abstract class PanelEventHandler implements EventHandler<Event> {
         String buttonText = ((Button) actionEvent.getSource()).getText();
         try {
             if (buttonText.equals("Update")){
-                if (tableView.getSelectionModel().getSelectedItem() != null)
+                if (profile != null)
                     update();
                 else
                     add();
-            } else
+                onSuccessfulEvent();
+            } else {
                 delete();
+                onSuccessfulEvent();
+            }
         } catch (Exception e){
             new ExceptionDialog(e).showAndWait();
+            e.printStackTrace();
         }
     }
 

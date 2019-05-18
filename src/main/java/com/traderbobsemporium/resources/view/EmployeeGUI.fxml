@@ -281,7 +281,7 @@
       </AnchorPane>
       <AnchorPane fx:id="accountsAnchorPane" layoutX="174.0" layoutY="49.0" prefHeight="676.0" prefWidth="1037.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
          <children>
-            <TableView fx:id="camperTableView1" layoutX="434.0" onMouseClicked="#fillCamperFields" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TableView fx:id="accountTableView" layoutX="434.0" onMouseClicked="#fillAccountFields" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
@@ -302,12 +302,12 @@
                   </Text>
                   <VBox alignment="CENTER" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
                            <font>
                               <Font name="Leelawadee UI" size="27.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="nameField" prefHeight="25.0" prefWidth="317.0" />
+                        <TextField fx:id="usernameField" prefHeight="25.0" prefWidth="317.0" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" layoutX="59.0" layoutY="83.0" prefHeight="66.0" prefWidth="334.0" spacing="5.0">

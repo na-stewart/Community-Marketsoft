@@ -1,5 +1,7 @@
 package main.java.com.traderbobsemporium.controllers.Employee;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
+import main.java.com.traderbobsemporium.dao.AccountDAO;
 import main.java.com.traderbobsemporium.dao.CamperDAO;
 import main.java.com.traderbobsemporium.dao.loggers.Logger;
 import main.java.com.traderbobsemporium.factory.LoggerFactory;
@@ -31,6 +34,7 @@ import main.java.com.traderbobsemporium.model.Logging.Announcement;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -84,15 +88,11 @@ public class EmployeeController implements Initializable {
     @FXML
     private TableColumn<Account, String> accountIdColumn, usernameColumn, passwordColumn, permissionsColumn, accountRoleColumn;
     @FXML
-    private TextField nameField, passwordField, permissionsField;
+    private TextField usernameField, passwordField, permissionsField;
     @FXML
     private ChoiceBox<AccountRole> accountRoleChoiceBox;
     @FXML
     private Button accountUpdate, accountDelete;
-
-
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -100,7 +100,7 @@ public class EmployeeController implements Initializable {
                 new GUIPanel(campersAnchorPane, "Campers"), new GUIPanel(accountsAnchorPane, "Accounts")};
         setCellValueFactory();
         loadDashboard();
-        createCamperPanelEventHandler();
+
         loadDataManagerPanels();
         setTableSelectionMethods();
         dashboardTilePane.prefWidthProperty().bind(dashboardScrollPane.widthProperty());
@@ -109,6 +109,7 @@ public class EmployeeController implements Initializable {
 
     private void setTableSelectionMethods(){
         camperTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        accountTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     private void loadDashboard() {
@@ -125,6 +126,10 @@ public class EmployeeController implements Initializable {
     private void loadDataManagerPanels(){
         try {
             camperTableView.getItems().setAll(new CamperDAO().getAll());
+            createCamperPanelEventHandler();
+            accountTableView.getItems().setAll(new AccountDAO().getAll());
+            populateAccountRoleChoiceBox();
+            createAccountPanelEventHandler();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -195,8 +200,7 @@ public class EmployeeController implements Initializable {
 
     private void populateAccountActivityTable() throws SQLException {
         logger = new LoggerFactory().create("accountactivity");
-        accountActivityTableView.getItems().clear();
-        accountActivityTableView.getItems().addAll(logger.getLogs());
+        accountActivityTableView.getItems().setAll(logger.getLogs());
     }
 
     private void populateAccountActivityFrequency() throws SQLException {
@@ -227,6 +231,12 @@ public class EmployeeController implements Initializable {
                 data.remove(i--);
         }
     }
+    /*
+    //////////////
+    ITEMS
+    //////////////
+    */
+
 
     /*
     //////////////
@@ -235,50 +245,43 @@ public class EmployeeController implements Initializable {
      */
 
     private void createCamperPanelEventHandler(){
-        List<Camper> selectedCampers = camperTableView.getSelectionModel().getSelectedItems();
-        List<Camper> getItems = camperTableView.getItems();
-        String[] camperParams = new String[]{camperNameField.getText(), camperBalanceField.getText()};
         CamperDAO camperDAO = new CamperDAO();
-        EventHandler<Event> eventHandler = new PanelEventHandler(camperTableView) {
+        EventHandler<Event> camperEventHandler = new PanelEventHandler(camperTableView) {
             @Override
             public void handle(Event event) {
                 onEvent(event);
             }
-
             @Override
             void add() throws SQLException {
-                Camper camper = new Camper(Util.NEW_ID(), camperParams[0], Integer.parseInt(camperParams[1]));
+                Camper camper = new Camper(Util.NEW_ID(), camperNameField.getText(), Integer.parseInt(camperBalanceField.getText()));
                 camperDAO.add(camper);
-                getItems.add(camper);
-                clearCamperFields();
-
+                camperTableView.getItems().add(camper);
             }
             @Override
             void update() throws SQLException {
-                for (Camper camper : selectedCampers)
-                    camperDAO.update(camper, camperParams);
+                for (Camper camper : camperTableView.getSelectionModel().getSelectedItems())
+                    camperDAO.update(camper, new String[]{camperNameField.getText(), camperBalanceField.getText()});
                 camperTableView.getItems().setAll(camperDAO.getAll());
+
             }
             @Override
             void delete() throws SQLException {
-                for (Camper camper : selectedCampers)
+                for (Camper camper : camperTableView.getSelectionModel().getSelectedItems())
                     camperDAO.delete(camper.getId());
-                getItems.removeAll(selectedCampers);
+                camperTableView.getItems().removeAll(camperTableView.getSelectionModel().getSelectedItems());
+            }
+
+            @Override
+            void onSuccessfulEvent() {
+                camperNameField.clear();
+                camperBalanceField.clear();
+                camperNameField.requestFocus();
+                camperTableView.getSelectionModel().clearSelection();
             }
         };
-        campersAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, eventHandler);
-        camperUpdate.addEventHandler(ActionEvent.ACTION ,eventHandler);
-        camperDelete.addEventHandler(ActionEvent.ACTION, eventHandler);
-    }
-
-    /*
-    //////////////
-    ACCOUNTS
-    //////////////
-     */
-
-    private void createAccountPanelEventHandler(){
-        
+        campersAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, camperEventHandler);
+        camperUpdate.addEventHandler(ActionEvent.ACTION , camperEventHandler);
+        camperDelete.addEventHandler(ActionEvent.ACTION, camperEventHandler);
     }
 
     @FXML
@@ -288,10 +291,73 @@ public class EmployeeController implements Initializable {
         camperBalanceField.setText(String.valueOf(camper.getBalance()));
     }
 
-    private void clearCamperFields(){
-        camperNameField.clear();
-        camperBalanceField.clear();
-        camperNameField.requestFocus();
+    /*
+    //////////////
+    ACCOUNTS
+    //////////////
+     */
+
+    private void createAccountPanelEventHandler(){
+        AccountDAO accountDAO = new AccountDAO();
+        EventHandler<Event> accountEventHandler = new PanelEventHandler(accountTableView) {
+            @Override
+            void add() throws SQLException {
+                Account account = new Account(Util.NEW_ID(), usernameField.getText(),
+                        new DefaultPasswordService().encryptPassword(passwordField.getText()),
+                        permissionsField.getText(), accountRoleChoiceBox.getValue());
+                accountDAO.add(account);
+                accountTableView.getItems();
+            }
+            @Override
+            void update() throws SQLException {
+                for (Account account: accountTableView.getSelectionModel().getSelectedItems())
+                    accountDAO.update(account, new String[]{usernameField.getText(), passwordField.getText(),
+                            accountRoleChoiceBox.getValue().name(),
+                            permissionsField.getText()});
+                accountTableView.getItems().setAll(accountDAO.getAll());
+            }
+
+            @Override
+            void delete() throws SQLException {
+                for (Account account : accountTableView.getSelectionModel().getSelectedItems())
+                    accountDAO.delete(account.getId());
+                accountTableView.getItems().removeAll(accountTableView.getSelectionModel().getSelectedItems());
+            }
+
+            @Override
+            void onSuccessfulEvent() {
+                usernameField.requestFocus();
+                usernameField.clear();
+                passwordField.clear();
+                permissionsField.clear();
+                accountTableView.getSelectionModel().clearSelection();
+            }
+
+            @Override
+            public void handle(Event event) {
+                onEvent(event);
+            }
+        };
+
+        accountUpdate.addEventHandler(ActionEvent.ACTION, accountEventHandler);
+        accountDelete.addEventHandler(ActionEvent.ACTION, accountEventHandler);
+        accountsAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, accountEventHandler);
+    }
+
+    @FXML
+    private void fillAccountFields(){
+        Account account = accountTableView.getSelectionModel().getSelectedItem();
+        usernameField.setText(account.getName());
+        passwordField.setText(account.getPassword());
+        permissionsField.setText(account.getPermissions());
+        accountRoleChoiceBox.setValue(account.getAccountRole());
+    }
+
+
+    private void populateAccountRoleChoiceBox(){
+        for (AccountRole accountType : AccountRole.values())
+            accountRoleChoiceBox.getItems().add(accountType);
+        accountRoleChoiceBox.setValue(AccountRole.UNCONFIRMED);
     }
 
 
@@ -311,6 +377,12 @@ public class EmployeeController implements Initializable {
         camperNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         camperIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
+        accountIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        usernameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        passwordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
+        permissionsColumn.setCellValueFactory(new PropertyValueFactory<>("permissions"));
+        accountRoleColumn.setCellValueFactory(new PropertyValueFactory<>("accountRole"));
+
 
     }
 }
