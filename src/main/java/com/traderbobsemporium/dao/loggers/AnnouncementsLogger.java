@@ -19,8 +19,9 @@ public class AnnouncementsLogger implements Logger<Announcement> {
 
     @Override
     public void log(Announcement announcement) throws SQLException {
-        DatabaseUtil.UPDATE("INSERT INTO announcement VALUES('" + announcement.getId() + "','" +
-                announcement.getTitle() + "','" + announcement.getDialog() + "','" + announcement.getDateTime() + "')");
+        DatabaseUtil.UPDATE("INSERT INTO announcement VALUES('" +announcement.getId() + "','" +
+                announcement.getName() + "','" +announcement.getTitle() + "','" + announcement.getDialog() +
+                "','" + announcement.getDateTime() + "')");
     }
 
     @Override

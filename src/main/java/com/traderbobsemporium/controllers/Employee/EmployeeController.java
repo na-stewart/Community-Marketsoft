@@ -1,7 +1,6 @@
 package main.java.com.traderbobsemporium.controllers.Employee;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -49,10 +48,15 @@ import java.util.*;
 
 //https://camo.githubusercontent.com/8708a8dcb49d365b1786a5093d8f3fd37aeb18a2/68747470733a2f2f7770696d672e77616c6c7374636e2e636f6d2f61353839346331622d663661662d343536652d383264662d3131353164613038333962662e706e67 <- design link
 public class EmployeeController implements Initializable {
-    private Logger logger;
+    private Logger<AccountActivity> accountActivityLogger = new LoggerFactory<AccountActivity>().create("accountactivity");
+    private Logger<Announcement> announcementLogger = new LoggerFactory<Announcement>().create("announcements");
     private GUIPanel[] panels;
     @FXML
     private TextField panelXField, panelYField;
+    @FXML
+    private ScrollPane dashboardScrollPane;
+    @FXML
+    private TilePane dashboardTilePane;
     @FXML
     private TableView<AccountActivity> accountActivityTableView;
     @FXML
@@ -63,10 +67,6 @@ public class EmployeeController implements Initializable {
     @FXML
     private TableColumn<PurchasesActivity, String> camperPurchasingNameColumn, itemNameColumn, quantityColumn, balanceSpentColumn,
             dateTimeColumnPurchases;
-    @FXML
-    private ScrollPane dashboardScrollPane;
-    @FXML
-    private TilePane dashboardTilePane;
     @FXML
     private PieChart accountActivityFrequencyChart;
     @FXML
@@ -93,14 +93,22 @@ public class EmployeeController implements Initializable {
     private ChoiceBox<AccountRole> accountRoleChoiceBox;
     @FXML
     private Button accountUpdate, accountDelete;
+    @FXML
+    private TableView<Announcement> announcementTableView;
+    @FXML
+    private TableColumn<Announcement, String> announcementIdColumn, TitleColumn, DialogColumn;
+    @FXML
+    private TextField titleField;
+    @FXML
+    private TextArea dialogField;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         panels = new GUIPanel[]{new GUIPanel(dashboardScrollPane, "Dashboard"),
                 new GUIPanel(campersAnchorPane, "Campers"), new GUIPanel(accountsAnchorPane, "Accounts")};
         setCellValueFactory();
-        loadDashboard();
-
+        loadDash();
         loadDataManagerPanels();
         setTableSelectionMethods();
         dashboardTilePane.prefWidthProperty().bind(dashboardScrollPane.widthProperty());
@@ -112,9 +120,20 @@ public class EmployeeController implements Initializable {
         accountTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
+
+    private void loadDash(){
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> loadDashboard());
+            }
+        };
+        new Timer().schedule(task, 0, 10000);
+    }
+
     private void loadDashboard() {
         try {
-            populateAccountActivityTable();
+            accountActivityTableView.getItems().setAll(accountActivityLogger.getLogs());
             populateAccountActivityFrequency();
             populateAnnouncementsTextArea();
             populatePurchasedItems();
@@ -184,11 +203,11 @@ public class EmployeeController implements Initializable {
     }
 
     private void populateAnnouncementsTextArea() throws SQLException {
-        logger = new LoggerFactory().create("announcements");
         StringBuilder stringBuilder = new StringBuilder();
-        for (Object announcementObj : logger.getLogs()) {
+        for (Object announcementObj : announcementLogger.getLogs()) {
             Announcement announcement = (Announcement) announcementObj;
             stringBuilder.append(announcement.getTitle()).append("\n");
+            stringBuilder.append(announcement.getName()).append("\n");
             stringBuilder.append(announcement.getDateTime()).append("\n");
             stringBuilder.append("-----------------------------------\n");
             stringBuilder.append(announcement.getDialog()).append("\n");
@@ -198,18 +217,12 @@ public class EmployeeController implements Initializable {
 
     }
 
-    private void populateAccountActivityTable() throws SQLException {
-        logger = new LoggerFactory().create("accountactivity");
-        accountActivityTableView.getItems().setAll(logger.getLogs());
-    }
-
     private void populateAccountActivityFrequency() throws SQLException {
         int frequency = 0;
-        logger = new LoggerFactory().create("accountactivity");
         ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
         String[] activityTypes = Arrays.stream(ActivityType.class.getEnumConstants()).map(Enum::name).toArray(String[]::new);
         for (String activityType : activityTypes) {
-            for (Object accountActivityObj : logger.getLogs()) {
+            for (Object accountActivityObj : accountActivityLogger.getLogs()) {
                 AccountActivity accountActivity = (AccountActivity) accountActivityObj;
                 if (accountActivity.getActivityType().name().equals(activityType))
                     frequency++;
@@ -253,21 +266,26 @@ public class EmployeeController implements Initializable {
             }
             @Override
             void add() throws SQLException {
-                Camper camper = new Camper(Util.NEW_ID(), camperNameField.getText(), Integer.parseInt(camperBalanceField.getText()));
+                Camper camper = new Camper(camperNameField.getText(), Integer.parseInt(camperBalanceField.getText()));
                 camperDAO.add(camper);
                 camperTableView.getItems().add(camper);
+                accountActivityLogger.log(new AccountActivity(ActivityType.ADD, camper));
             }
             @Override
             void update() throws SQLException {
-                for (Camper camper : camperTableView.getSelectionModel().getSelectedItems())
+                for (Camper camper : camperTableView.getSelectionModel().getSelectedItems()) {
                     camperDAO.update(camper, new String[]{camperNameField.getText(), camperBalanceField.getText()});
+                    accountActivityLogger.log(new AccountActivity(ActivityType.UPDATE, camper));
+                }
                 camperTableView.getItems().setAll(camperDAO.getAll());
 
             }
             @Override
             void delete() throws SQLException {
-                for (Camper camper : camperTableView.getSelectionModel().getSelectedItems())
+                for (Camper camper : camperTableView.getSelectionModel().getSelectedItems()) {
                     camperDAO.delete(camper.getId());
+                    accountActivityLogger.log(new AccountActivity(ActivityType.DELETE, camper));
+                }
                 camperTableView.getItems().removeAll(camperTableView.getSelectionModel().getSelectedItems());
             }
 
@@ -302,25 +320,30 @@ public class EmployeeController implements Initializable {
         EventHandler<Event> accountEventHandler = new PanelEventHandler(accountTableView) {
             @Override
             void add() throws SQLException {
-                Account account = new Account(Util.NEW_ID(), usernameField.getText(),
+                Account account = new Account(usernameField.getText(),
                         new DefaultPasswordService().encryptPassword(passwordField.getText()),
                         permissionsField.getText(), accountRoleChoiceBox.getValue());
                 accountDAO.add(account);
-                accountTableView.getItems();
+                accountTableView.getItems().add(account);
+                accountActivityLogger.log(new AccountActivity(ActivityType.ADD, account));
             }
             @Override
             void update() throws SQLException {
-                for (Account account: accountTableView.getSelectionModel().getSelectedItems())
+                for (Account account: accountTableView.getSelectionModel().getSelectedItems()) {
                     accountDAO.update(account, new String[]{usernameField.getText(), passwordField.getText(),
                             accountRoleChoiceBox.getValue().name(),
                             permissionsField.getText()});
+                    accountActivityLogger.log(new AccountActivity(ActivityType.UPDATE, account));
+                }
                 accountTableView.getItems().setAll(accountDAO.getAll());
             }
 
             @Override
             void delete() throws SQLException {
-                for (Account account : accountTableView.getSelectionModel().getSelectedItems())
+                for (Account account : accountTableView.getSelectionModel().getSelectedItems()) {
                     accountDAO.delete(account.getId());
+                    accountActivityLogger.log(new AccountActivity(ActivityType.DELETE, account));
+                }
                 accountTableView.getItems().removeAll(accountTableView.getSelectionModel().getSelectedItems());
             }
 
@@ -338,7 +361,6 @@ public class EmployeeController implements Initializable {
                 onEvent(event);
             }
         };
-
         accountUpdate.addEventHandler(ActionEvent.ACTION, accountEventHandler);
         accountDelete.addEventHandler(ActionEvent.ACTION, accountEventHandler);
         accountsAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, accountEventHandler);
@@ -360,9 +382,48 @@ public class EmployeeController implements Initializable {
         accountRoleChoiceBox.setValue(AccountRole.UNCONFIRMED);
     }
 
+     /*
+    //////////////
+    ANNOUNCEMENT
+    //////////////
+     */
+
+     private void createAnnouncementPanelEventHandler(){
+         EventHandler<Event> panelEventHandler = new PanelEventHandler(announcementTableView) {
+             @Override
+             public void handle(Event event) {
+                onEvent(event);
+             }
+             @Override
+             void add() throws SQLException {
+                announcementLogger.log(new Announcement(titleField.getText(), dialogField.getText()));
+             }
+
+             @Override
+             void update() throws SQLException {
+                Util.displayError("Editing logs is forbidden. Deselect log in table and click submit to" +
+                        "submit new log.", Alert.AlertType.ERROR);
+             }
+
+             @Override
+             void delete() throws SQLException {
+
+             }
+
+             @Override
+             void onSuccessfulEvent() {
+
+             }
+         };
+     }
+
+
+
+
+
 
     private void setCellValueFactory(){
-        usernameActivityColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        usernameActivityColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         ipColumn.setCellValueFactory(new PropertyValueFactory<>("ip"));
         macColumn.setCellValueFactory(new PropertyValueFactory<>("mac"));
         activityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("activityType"));

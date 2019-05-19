@@ -11,18 +11,22 @@ import main.java.com.traderbobsemporium.dao.loggers.PurchasesActivityLogger;
  * Copyright (c)
  * All rights reserved.
  */
-public class LoggerFactory implements Factory<Logger>{
+public class LoggerFactory<T> implements Factory<Logger>{
 
     @Override
-    public Logger create(String param) {
+    public Logger<T> create(String param) {
+        Logger logger = null;
         switch (param.toLowerCase()){
             case "accountactivity":
-                return new AccountActivityLogger();
+                logger = new AccountActivityLogger();
+                break;
             case "announcements":
-                return new AnnouncementsLogger();
+                logger = new AnnouncementsLogger();
+                break;
             case "purchasesactivity":
-                return new PurchasesActivityLogger();
+                 logger = new PurchasesActivityLogger();
+                 break;
         }
-      return null;
+        return logger;
     }
 }

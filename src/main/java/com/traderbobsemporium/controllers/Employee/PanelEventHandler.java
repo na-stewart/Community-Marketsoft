@@ -28,7 +28,7 @@ import java.sql.SQLException;
  * All rights reserved.
  */
 abstract class PanelEventHandler implements EventHandler<Event> {
-    private Profile profile;
+    private Object object;
 
     @RequiresAuthentication
     abstract void add() throws SQLException;
@@ -36,11 +36,10 @@ abstract class PanelEventHandler implements EventHandler<Event> {
     abstract void update() throws SQLException;
     @RequiresAuthentication
     abstract void delete() throws SQLException;
-    @RequiresAuthentication
     abstract void onSuccessfulEvent();
 
-    PanelEventHandler(TableView tableView) {
-        this.profile = (Profile) tableView.getSelectionModel().getSelectedItem();
+    public PanelEventHandler(TableView tableView) {
+        this.object = tableView.getSelectionModel().getSelectedItem();
     }
 
     void onEvent(Event event){
@@ -54,7 +53,7 @@ abstract class PanelEventHandler implements EventHandler<Event> {
     private void onKeyEvent(KeyEvent keyEvent){
         try {
             if (keyEvent.getCode() == KeyCode.ENTER) {
-                if (profile!= null)
+                if (object != null)
                     update();
                 else
                     add();
@@ -73,7 +72,7 @@ abstract class PanelEventHandler implements EventHandler<Event> {
         String buttonText = ((Button) actionEvent.getSource()).getText();
         try {
             if (buttonText.equals("Update")){
-                if (profile != null)
+                if (object != null)
                     update();
                 else
                     add();

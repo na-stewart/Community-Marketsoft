@@ -2,6 +2,7 @@ package main.java.com.traderbobsemporium.model.Logging;
 
 import main.java.com.traderbobsemporium.model.Profile;
 import main.java.com.traderbobsemporium.util.Util;
+import org.apache.shiro.SecurityUtils;
 
 import java.net.*;
 import java.sql.ResultSet;
@@ -13,9 +14,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class AccountActivity {
-    private long id;
-    private String username;
+public class AccountActivity extends Profile {
     private String ip;
     private String mac;
     private ActivityType activityType;
@@ -23,9 +22,8 @@ public class AccountActivity {
     private String affectedItemName;
     private String dateTime;
 
-    public AccountActivity(long id, String username, ActivityType activityType, Profile profile) {
-        this.id = id;
-        this.username = username;
+    public AccountActivity(ActivityType activityType, Profile profile) {
+        super(Util.NEW_ID(), String.valueOf(SecurityUtils.getSubject().getPrincipal()));
         this.activityType = activityType;
         this.dateTime = Util.dateTime();
         this.affectedItemName = profile.getName();
@@ -35,15 +33,15 @@ public class AccountActivity {
     }
 
     public AccountActivity(ResultSet resultSet) throws SQLException {
-            this.username = resultSet.getString("username");
-            this.ip = resultSet.getString("ip");
-            this.mac = resultSet.getString("mac");
-            this.activityType = ActivityType.valueOf(resultSet.getString("activityType"));
-            this.affectedItemId = resultSet.getLong("itemID");
-            this.affectedItemName = resultSet.getString("itemName");
-            this.dateTime = resultSet.getString("dateTime");
-            this.affectedItemId = resultSet.getLong("itemID");
-            this.affectedItemName = resultSet.getString("itemName");
+        super(resultSet.getLong("id"), resultSet.getString("username"));
+        this.ip = resultSet.getString("ip");
+        this.mac = resultSet.getString("mac");
+        this.activityType = ActivityType.valueOf(resultSet.getString("activityType"));
+        this.affectedItemId = resultSet.getLong("itemID");
+        this.affectedItemName = resultSet.getString("itemName");
+        this.dateTime = resultSet.getString("dateTime");
+        this.affectedItemId = resultSet.getLong("itemID");
+        this.affectedItemName = resultSet.getString("itemName");
     }
 
     private String ip() {
@@ -74,28 +72,12 @@ public class AccountActivity {
     }
 
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public long getAffectedItemId() {
         return affectedItemId;
     }
 
     public void setAffectedItemId(long affectedItemId) {
         this.affectedItemId = affectedItemId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getIp() {
@@ -141,7 +123,8 @@ public class AccountActivity {
     @Override
     public String toString() {
         return "AccountActivity{" +
-                "username='" + username + '\'' +
+                "id=" + getId() + '\'' +
+                "username='" + getName() + '\'' +
                 ", ip='" + ip + '\'' +
                 ", mac='" + mac + '\'' +
                 ", activityType=" + activityType +

@@ -10,31 +10,20 @@ import java.sql.SQLException;
  * All rights reserved.
  */
 public class PurchasesActivity {
-    private long id;
     private String camperName;
     private int quantity;
     private int balanceSpent;
 
-    public PurchasesActivity(long id, String camperName, int quantity, int balanceSpent) {
-        this.id = id;
+    public PurchasesActivity(String camperName, int quantity, int balanceSpent) {
         this.camperName = camperName;
         this.quantity = quantity;
         this.balanceSpent = balanceSpent;
     }
 
     public PurchasesActivity(ResultSet resultSet) throws SQLException {
-        this.id = resultSet.getLong("id");
         this.camperName = resultSet.getString("camperName");
         this.quantity = resultSet.getInt("quantity");
         this.balanceSpent = resultSet.getInt("balanceSpent");
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getCamperName() {
@@ -64,7 +53,6 @@ public class PurchasesActivity {
     @Override
     public String toString() {
         return "PurchasesActivity{" +
-                "id=" + id +
                 ", camperName='" + camperName + '\'' +
                 ", quantity=" + quantity +
                 ", balanceSpent=" + balanceSpent +

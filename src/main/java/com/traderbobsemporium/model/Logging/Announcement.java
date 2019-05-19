@@ -1,5 +1,9 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
+import main.java.com.traderbobsemporium.model.Profile;
+import main.java.com.traderbobsemporium.util.Util;
+import org.apache.shiro.SecurityUtils;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -9,32 +13,23 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class Announcement{
-    private Long id;
+public class Announcement extends Profile {
     private String title;
     private String dialog;
     private String dateTime;
 
-    public Announcement(Long id, String title, String dialog, String dateTime) {
-        this.id = id;
+    public Announcement(String title, String dialog) {
+        super(Util.NEW_ID(), String.valueOf(SecurityUtils.getSubject()));
         this.title = title;
         this.dialog = dialog;
-        this.dateTime = dateTime;
+        this.dateTime = Util.dateTime();
     }
 
     public Announcement(ResultSet resultSet) throws SQLException {
-        id = resultSet.getLong("id");
+        super(resultSet.getLong("id"), resultSet.getString("username"));
         title = resultSet.getString("title");
         dialog = resultSet.getString("dialog");
         dateTime = resultSet.getString("dateTime");
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -64,6 +59,7 @@ public class Announcement{
     @Override
     public String toString() {
         return "Announcement{" +
+                "id=" + getId() + '\'' +
                 "title='" + title + '\'' +
                 ", dialog='" + dialog + '\'' +
                 ", dateTime='" + dateTime + '\'' +

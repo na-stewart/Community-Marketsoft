@@ -81,7 +81,7 @@ public class RegisterController implements Initializable {
                 new DefaultPasswordService().encryptPassword(passwordField.getText()),
                 "none", AccountRole.UNCONFIRMED);
         new AccountDAO().add(account);
-        accountActivityLogger.log(new AccountActivity(Util.NEW_ID(), "null", ActivityType.REGISTER, account));
+        accountActivityLogger.log(new AccountActivity(ActivityType.REGISTER, account));
         Util.displayError("Your account has been registered! Please wait for your account to be " +
                 "assigned a designated role by the administrator.", Alert.AlertType.INFORMATION);
     }

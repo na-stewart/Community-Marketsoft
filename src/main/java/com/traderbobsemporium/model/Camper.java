@@ -1,6 +1,8 @@
 package main.java.com.traderbobsemporium.model;
 
 
+import main.java.com.traderbobsemporium.util.Util;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,8 +15,8 @@ import java.sql.SQLException;
 public class Camper extends Profile {
     private int balance;
 
-    public Camper(long id, String name, int balance) {
-        super(id, name);
+    public Camper(String name, int balance) {
+        super(Util.NEW_ID(), name);
         this.balance = balance;
     }
 

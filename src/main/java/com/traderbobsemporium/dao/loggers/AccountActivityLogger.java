@@ -20,10 +20,10 @@ public class AccountActivityLogger implements Logger<AccountActivity> {
 
     @Override
     public void log(AccountActivity accountActivity) throws SQLException {
-        DatabaseUtil.UPDATE("INSERT INTO accountactivity VALUES('" + accountActivity.getId() + "','" +
-                accountActivity.getUsername() + "','" + accountActivity.getIp() + "','" + accountActivity.getMac() + "','" +
-                accountActivity.getActivityType() + "','" + accountActivity.getAffectedItemId() + "','" +
-                accountActivity.getUsername() + "','" + Util.dateTime() + "')");
+        DatabaseUtil.UPDATE("INSERT INTO accountactivity VALUES(' "+ accountActivity.getId() +  "','" +
+                accountActivity.getUsername() + "','" + accountActivity.getIp() + "','" + accountActivity.getMac() +
+                "','" + accountActivity.getActivityType() + "','" + accountActivity.getAffectedItemId() + "','" +
+                accountActivity.getAffectedItemName() + "','" + Util.dateTime() + "')");
     }
 
     @Override

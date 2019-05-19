@@ -1,5 +1,7 @@
 package main.java.com.traderbobsemporium.model;
 
+import main.java.com.traderbobsemporium.util.Util;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -15,8 +17,8 @@ public class Account extends Profile {
     private String permissions;
     private AccountRole accountRoles;
 
-    public Account(long id, String name, String password, String permissions, AccountRole accountRoles) {
-        super(id, name);
+    public Account(String name, String password, String permissions, AccountRole accountRoles) {
+        super(Util.NEW_ID(), name);
         this.password = password;
         this.permissions = permissions;
         this.accountRoles = accountRoles;

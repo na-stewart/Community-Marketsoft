@@ -85,7 +85,7 @@
                         <Font name="Leelawadee UI Semilight" size="20.0" />
                      </font>
                   </Text>
-                  <Text fill="WHITE" layoutX="11.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Logs" textAlignment="CENTER" wrappingWidth="98.798828125">
+                  <Text fill="WHITE" layoutX="11.0" layoutY="104.0" onMouseClicked="#openPanel" strokeType="OUTSIDE" strokeWidth="0.0" text="Announce" textAlignment="CENTER" wrappingWidth="98.798828125">
                      <font>
                         <Font name="Leelawadee UI Semilight" size="20.0" />
                      </font>
@@ -153,8 +153,8 @@
                               <TableColumn fx:id="ipColumn" prefWidth="75.0" text="IP" />
                               <TableColumn fx:id="macColumn" prefWidth="75.0" text="Mac" />
                               <TableColumn fx:id="activityTypeColumn" prefWidth="75.0" text="Activity Type" />
-                              <TableColumn fx:id="affectedID" prefWidth="85.0" text="Item ID" />
-                              <TableColumn fx:id="affectedName" prefWidth="85.0" text="Item Name" />
+                              <TableColumn fx:id="affectedID" prefWidth="85.0" text="ID" />
+                              <TableColumn fx:id="affectedName" prefWidth="85.0" text="Name" />
                               <TableColumn fx:id="dateTimeColumnAccount" prefWidth="74.0" text="Date/Time" />
                            </columns>
                         </TableView>
@@ -279,7 +279,7 @@
             </VBox>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="accountsAnchorPane" layoutX="174.0" layoutY="49.0" prefHeight="676.0" prefWidth="1037.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <AnchorPane fx:id="accountsAnchorPane" layoutX="174.0" layoutY="49.0" prefHeight="676.0" prefWidth="1037.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
          <children>
             <TableView fx:id="accountTableView" layoutX="434.0" onMouseClicked="#fillAccountFields" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <columnResizePolicy>
@@ -358,5 +358,136 @@
             </VBox>
          </children>
       </AnchorPane>
+      <TabPane layoutX="174.0" layoutY="49.0" prefHeight="678.0" prefWidth="1038.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+        <tabs>
+          <Tab text="Announcements">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="accountTableView1" onMouseClicked="#fillAccountFields" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                           <columns>
+                              <TableColumn fx:id="accountIdColumn1" prefWidth="75.0" text="ID" />
+                              <TableColumn fx:id="usernameColumn1" prefWidth="75.0" text="Title" />
+                              <TableColumn fx:id="passwordColumn1" prefWidth="75.0" text="Dialog" />
+                           </columns>
+                        </TableView>
+                        <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="659.0" prefWidth="432.0" spacing="50.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="17.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Announcement">
+                                 <font>
+                                    <Font name="Georgia" size="37.0" />
+                                 </font>
+                              </Text>
+                              <VBox alignment="CENTER" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
+                                       <font>
+                                          <Font name="Leelawadee UI" size="27.0" />
+                                       </font>
+                                    </Text>
+                                    <TextField fx:id="usernameField1" prefHeight="25.0" prefWidth="317.0" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="59.0" layoutY="83.0" prefHeight="273.0" prefWidth="334.0" spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dialog">
+                                       <font>
+                                          <Font name="Leelawadee UI" size="27.0" />
+                                       </font>
+                                    </Text>
+                                    <TextArea prefHeight="266.0" prefWidth="334.0" wrapText="true" />
+                                 </children>
+                              </VBox>
+                              <HBox alignment="CENTER" prefHeight="82.0" prefWidth="335.0" spacing="40.0">
+                                 <children>
+                                    <Button fx:id="accountUpdate1" layoutX="93.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Submit">
+                                       <font>
+                                          <Font name="Malgun Gothic" size="16.0" />
+                                       </font>
+                                    </Button>
+                                    <Button fx:id="accountUpdate12" layoutX="136.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Delete">
+                                       <font>
+                                          <Font name="Malgun Gothic" size="16.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Account Activity">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="accountTableView11" onMouseClicked="#fillAccountFields" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                           <columns>
+                              <TableColumn fx:id="accountIdColumn11" prefWidth="75.0" text="ID" />
+                              <TableColumn fx:id="usernameColumn11" prefWidth="75.0" text="Title" />
+                              <TableColumn fx:id="passwordColumn11" prefWidth="75.0" text="Dialog" />
+                           </columns>
+                        </TableView>
+                        <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="659.0" prefWidth="432.0" spacing="50.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="17.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Account Activity">
+                                 <font>
+                                    <Font name="Georgia" size="37.0" />
+                                 </font>
+                              </Text>
+                              <VBox alignment="CENTER" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
+                                       <font>
+                                          <Font name="Leelawadee UI" size="27.0" />
+                                       </font>
+                                    </Text>
+                                    <TextField fx:id="usernameField11" prefHeight="25.0" prefWidth="317.0" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="59.0" layoutY="83.0" prefHeight="273.0" prefWidth="334.0" spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dialog">
+                                       <font>
+                                          <Font name="Leelawadee UI" size="27.0" />
+                                       </font>
+                                    </Text>
+                                    <TextArea prefHeight="280.0" prefWidth="334.0" />
+                                 </children>
+                              </VBox>
+                              <HBox alignment="CENTER" prefHeight="82.0" prefWidth="335.0" spacing="40.0">
+                                 <children>
+                                    <Button fx:id="accountUpdate11" layoutX="93.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Update">
+                                       <font>
+                                          <Font name="Malgun Gothic" size="16.0" />
+                                       </font>
+                                    </Button>
+                                    <Button fx:id="accountDelete11" layoutX="75.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Delete">
+                                       <font>
+                                          <Font name="Malgun Gothic" size="16.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Purchases">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
    </children>
 </AnchorPane>

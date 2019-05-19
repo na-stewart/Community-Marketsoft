@@ -1,5 +1,7 @@
 package main.java.com.traderbobsemporium.model;
 
+import main.java.com.traderbobsemporium.util.Util;
+
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +17,8 @@ public class Item extends Profile {
     private int price;
     private ItemType itemType;
 
-    public Item(long id, String name, URL imageURL, int price, ItemType itemType) {
-        super(id, name);
+    public Item(String name, URL imageURL, int price, ItemType itemType) {
+        super(Util.NEW_ID(), name);
         this.imageURL = imageURL;
         this.price = price;
         this.itemType = itemType;

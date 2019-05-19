@@ -10,7 +10,7 @@ public class Profile {
     private long id;
     private String name;
 
-    Profile(long id, String name) {
+   public Profile(long id, String name) {
         this.id = id;
         this.name = name;
     }
