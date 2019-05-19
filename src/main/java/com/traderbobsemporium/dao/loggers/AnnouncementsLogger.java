@@ -16,12 +16,16 @@ import java.util.List;
  */
 public class AnnouncementsLogger implements Logger<Announcement> {
 
-
     @Override
     public void log(Announcement announcement) throws SQLException {
         DatabaseUtil.UPDATE("INSERT INTO announcement VALUES('" +announcement.getId() + "','" +
                 announcement.getName() + "','" +announcement.getTitle() + "','" + announcement.getDialog() +
                 "','" + announcement.getDateTime() + "')");
+    }
+
+    @Override
+    public void deleteLog(long id) throws SQLException {
+        DatabaseUtil.UPDATE("DELETE FROM announcement WHERE id = '" + id  + "'");
     }
 
     @Override

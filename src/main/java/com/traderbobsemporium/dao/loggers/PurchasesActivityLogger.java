@@ -22,6 +22,11 @@ public class PurchasesActivityLogger implements Logger<PurchasesActivity> {
     }
 
     @Override
+    public void deleteLog(long id) throws SQLException {
+
+    }
+
+    @Override
     public ArrayList<PurchasesActivity> getLogs() throws SQLException {
         ArrayList<PurchasesActivity> purchases = new ArrayList<>();
         ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("purchasesactivity");
@@ -30,17 +35,4 @@ public class PurchasesActivityLogger implements Logger<PurchasesActivity> {
         resultSet.close();
         return purchases;
     }
-
-    /*
-    @Override
-    public void log(String[] params, ActivityType activityType) {
-        try {
-            DatabaseUtil.UPDATE("INSERT INTO purchasesactivity VALUES('" + params[0] + "','" + params[1] + "','"
-                    + Integer.parseInt(params[2]) + "','" + Integer.parseInt(params[3]) + "','" + params[4] + "::" +
-                    activityType.name() + "')");
-        } catch (SQLException e) {
-            new ExceptionDialog(e).showAndWait();
-        }
-    }
-    */
 }

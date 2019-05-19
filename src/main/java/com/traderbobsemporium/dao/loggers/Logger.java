@@ -12,5 +12,6 @@ import java.util.List;
  */
 public interface Logger<T> {
     void log(T t) throws SQLException;
+    void deleteLog(long id) throws SQLException;
     List<T> getLogs() throws SQLException;
 }

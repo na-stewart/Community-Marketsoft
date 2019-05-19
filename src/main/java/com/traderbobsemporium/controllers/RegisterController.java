@@ -76,8 +76,8 @@ public class RegisterController implements Initializable {
     }
 
     private void register() throws SQLException {
-        Logger accountActivityLogger = new LoggerFactory().create("accountactivity");
-        Account account = new Account(Util.NEW_ID(), usernameField.getText(),
+        Logger<AccountActivity> accountActivityLogger = new LoggerFactory<AccountActivity>().create("accountactivity");
+        Account account = new Account(usernameField.getText(),
                 new DefaultPasswordService().encryptPassword(passwordField.getText()),
                 "none", AccountRole.UNCONFIRMED);
         new AccountDAO().add(account);
