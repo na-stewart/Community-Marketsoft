@@ -17,7 +17,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class ItemDAO implements DAO<Item> {
+class ItemDAO implements DAO<Item> {
 
     @Override
     public Item get(long id) throws SQLException {
@@ -40,9 +40,9 @@ public class ItemDAO implements DAO<Item> {
     }
 
     @Override
-    public void update(Item item, String[] params) throws SQLException, MalformedURLException {
+    public void update(Item item, String[] params) throws SQLException {
         item.setName(params[0]);
-        item.setImageURL(new URL(params[1]));
+        item.setImageURL(params[1]);
         item.setPrice(Integer.parseInt(params[2]));
         item.setItemType(ItemType.valueOf(params[3]));
         DatabaseUtil.UPDATE("UPDATE item SET name = '" + item.getName() + "'," +

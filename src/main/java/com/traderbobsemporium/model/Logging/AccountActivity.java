@@ -18,18 +18,28 @@ public class AccountActivity extends Profile {
     private String ip;
     private String mac;
     private ActivityType activityType;
-    private long affectedItemId;
-    private String affectedItemName;
+    private long affectedId;
+    private String affectedName;
     private String dateTime;
 
     public AccountActivity(ActivityType activityType, Profile profile) {
         super(Util.NEW_ID(), String.valueOf(SecurityUtils.getSubject().getPrincipal()));
         this.activityType = activityType;
         this.dateTime = Util.dateTime();
-        this.affectedItemName = profile.getName();
-        this.affectedItemId = profile.getId();
+        this.affectedName = profile.getName();
+        this.affectedId = profile.getId();
         this.ip = ip();
         this.mac = mac();
+    }
+
+    public AccountActivity(String name, String ip, String mac, ActivityType activityType, long affectedItemId, String affectedItemName, String dateTime) {
+        super(Util.NEW_ID(), name);
+        this.ip = ip;
+        this.mac = mac;
+        this.activityType = activityType;
+        this.affectedId = affectedItemId;
+        this.affectedName = affectedItemName;
+        this.dateTime = dateTime;
     }
 
     public AccountActivity(ResultSet resultSet) throws SQLException {
@@ -37,11 +47,9 @@ public class AccountActivity extends Profile {
         this.ip = resultSet.getString("ip");
         this.mac = resultSet.getString("mac");
         this.activityType = ActivityType.valueOf(resultSet.getString("activityType"));
-        this.affectedItemId = resultSet.getLong("itemID");
-        this.affectedItemName = resultSet.getString("itemName");
+        this.affectedId = resultSet.getLong("affectedID");
+        this.affectedName = resultSet.getString("affectedName");
         this.dateTime = resultSet.getString("dateTime");
-        this.affectedItemId = resultSet.getLong("itemID");
-        this.affectedItemName = resultSet.getString("itemName");
     }
 
     private String ip() {
@@ -72,12 +80,12 @@ public class AccountActivity extends Profile {
     }
 
 
-    public long getAffectedItemId() {
-        return affectedItemId;
+    public long getAffectedId() {
+        return affectedId;
     }
 
-    public void setAffectedItemId(long affectedItemId) {
-        this.affectedItemId = affectedItemId;
+    public void setAffectedId(long affectedId) {
+        this.affectedId = affectedId;
     }
 
     public String getIp() {
@@ -104,12 +112,12 @@ public class AccountActivity extends Profile {
         this.activityType = activityType;
     }
 
-    public String getAffectedItemName() {
-        return affectedItemName;
+    public String getAffectedName() {
+        return affectedName;
     }
 
-    public void setAffectedItemName(String affectedItemName) {
-        this.affectedItemName = affectedItemName;
+    public void setAffectedName(String affectedName) {
+        this.affectedName = affectedName;
     }
 
     public String getDateTime() {
@@ -128,8 +136,8 @@ public class AccountActivity extends Profile {
                 ", ip='" + ip + '\'' +
                 ", mac='" + mac + '\'' +
                 ", activityType=" + activityType +
-                ", affectedItemId=" + affectedItemId +
-                ", affectedItemName='" + affectedItemName + '\'' +
+                ", affectedId=" + affectedId +
+                ", affectedName='" + affectedName + '\'' +
                 ", dateTime='" + dateTime + '\'' +
                 '}';
     }

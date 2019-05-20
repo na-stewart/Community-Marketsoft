@@ -1,5 +1,8 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
+import main.java.com.traderbobsemporium.model.Item;
+import main.java.com.traderbobsemporium.util.Util;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -10,18 +13,24 @@ import java.sql.SQLException;
  * All rights reserved.
  */
 public class PurchasesActivity {
+    private long id;
     private String camperName;
+    private String itemName;
     private int quantity;
     private int balanceSpent;
 
-    public PurchasesActivity(String camperName, int quantity, int balanceSpent) {
+    public PurchasesActivity(String camperName, int quantity, Item item, int balanceSpent) {
+        this.id = Util.NEW_ID();
         this.camperName = camperName;
         this.quantity = quantity;
+        this.itemName = item.getName();
         this.balanceSpent = balanceSpent;
     }
 
     public PurchasesActivity(ResultSet resultSet) throws SQLException {
+        this.id = resultSet.getLong("id");
         this.camperName = resultSet.getString("camperName");
+        this.itemName = resultSet.getString("itemName");
         this.quantity = resultSet.getInt("quantity");
         this.balanceSpent = resultSet.getInt("balanceSpent");
     }
@@ -54,6 +63,7 @@ public class PurchasesActivity {
     public String toString() {
         return "PurchasesActivity{" +
                 ", camperName='" + camperName + '\'' +
+                ", itemName='" + itemName +
                 ", quantity=" + quantity +
                 ", balanceSpent=" + balanceSpent +
                 '}';

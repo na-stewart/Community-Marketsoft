@@ -13,11 +13,11 @@ import java.sql.SQLException;
  * All rights reserved.
  */
 public class Item extends Profile {
-    private URL imageURL;
+    private String imageURL;
     private int price;
     private ItemType itemType;
 
-    public Item(String name, URL imageURL, int price, ItemType itemType) {
+    public Item(String name, String imageURL, int price, ItemType itemType) {
         super(Util.NEW_ID(), name);
         this.imageURL = imageURL;
         this.price = price;
@@ -26,7 +26,7 @@ public class Item extends Profile {
 
     public Item (ResultSet resultSet) throws SQLException {
         super(resultSet.getLong("id"), resultSet.getString("name"));
-        this.imageURL = resultSet.getURL("imageURL");
+        this.imageURL = resultSet.getString("imageURL");
         this.price = resultSet.getInt("price");
         this.itemType = ItemType.valueOf(resultSet.getString("itemType"));
     }
@@ -39,11 +39,11 @@ public class Item extends Profile {
         this.itemType = itemType;
     }
 
-    public URL getImageURL() {
+    public String getImageURL() {
         return imageURL;
     }
 
-    public void setImageURL(URL imageURL) {
+    public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
     }
 

@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class Announcement extends Profile {
+public class Announcement extends Profile implements Comparable<Announcement> {
     private String title;
     private String dialog;
     private String dateTime;
@@ -25,9 +25,16 @@ public class Announcement extends Profile {
         this.dateTime = Util.dateTime();
     }
 
+    public Announcement(String name, String title, String dialog, String dateTime) {
+        super(Util.NEW_ID(), name);
+        this.title = title;
+        this.dialog = dialog;
+        this.dateTime = dateTime;
+    }
+
     public Announcement(ResultSet resultSet) throws SQLException {
         super(resultSet.getLong("id"), resultSet.getString("username"));
-        title = resultSet.getString("title");
+        title  = resultSet.getString("title");
         dialog = resultSet.getString("dialog");
         dateTime = resultSet.getString("dateTime");
     }
@@ -64,6 +71,14 @@ public class Announcement extends Profile {
                 ", dialog='" + dialog + '\'' +
                 ", dateTime='" + dateTime + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Announcement o) {
+        if (dateTime == null || o.dateTime == null) {
+            return 0;
+        }
+        return getDateTime().compareTo(o.getDateTime());
     }
 }
 
