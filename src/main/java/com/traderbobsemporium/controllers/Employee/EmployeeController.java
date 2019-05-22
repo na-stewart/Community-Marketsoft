@@ -1,5 +1,4 @@
 package main.java.com.traderbobsemporium.controllers.Employee;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,11 +10,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import main.java.com.traderbobsemporium.dao.DAO;
 import main.java.com.traderbobsemporium.dao.DatabaseAccessFactory;
@@ -31,10 +32,12 @@ import main.java.com.traderbobsemporium.model.Logging.Announcement;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
-
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @Author Aidan Stewart
@@ -45,12 +48,12 @@ import java.util.*;
 
 //https://camo.githubusercontent.com/8708a8dcb49d365b1786a5093d8f3fd37aeb18a2/68747470733a2f2f7770696d672e77616c6c7374636e2e636f6d2f61353839346331622d663661662d343536652d383264662d3131353164613038333962662e706e67 <- design link
 public class EmployeeController implements Initializable {
-
     private DAO<Camper> camperDAO = new DatabaseAccessFactory<Camper>().getDAO("camper");
     private DAO<Account> accountDAO = new DatabaseAccessFactory<Account>().getDAO("account");
     private DAO<AccountActivity> accountActivityLogger = new DatabaseAccessFactory<AccountActivity>().getLogger("accountactivity");
     private DAO<Announcement> announcementLogger = new DatabaseAccessFactory<Announcement>().getLogger("announcements");
 
+    //TODO: cleanup var names. aka: Dashboard(Tableview)//Logger(TableView)
     private GUIPanel[] panels;
     @FXML
     private TextField panelXField, panelYField;
@@ -75,6 +78,8 @@ public class EmployeeController implements Initializable {
     @FXML
     private AnchorPane campersAnchorPane;
     @FXML
+    private ImageView campersCancel;
+    @FXML
     private TableView<Camper> camperTableView;
     @FXML
     private TableColumn<Camper, String> camperIdColumn, camperNameColumn, balanceColumn;
@@ -84,6 +89,8 @@ public class EmployeeController implements Initializable {
     private Button camperUpdate, camperDelete;
     @FXML
     private AnchorPane accountsAnchorPane;
+    @FXML
+    private ImageView accountsCancel;
     @FXML
     private TableView<Account> accountTableView;
     @FXML
@@ -101,10 +108,10 @@ public class EmployeeController implements Initializable {
     @FXML
     private TableView<AccountActivity> accountActivityLoggerTableView;
     @FXML
-    private TableColumn<AccountActivity, String> activityIdColumn, activityUsernameColumn, activityMacColumn,
+    private TableColumn<AccountActivity, String> activityIdColumn, activityUsernameColumn, activityIpColumn, activityMacColumn,
             activityActivityTypeColumn, activityAffectedIdColumn, activityAffectedNameColumn, activityDateTimeColumn;
     @FXML
-    private TextField activityUsernameField, ipField, affectedIdField, affectedNameField, activityDateTimeField;
+    private TextField activityUsernameField, ipField, macField, affectedIdField, affectedNameField, activityDateTimeField;
     @FXML
     private ChoiceBox<ActivityType> activityTypeChoiceBox;
     @FXML
@@ -141,6 +148,7 @@ public class EmployeeController implements Initializable {
         camperTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         accountTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         announcementTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        accountActivityLoggerTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
 
@@ -174,6 +182,8 @@ public class EmployeeController implements Initializable {
             createAccountPanelEventHandler();
             announcementTableView.getItems().setAll(announcementLogger.getAll());
             createAnnouncementPanelEventHandler();
+            accountActivityLoggerTableView.getItems().setAll(accountActivityLogger.getAll());
+            createAccountActivitiesPanelEventHandler();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -281,7 +291,6 @@ public class EmployeeController implements Initializable {
      */
 
     private void createCamperPanelEventHandler(){
-        DAO<Camper> camperDAO = new DatabaseAccessFactory<Camper>().getDAO("camper");
         EventHandler<Event> camperEventHandler = new PanelEventHandler(camperTableView) {
             @Override
             public void handle(Event event) {
@@ -321,6 +330,7 @@ public class EmployeeController implements Initializable {
             }
         };
         campersAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, camperEventHandler);
+        campersCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, camperEventHandler);
         camperUpdate.addEventHandler(ActionEvent.ACTION , camperEventHandler);
         camperDelete.addEventHandler(ActionEvent.ACTION, camperEventHandler);
     }
@@ -383,6 +393,7 @@ public class EmployeeController implements Initializable {
                 onEvent(event);
             }
         };
+        accountsCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, accountEventHandler);
         accountUpdate.addEventHandler(ActionEvent.ACTION, accountEventHandler);
         accountDelete.addEventHandler(ActionEvent.ACTION, accountEventHandler);
         accountsAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, accountEventHandler);
@@ -413,7 +424,62 @@ public class EmployeeController implements Initializable {
       //todo Account Activity
 
     private void createAccountActivitiesPanelEventHandler(){
+        EventHandler<Event> panelEventHandler = new PanelEventHandler(accountActivityLoggerTableView) {
+            @Override
+            void add() throws SQLException {
+                AccountActivity accountActivity = new AccountActivity(activityUsernameField.getText(), ipField.getText(),
+                        macField.getText(), activityTypeChoiceBox.getValue(), Long.parseLong(affectedIdField.getText()),
+                        affectedNameField.getText(), activityDateTimeField.getText());
+                accountActivityLogger.add(accountActivity);
+            }
 
+
+            @Override
+            void update() throws SQLException {
+                for (AccountActivity activityType : accountActivityLogger.getAll()) {
+                    accountActivityLogger.update(activityType, new String[]{activityUsernameField.getText(),
+                    ipField.getText(), macField.getText(), activityTypeChoiceBox.getValue().name(), affectedID.getText(),
+                    affectedNameField.getText(), activityDateTimeField.getText()});
+                }
+                accountActivityTableView.getItems().setAll(accountActivityLogger.getAll());
+            }
+            @Override
+            void delete() throws SQLException {
+                for (AccountActivity accountActivity : accountActivityLoggerTableView.getSelectionModel().getSelectedItems())
+                    accountActivityLogger.delete(accountActivity.getId());
+                accountActivityLoggerTableView.getItems().removeAll(accountActivityLoggerTableView.getSelectionModel().getSelectedItems());
+            }
+
+            @Override
+            void onSuccessfulEvent() {
+                activityUsernameField.clear();
+                ipField.clear();
+                macField.clear();
+                affectedIdField.clear();
+                affectedNameField.clear();
+                activityDateTimeField.clear();
+            }
+
+            @Override
+            public void handle(Event event) {
+                onEvent(event);
+            }
+        };
+        activityUpdate.addEventHandler(ActionEvent.ACTION, panelEventHandler);
+        activityDelete.addEventHandler(ActionEvent.ACTION, panelEventHandler);
+        accountActivityAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, panelEventHandler);
+    }
+
+    @FXML
+    private void fillAccountActivityFields(){
+        AccountActivity accountActivity = accountActivityLoggerTableView.getSelectionModel().getSelectedItem();
+        activityUsernameField.setText(accountActivity.getName());
+        ipField.setText(accountActivity.getIp());
+        macField.setText(accountActivity.getMac());
+        affectedIdField.setText(String.valueOf(accountActivity.getAffectedId()));
+        affectedNameField.setText(accountActivity.getAffectedName());
+        activityDateTimeField.setText(accountActivity.getDateTime());
+        activityTypeChoiceBox.setValue(accountActivity.getActivityType());
     }
 
 
@@ -427,12 +493,12 @@ public class EmployeeController implements Initializable {
          EventHandler<Event> panelEventHandler = new PanelEventHandler(announcementTableView) {
              @Override
              public void handle(Event event) {
-                onEvent(event);
+                if (!dialogField.isFocused())
+                    onEvent(event);
              }
              @Override
              void add() throws SQLException {
-                 Announcement announcement = new Announcement(authorField.getText(), titleField.getText(),
-                         dialogField.getText(), announcementDateTimeField.getText());
+                 Announcement announcement = new Announcement(titleField.getText(), dialogField.getText());
                  announcementLogger.add(announcement);
                  announcementTableView.getItems().add(announcement);
                  accountActivityLogger.add(new AccountActivity(ActivityType.ADD, announcement));
@@ -440,9 +506,13 @@ public class EmployeeController implements Initializable {
 
              @Override
              void update() throws SQLException {
-                 for (Announcement announcement : announcementTableView.getSelectionModel().getSelectedItems())
+                 for (Announcement announcement : announcementTableView.getSelectionModel().getSelectedItems()) {
                      announcementLogger.update(announcement, new String[]{authorField.getText(), titleField.getText(),
                              dialogField.getText(), announcementDateTimeField.getText()});
+                     accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, announcement));
+                 }
+                 announcementTableView.getItems().setAll(announcementLogger.getAll());
+
              }
 
              @Override
@@ -484,8 +554,8 @@ public class EmployeeController implements Initializable {
         ipColumn.setCellValueFactory(new PropertyValueFactory<>("ip"));
         macColumn.setCellValueFactory(new PropertyValueFactory<>("mac"));
         activityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("activityType"));
-        affectedName.setCellValueFactory(new PropertyValueFactory<>("affectedItemName"));
-        affectedID.setCellValueFactory(new PropertyValueFactory<>("affectedItemId"));
+        affectedName.setCellValueFactory(new PropertyValueFactory<>("affectedName"));
+        affectedID.setCellValueFactory(new PropertyValueFactory<>("affectedId"));
         dateTimeColumnAccount.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
         camperPurchasingNameColumn.setCellValueFactory(new PropertyValueFactory<>("camperName"));
         itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
@@ -505,5 +575,13 @@ public class EmployeeController implements Initializable {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         dialogColumn.setCellValueFactory(new PropertyValueFactory<>("dialog"));
         announcementDateTimeColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
+        activityIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        activityUsernameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        activityIpColumn.setCellValueFactory(new PropertyValueFactory<>("ip"));
+        activityMacColumn.setCellValueFactory(new PropertyValueFactory<>("mac"));
+        activityAffectedIdColumn.setCellValueFactory(new PropertyValueFactory<>("affectedId"));
+        activityAffectedNameColumn.setCellValueFactory(new PropertyValueFactory<>("affectedName"));
+        activityActivityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("activityType"));
+        activityDateTimeColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
     }
 }

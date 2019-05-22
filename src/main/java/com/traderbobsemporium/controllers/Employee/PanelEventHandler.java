@@ -3,6 +3,7 @@ package main.java.com.traderbobsemporium.controllers.Employee;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
@@ -10,9 +11,13 @@ import javafx.scene.input.KeyEvent;
 import main.java.com.traderbobsemporium.dao.DAO;
 import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.AccountRole;
+import main.java.com.traderbobsemporium.model.Camper;
+import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
+import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.model.Profile;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.controlsfx.dialog.ExceptionDialog;
 
@@ -30,10 +35,11 @@ import java.sql.SQLException;
 abstract class PanelEventHandler implements EventHandler<Event> {
     private TableView tableView;
 
+
     @RequiresAuthentication
     abstract void add() throws SQLException;
     @RequiresAuthentication
-    abstract void update() throws SQLException, MalformedURLException;
+    abstract void update() throws SQLException;
     @RequiresAuthentication
     abstract void delete() throws SQLException;
     abstract void onSuccessfulEvent();
@@ -43,10 +49,19 @@ abstract class PanelEventHandler implements EventHandler<Event> {
     }
 
     void onEvent(Event event){
-        if (event.getEventType().getName().equals("KEY_PRESSED"))
-            onKeyEvent((KeyEvent) event);
-        else
-            onActionEvent((ActionEvent) event);
+        switch (event.getEventType().getName()) {
+            case "KEY_PRESSED":
+                onKeyEvent((KeyEvent) event);
+                break;
+            case "ACTION":
+                onActionEvent((ActionEvent) event);
+                break;
+            case "MOUSE_PRESSED":
+                if (tableView.getSelectionModel().getSelectedItem() != null)
+                    onSuccessfulEvent();
+
+                break;
+        }
 
     }
 
@@ -62,9 +77,12 @@ abstract class PanelEventHandler implements EventHandler<Event> {
                 delete();
                 onSuccessfulEvent();
             }
-        } catch (Exception e){
+        } catch (SQLException e){
             new ExceptionDialog(e).showAndWait();
             e.printStackTrace();
+        }
+        catch (AuthorizationException e){
+            Util.displayError("You are not authorized to execute this command", Alert.AlertType.ERROR);
         }
     }
 
@@ -81,9 +99,11 @@ abstract class PanelEventHandler implements EventHandler<Event> {
                 delete();
                 onSuccessfulEvent();
             }
-        } catch (Exception e){
+        } catch (SQLException e){
             new ExceptionDialog(e).showAndWait();
             e.printStackTrace();
+        } catch (AuthorizationException e){
+            Util.displayError("You are not authorized to execute this command", Alert.AlertType.ERROR);
         }
     }
 

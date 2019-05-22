@@ -19,7 +19,7 @@ public class Announcement extends Profile implements Comparable<Announcement> {
     private String dateTime;
 
     public Announcement(String title, String dialog) {
-        super(Util.NEW_ID(), String.valueOf(SecurityUtils.getSubject()));
+        super(Util.NEW_ID(), String.valueOf(SecurityUtils.getSubject().getPrincipal()));
         this.title = title;
         this.dialog = dialog;
         this.dateTime = Util.dateTime();
