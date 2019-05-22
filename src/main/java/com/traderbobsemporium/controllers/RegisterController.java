@@ -8,7 +8,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
-import main.java.com.traderbobsemporium.dao.DatabaseAccessFactory;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.model.Logging.ActivityType;
@@ -72,12 +71,14 @@ public class RegisterController implements Initializable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void register() throws SQLException {
+        DatabaseAccessFactory databaseAccessFactory = new DatabaseAccessFactory();
         Account account = new Account(usernameField.getText(),
                 new DefaultPasswordService().encryptPassword(passwordField.getText()),
                 "none", AccountRole.UNCONFIRMED);
-        new DatabaseAccessFactory<Account>().getDAO("account").add(account);
-        new DatabaseAccessFactory<AccountActivity>().getLogger("accountactivity").add(new AccountActivity(ActivityType.ADD, account));
+        databaseAccessFactory.getDAO("account").add(account);
+        databaseAccessFactory.getLogger("accountactivity").add(new AccountActivity(ActivityType.REGISTER, account));
         Util.displayError("Your account has been registered! Please wait for your account to be " +
                 "assigned a designated role by an administrator.", Alert.AlertType.INFORMATION);
     }

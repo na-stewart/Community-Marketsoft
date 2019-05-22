@@ -18,7 +18,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-class AnnouncementsLogger implements DAO<Announcement> {
+public class AnnouncementsLogger implements DAO<Announcement> {
 
 
     @Override

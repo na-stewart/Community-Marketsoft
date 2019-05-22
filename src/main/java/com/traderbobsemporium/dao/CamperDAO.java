@@ -15,7 +15,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-class CamperDAO implements DAO<Camper> {
+public class CamperDAO implements DAO<Camper> {
 
 
     @Override

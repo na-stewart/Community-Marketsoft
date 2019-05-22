@@ -16,7 +16,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-class PurchasesActivityLogger implements DAO<PurchasesActivity> {
+public class PurchasesActivityLogger implements DAO<PurchasesActivity> {
     @Override
     public PurchasesActivity get(long id) throws SQLException {
         return null;

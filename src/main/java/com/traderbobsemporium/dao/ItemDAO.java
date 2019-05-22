@@ -17,7 +17,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-class ItemDAO implements DAO<Item> {
+public class ItemDAO implements DAO<Item> {
 
     @Override
     public Item get(long id) throws SQLException {

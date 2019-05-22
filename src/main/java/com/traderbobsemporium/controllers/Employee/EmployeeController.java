@@ -16,10 +16,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import main.java.com.traderbobsemporium.dao.DAO;
-import main.java.com.traderbobsemporium.dao.DatabaseAccessFactory;
+import main.java.com.traderbobsemporium.dao.*;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.gui.GUIPanel;
@@ -32,6 +30,8 @@ import main.java.com.traderbobsemporium.model.Logging.Announcement;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.controlsfx.dialog.ExceptionDialog;
+
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -48,10 +48,10 @@ import java.util.TimerTask;
 
 //https://camo.githubusercontent.com/8708a8dcb49d365b1786a5093d8f3fd37aeb18a2/68747470733a2f2f7770696d672e77616c6c7374636e2e636f6d2f61353839346331622d663661662d343536652d383264662d3131353164613038333962662e706e67 <- design link
 public class EmployeeController implements Initializable {
-    private DAO<Camper> camperDAO = new DatabaseAccessFactory<Camper>().getDAO("camper");
-    private DAO<Account> accountDAO = new DatabaseAccessFactory<Account>().getDAO("account");
-    private DAO<AccountActivity> accountActivityLogger = new DatabaseAccessFactory<AccountActivity>().getLogger("accountactivity");
-    private DAO<Announcement> announcementLogger = new DatabaseAccessFactory<Announcement>().getLogger("announcements");
+    private CamperDAO camperDAO = new CamperDAO();
+    private AccountDAO accountDAO = new AccountDAO();
+    private AccountActivityLogger accountActivityLogger = new AccountActivityLogger();
+    private AnnouncementsLogger announcementLogger = new AnnouncementsLogger();
 
     //TODO: cleanup var names. aka: Dashboard(Tableview)//Logger(TableView)
     private GUIPanel[] panels;
@@ -106,6 +106,8 @@ public class EmployeeController implements Initializable {
     @FXML
     private AnchorPane accountActivityAnchorPane;
     @FXML
+    private ImageView accountActivityCancel;
+    @FXML
     private TableView<AccountActivity> accountActivityLoggerTableView;
     @FXML
     private TableColumn<AccountActivity, String> activityIdColumn, activityUsernameColumn, activityIpColumn, activityMacColumn,
@@ -118,6 +120,8 @@ public class EmployeeController implements Initializable {
     private Button activityUpdate, activityDelete;
     @FXML
     private AnchorPane announcementsAnchorPane;
+    @FXML
+    private ImageView announcementsCancel;
     @FXML
     private TableView<Announcement> announcementTableView;
     @FXML
@@ -156,10 +160,13 @@ public class EmployeeController implements Initializable {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> loadDashboard());
+                Platform.runLater(() -> {
+                    loadDashboard();
+                    populatePanelAllTableViews();
+                });
             }
         };
-        new Timer().schedule(task, 0, 20000);
+        new Timer().schedule(task, 0, 10000);
     }
 
     private void loadDashboard() {
@@ -173,19 +180,23 @@ public class EmployeeController implements Initializable {
         }
     }
 
-    private void loadDataManagerPanels(){
+    private void loadDataManagerPanels() {
+        populatePanelAllTableViews();
+        createCamperPanelEventHandler();
+        populateAccountRoleChoiceBox();
+        createAccountPanelEventHandler();
+        createAnnouncementPanelEventHandler();
+        createAccountActivitiesPanelEventHandler();
+    }
+
+    private void populatePanelAllTableViews() {
         try {
-            camperTableView.getItems().setAll(camperDAO.getAll());
-            createCamperPanelEventHandler();
             accountTableView.getItems().setAll(accountDAO.getAll());
-            populateAccountRoleChoiceBox();
-            createAccountPanelEventHandler();
+            camperTableView.getItems().setAll(camperDAO.getAll());
             announcementTableView.getItems().setAll(announcementLogger.getAll());
-            createAnnouncementPanelEventHandler();
             accountActivityLoggerTableView.getItems().setAll(accountActivityLogger.getAll());
-            createAccountActivitiesPanelEventHandler();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e){
+            new ExceptionDialog(e).showAndWait();
         }
     }
 
@@ -420,9 +431,7 @@ public class EmployeeController implements Initializable {
     ACCOUNT ACTIVITY
     //////////////
     */
-
-      //todo Account Activity
-
+      
     private void createAccountActivitiesPanelEventHandler(){
         EventHandler<Event> panelEventHandler = new PanelEventHandler(accountActivityLoggerTableView) {
             @Override
@@ -432,8 +441,6 @@ public class EmployeeController implements Initializable {
                         affectedNameField.getText(), activityDateTimeField.getText());
                 accountActivityLogger.add(accountActivity);
             }
-
-
             @Override
             void update() throws SQLException {
                 for (AccountActivity activityType : accountActivityLogger.getAll()) {
@@ -452,6 +459,7 @@ public class EmployeeController implements Initializable {
 
             @Override
             void onSuccessfulEvent() {
+                activityUsernameField.requestFocus();
                 activityUsernameField.clear();
                 ipField.clear();
                 macField.clear();
@@ -465,6 +473,7 @@ public class EmployeeController implements Initializable {
                 onEvent(event);
             }
         };
+        accountActivityCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, panelEventHandler);
         activityUpdate.addEventHandler(ActionEvent.ACTION, panelEventHandler);
         activityDelete.addEventHandler(ActionEvent.ACTION, panelEventHandler);
         accountActivityAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, panelEventHandler);
@@ -512,7 +521,6 @@ public class EmployeeController implements Initializable {
                      accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, announcement));
                  }
                  announcementTableView.getItems().setAll(announcementLogger.getAll());
-
              }
 
              @Override
@@ -533,6 +541,7 @@ public class EmployeeController implements Initializable {
                 announcementTableView.getSelectionModel().clearSelection();
              }
          };
+         announcementsCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, panelEventHandler);
          announcementsUpdate.addEventHandler(ActionEvent.ACTION, panelEventHandler);
          announcementsDelete.addEventHandler(ActionEvent.ACTION, panelEventHandler);
          announcementsAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, panelEventHandler);

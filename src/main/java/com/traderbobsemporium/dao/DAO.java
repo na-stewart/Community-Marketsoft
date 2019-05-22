@@ -13,7 +13,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-// TODO: 5/12/2019 ABSTRACT CLASS INSTEAD OF INTERFACE 
+
 public interface DAO<T> {
     T get(long id) throws SQLException;
     List<T> getAll() throws SQLException;

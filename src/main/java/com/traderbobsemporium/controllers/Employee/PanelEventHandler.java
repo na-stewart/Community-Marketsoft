@@ -35,7 +35,6 @@ import java.sql.SQLException;
 abstract class PanelEventHandler implements EventHandler<Event> {
     private TableView tableView;
 
-
     @RequiresAuthentication
     abstract void add() throws SQLException;
     @RequiresAuthentication
@@ -44,7 +43,7 @@ abstract class PanelEventHandler implements EventHandler<Event> {
     abstract void delete() throws SQLException;
     abstract void onSuccessfulEvent();
 
-    public PanelEventHandler(TableView tableView) {
+    PanelEventHandler(TableView tableView) {
         this.tableView = tableView;
     }
 

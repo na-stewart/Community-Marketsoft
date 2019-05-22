@@ -15,7 +15,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-class AccountDAO implements DAO<Account> {
+public class AccountDAO implements DAO<Account> {
 
     @Override
     public Account get(long id) throws SQLException {
