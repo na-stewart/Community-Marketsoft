@@ -19,6 +19,8 @@ import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.controlsfx.dialog.ExceptionDialog;
 
 
@@ -35,19 +37,19 @@ import java.sql.SQLException;
 abstract class PanelEventHandler implements EventHandler<Event> {
     private TableView tableView;
 
-    @RequiresAuthentication
     abstract void add() throws SQLException;
-    @RequiresAuthentication
+
     abstract void update() throws SQLException;
-    @RequiresAuthentication
+
     abstract void delete() throws SQLException;
+
     abstract void onSuccessfulEvent();
 
     PanelEventHandler(TableView tableView) {
         this.tableView = tableView;
     }
 
-    void onEvent(Event event){
+    void onEvent(Event event) {
         switch (event.getEventType().getName()) {
             case "KEY_PRESSED":
                 onKeyEvent((KeyEvent) event);
@@ -64,7 +66,7 @@ abstract class PanelEventHandler implements EventHandler<Event> {
 
     }
 
-    private void onKeyEvent(KeyEvent keyEvent){
+    private void onKeyEvent(KeyEvent keyEvent) {
         try {
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 if (tableView.getSelectionModel().getSelectedItem() != null)
@@ -76,19 +78,18 @@ abstract class PanelEventHandler implements EventHandler<Event> {
                 delete();
                 onSuccessfulEvent();
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             new ExceptionDialog(e).showAndWait();
             e.printStackTrace();
-        }
-        catch (AuthorizationException e){
+        } catch (AuthorizationException e) {
             Util.displayError("You are not authorized to execute this command", Alert.AlertType.ERROR);
         }
     }
 
-    private void onActionEvent(ActionEvent actionEvent){
+    private void onActionEvent(ActionEvent actionEvent) {
         String buttonText = ((Button) actionEvent.getSource()).getText();
         try {
-            if (buttonText.equals("Update")){
+            if (buttonText.equals("Update")) {
                 if (tableView.getSelectionModel().getSelectedItem() != null)
                     update();
                 else
@@ -98,15 +99,11 @@ abstract class PanelEventHandler implements EventHandler<Event> {
                 delete();
                 onSuccessfulEvent();
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             new ExceptionDialog(e).showAndWait();
             e.printStackTrace();
-        } catch (AuthorizationException e){
+        } catch (AuthorizationException e) {
             Util.displayError("You are not authorized to execute this command", Alert.AlertType.ERROR);
         }
     }
-
-
-
-
 }

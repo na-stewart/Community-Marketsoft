@@ -20,6 +20,15 @@
 
 <AnchorPane prefHeight="681.0" prefWidth="1098.0" style="-fx-background-color: #F2F1EC;" stylesheets="@../css/EmployeeCSS.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.traderbobsemporium.controllers.Employee.EmployeeController">
    <children>
+      <HBox alignment="CENTER" layoutX="532.0" layoutY="315.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="266.0" AnchorPane.leftAnchor="532.0" AnchorPane.rightAnchor="356.0" AnchorPane.topAnchor="315.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Panel Unavailable">
+               <font>
+                  <Font size="27.0" />
+               </font>
+            </Text>
+         </children>
+      </HBox>
       <HBox alignment="CENTER_RIGHT" layoutX="175.0" prefHeight="52.0" prefWidth="1026.0" spacing="15.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER" prefHeight="52.0" prefWidth="168.0" spacing="10.0">
@@ -134,7 +143,7 @@
             </VBox>
          </children>
       </Pane>
-      <ScrollPane fx:id="dashboardScrollPane" layoutX="175.0" layoutY="49.0" prefHeight="2396.0" prefWidth="1340.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="49.0">
+      <ScrollPane fx:id="dashboardScrollPane" layoutX="175.0" layoutY="49.0" prefHeight="2396.0" prefWidth="1340.0" style="-fx-background-color: #F2F1EC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="49.0">
          <content>
             <TilePane fx:id="dashboardTilePane" alignment="TOP_CENTER" hgap="50.0" prefHeight="2543.0" prefWidth="823.0" vgap="50.0">
                <children>
@@ -369,7 +378,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <TabPane fx:id="logsTabPane" layoutX="174.0" layoutY="49.0" prefHeight="678.0" prefWidth="1038.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <TabPane fx:id="logsTabPane" layoutX="174.0" layoutY="49.0" prefHeight="678.0" prefWidth="1038.0" tabClosingPolicy="UNAVAILABLE" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
         <tabs>
             <Tab text="Account Activity">
                <content>

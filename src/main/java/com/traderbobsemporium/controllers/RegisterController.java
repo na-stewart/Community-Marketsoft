@@ -8,6 +8,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
+import main.java.com.traderbobsemporium.dao.AccountActivityLogger;
+import main.java.com.traderbobsemporium.dao.AccountDAO;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.model.Logging.ActivityType;
@@ -17,6 +19,7 @@ import main.java.com.traderbobsemporium.util.Util;
 import nl.captcha.Captcha;
 import nl.captcha.backgrounds.SquigglesBackgroundProducer;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.omg.PortableInterceptor.ACTIVE;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -73,12 +76,11 @@ public class RegisterController implements Initializable {
 
     @SuppressWarnings("unchecked")
     private void register() throws SQLException {
-        DatabaseAccessFactory databaseAccessFactory = new DatabaseAccessFactory();
         Account account = new Account(usernameField.getText(),
                 new DefaultPasswordService().encryptPassword(passwordField.getText()),
                 "none", AccountRole.UNCONFIRMED);
-        databaseAccessFactory.getDAO("account").add(account);
-        databaseAccessFactory.getLogger("accountactivity").add(new AccountActivity(ActivityType.REGISTER, account));
+        new AccountActivityLogger().add(new AccountActivity(ActivityType.REGISTER, account));
+        new AccountDAO().add(account);
         Util.displayError("Your account has been registered! Please wait for your account to be " +
                 "assigned a designated role by an administrator.", Alert.AlertType.INFORMATION);
     }
