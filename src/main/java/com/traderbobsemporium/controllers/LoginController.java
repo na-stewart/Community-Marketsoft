@@ -48,6 +48,7 @@ public class LoginController implements Initializable {
     @FXML
     private void login(){
         if (credentialsAreValid(usernameField.getText(), passwordField.getText())) {
+            System.out.println(SecurityUtils.getSubject().getSession().getAttribute("permissions"));
             GUI gui;
             GUIManager guiManager = GUIManager.getInstance();
             if (SecurityUtils.getSubject().hasRole(AccountRole.EMPLOYEE.name()))

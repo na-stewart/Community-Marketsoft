@@ -30,10 +30,10 @@ public final class AuthUtil {
         authorizer.setPermissionResolver(new WildcardPermissionResolver());
         defaultSecurityManager.setAuthorizer(authorizer);
         JdbcRealm realm = new JdbcRealm();
+        realm.setDataSource(DatabaseUtil.DATA_SOURCE);
         realm.setAuthenticationQuery("SELECT password FROM account WHERE username = ?");
         realm.setUserRolesQuery("SELECT accountRole FROM account WHERE username = ?");
         realm.setPermissionsQuery("SELECT permissions FROM account WHERE username = ?");
-        realm.setDataSource(DatabaseUtil.DATA_SOURCE);
         realm.setPermissionsLookupEnabled(true);
         realm.setCredentialsMatcher(new PasswordMatcher());
         defaultSecurityManager.setRealm(realm);

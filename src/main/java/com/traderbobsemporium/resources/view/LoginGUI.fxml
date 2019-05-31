@@ -18,7 +18,7 @@
                   <Font name="Calibri Light" size="37.0" />
                </font>
             </Text>
-            <Button layoutX="28.0" layoutY="385.0" mnemonicParsing="false" onAction="#login" prefHeight="31.0" prefWidth="309.0" style="-fx-background-radius: 0; -fx-background-color: #C6C6B5;" text="Login" />
+            <Button layoutX="28.0" layoutY="385.0" mnemonicParsing="false" onAction="#login" prefHeight="31.0" prefWidth="309.0" text="Login" />
             <Hyperlink layoutX="158.0" layoutY="480.0" onAction="#registerAccount" text="Register" />
             <PasswordField fx:id="passwordField" layoutX="29.0" layoutY="294.0" prefHeight="31.0" prefWidth="309.0" promptText="password" />
          </children>

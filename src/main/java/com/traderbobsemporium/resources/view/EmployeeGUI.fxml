@@ -20,7 +20,7 @@
 
 <AnchorPane prefHeight="681.0" prefWidth="1098.0" style="-fx-background-color: #F2F1EC;" stylesheets="@../css/EmployeeCSS.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.traderbobsemporium.controllers.Employee.EmployeeController">
    <children>
-      <HBox alignment="CENTER" layoutX="532.0" layoutY="315.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="266.0" AnchorPane.leftAnchor="532.0" AnchorPane.rightAnchor="356.0" AnchorPane.topAnchor="315.0">
+      <HBox alignment="CENTER" layoutX="532.0" layoutY="315.0" prefHeight="100.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="266.0" AnchorPane.leftAnchor="532.0" AnchorPane.rightAnchor="356.0" AnchorPane.topAnchor="315.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Panel Unavailable">
                <font>
@@ -29,7 +29,7 @@
             </Text>
          </children>
       </HBox>
-      <HBox alignment="CENTER_RIGHT" layoutX="175.0" prefHeight="52.0" prefWidth="1026.0" spacing="15.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
+      <HBox alignment="CENTER_RIGHT" layoutX="175.0" prefHeight="52.0" prefWidth="921.0" spacing="15.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER" prefHeight="52.0" prefWidth="168.0" spacing="10.0">
                <HBox.margin>
@@ -143,9 +143,9 @@
             </VBox>
          </children>
       </Pane>
-      <ScrollPane fx:id="dashboardScrollPane" layoutX="175.0" layoutY="49.0" prefHeight="2396.0" prefWidth="1340.0" style="-fx-background-color: #F2F1EC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="49.0">
+      <ScrollPane fx:id="dashboardScrollPane" layoutX="175.0" layoutY="49.0" prefHeight="2396.0" prefWidth="1340.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="49.0">
          <content>
-            <TilePane fx:id="dashboardTilePane" alignment="TOP_CENTER" hgap="50.0" prefHeight="2543.0" prefWidth="823.0" vgap="50.0">
+            <TilePane fx:id="dashboardTilePane" alignment="TOP_CENTER" hgap="50.0" prefHeight="2557.0" prefWidth="823.0" vgap="50.0">
                <children>
                   <VBox alignment="TOP_CENTER" prefHeight="470.0" prefWidth="503.0" spacing="3.0" style="-fx-background-color: white;">
                      <children>
@@ -232,7 +232,7 @@
             </TilePane>
          </content>
       </ScrollPane>
-      <AnchorPane fx:id="campersAnchorPane" layoutX="174.0" layoutY="52.0" prefHeight="676.0" prefWidth="1037.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <AnchorPane fx:id="campersAnchorPane" layoutX="174.0" layoutY="52.0" prefHeight="676.0" prefWidth="1037.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
          <children>
             <TableView fx:id="camperTableView" layoutX="434.0" onMouseClicked="#fillCamperFields" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columns>
