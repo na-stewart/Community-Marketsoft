@@ -15,6 +15,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import main.java.com.traderbobsemporium.dao.*;
@@ -31,7 +32,6 @@ import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 
-import org.apache.shiro.authz.permission.WildcardPermission;
 import org.apache.shiro.subject.Subject;
 import org.controlsfx.dialog.ExceptionDialog;
 import java.net.URL;
@@ -48,7 +48,9 @@ import java.util.TimerTask;
  * All rights reserved.
  */
 
-//https://camo.githubusercontent.com/8708a8dcb49d365b1786a5093d8f3fd37aeb18a2/68747470733a2f2f7770696d672e77616c6c7374636e2e636f6d2f61353839346331622d663661662d343536652d383264662d3131353164613038333962662e706e67 <- design link
+//https://camo.githubusercontent.com/8708a8dcb49d365b1786a5093d8f3fd37aeb18a2/68747470733a2f2f7770696d672e77616c6c7374636e2e636f6d2f61353839346331622d663661662d343536652d383264662d3131353164613038333962662e706e67 <- design link\
+
+
 public class EmployeeController implements Initializable {
     private Subject subject = SecurityUtils.getSubject();
     private CamperDAO camperDAO = new CamperDAO();
@@ -58,6 +60,8 @@ public class EmployeeController implements Initializable {
 
     //TODO: cleanup var names. aka: Dashboard(Tableview)//Logger(TableView)
     private EmployeePanel[] panels;
+    @FXML
+    private HBox dashboardResizerContainer;
     @FXML
     private TextField panelXField, panelYField;
     @FXML
@@ -141,8 +145,8 @@ public class EmployeeController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         panels = new EmployeePanel[]{new EmployeePanel(dashboardScrollPane, "Dashboard"),
-                new EmployeePanel(campersAnchorPane, "Campers"), new EmployeePanel(accountsAnchorPane, "Accounts"),
-                new EmployeePanel(logsTabPane, "Logs")};
+                new EmployeePanel(dashboardResizerContainer, "Dashboard"), new EmployeePanel(campersAnchorPane, "Campers"),
+                new EmployeePanel(accountsAnchorPane, "Accounts"), new EmployeePanel(logsTabPane, "Logs")};
 
         setCellValueFactory();
         loadDash();
@@ -219,7 +223,7 @@ public class EmployeeController implements Initializable {
 
     private void displayPanel(String display){
         for (EmployeePanel guiPanel : panels)
-            if (guiPanel.getName().equals(display))
+            if (guiPanel.getName().equals(display) && subject.isPermitted(guiPanel.getName() + ":Display"))
                 guiPanel.getNode().setVisible(true);
             else
                 guiPanel.getNode().setVisible(false);
@@ -315,6 +319,7 @@ public class EmployeeController implements Initializable {
             }
             @Override
             void add() throws SQLException {
+                subject.checkPermission("Campers:Add");
                 Camper camper = new Camper(camperNameField.getText(), Integer.parseInt(camperBalanceField.getText()));
                 camperDAO.add(camper);
                 camperTableView.getItems().add(camper);
@@ -322,6 +327,7 @@ public class EmployeeController implements Initializable {
             }
             @Override
             void update() throws SQLException {
+                subject.checkPermission("Campers:Update");
                 for (Camper camper : camperTableView.getSelectionModel().getSelectedItems()) {
                     camperDAO.update(camper, new String[]{camperNameField.getText(), camperBalanceField.getText()});
                     accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, camper));
@@ -331,6 +337,7 @@ public class EmployeeController implements Initializable {
             }
             @Override
             void delete() throws SQLException {
+                subject.checkPermission("Campers:Delete");
                 for (Camper camper : camperTableView.getSelectionModel().getSelectedItems()) {
                     camperDAO.delete(camper.getId());
                     accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, camper));
@@ -367,8 +374,9 @@ public class EmployeeController implements Initializable {
 
     private void createAccountPanelEventHandler(){
         EventHandler<Event> accountEventHandler = new PanelEventHandler(accountTableView) {
-            @Override
+
             void add() throws SQLException {
+                subject.checkPermission("Account:Add");
                 Account account = new Account(usernameField.getText(),
                         new DefaultPasswordService().encryptPassword(passwordField.getText()),
                         permissionsField.getText(), accountRoleChoiceBox.getValue());
@@ -378,6 +386,7 @@ public class EmployeeController implements Initializable {
             }
             @Override
             void update() throws SQLException {
+                subject.checkPermission("Account:Update");
                 for (Account account: accountTableView.getSelectionModel().getSelectedItems()) {
                     if (account.getAccountRole() != AccountRole.DISABLED) {
                         accountDAO.update(account, new String[]{usernameField.getText(),
@@ -394,6 +403,7 @@ public class EmployeeController implements Initializable {
 
             @Override
             void delete() throws SQLException {
+                subject.checkPermission("Account:Delete");
                 for (Account account : accountTableView.getSelectionModel().getSelectedItems()) {
                     accountDAO.delete(account.getId());
                     accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, account));
@@ -447,6 +457,7 @@ public class EmployeeController implements Initializable {
         EventHandler<Event> panelEventHandler = new PanelEventHandler(accountActivityLoggerTableView) {
             @Override
             void add() throws SQLException {
+                subject.checkPermission("AccountActivity:Add");
                 AccountActivity accountActivity = new AccountActivity(activityUsernameField.getText(), ipField.getText(),
                         macField.getText(), activityTypeChoiceBox.getValue(), Long.parseLong(affectedIdField.getText()),
                         affectedNameField.getText(), activityDateTimeField.getText());
@@ -454,6 +465,7 @@ public class EmployeeController implements Initializable {
             }
             @Override
             void update() throws SQLException {
+                subject.checkPermission("AccountActivity:Update");
                 for (AccountActivity activityType : accountActivityLogger.getAll()) {
                     accountActivityLogger.update(activityType, new String[]{activityUsernameField.getText(),
                     ipField.getText(), macField.getText(), activityTypeChoiceBox.getValue().name(), affectedID.getText(),
@@ -463,6 +475,7 @@ public class EmployeeController implements Initializable {
             }
             @Override
             void delete() throws SQLException {
+                subject.checkPermission("AccountActivity:Delete");
                 for (AccountActivity accountActivity : accountActivityLoggerTableView.getSelectionModel().getSelectedItems())
                     accountActivityLogger.delete(accountActivity.getId());
                 accountActivityLoggerTableView.getItems().removeAll(accountActivityLoggerTableView.getSelectionModel().getSelectedItems());
@@ -477,6 +490,7 @@ public class EmployeeController implements Initializable {
                 affectedIdField.clear();
                 affectedNameField.clear();
                 activityDateTimeField.clear();
+                accountActivityLoggerTableView.getSelectionModel().clearSelection();
             }
 
             @Override
@@ -524,6 +538,7 @@ public class EmployeeController implements Initializable {
              }
 
              void add() throws SQLException {
+                 subject.checkPermission("Announcement:Add");
                  Announcement announcement = new Announcement(titleField.getText(), dialogField.getText());
                  announcementLogger.add(announcement);
                  announcementTableView.getItems().add(announcement);
@@ -532,6 +547,7 @@ public class EmployeeController implements Initializable {
 
              @Override
              void update() throws SQLException {
+                 subject.checkPermission("Announcement:Update");
                  for (Announcement announcement : announcementTableView.getSelectionModel().getSelectedItems()) {
                      announcementLogger.update(announcement, new String[]{authorField.getText(), titleField.getText(),
                              dialogField.getText(), announcementDateTimeField.getText()});
@@ -542,6 +558,7 @@ public class EmployeeController implements Initializable {
 
              @Override
              void delete() throws SQLException {
+                 subject.checkPermission("Announcement:Delete");
                  for (Announcement announcement : announcementTableView.getSelectionModel().getSelectedItems()){
                      announcementLogger.delete(announcement.getId());
                      accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, announcement));

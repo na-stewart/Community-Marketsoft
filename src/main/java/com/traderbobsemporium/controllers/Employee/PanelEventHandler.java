@@ -60,7 +60,6 @@ abstract class PanelEventHandler implements EventHandler<Event> {
             case "MOUSE_PRESSED":
                 if (tableView.getSelectionModel().getSelectedItem() != null)
                     onSuccessfulEvent();
-
                 break;
         }
 

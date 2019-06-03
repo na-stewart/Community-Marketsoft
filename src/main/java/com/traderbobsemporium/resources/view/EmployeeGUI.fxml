@@ -20,7 +20,7 @@
 
 <AnchorPane prefHeight="681.0" prefWidth="1098.0" style="-fx-background-color: #F2F1EC;" stylesheets="@../css/EmployeeCSS.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.traderbobsemporium.controllers.Employee.EmployeeController">
    <children>
-      <HBox alignment="CENTER" layoutX="532.0" layoutY="315.0" prefHeight="100.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="266.0" AnchorPane.leftAnchor="532.0" AnchorPane.rightAnchor="356.0" AnchorPane.topAnchor="315.0">
+      <HBox alignment="CENTER" layoutX="532.0" layoutY="315.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="266.0" AnchorPane.leftAnchor="532.0" AnchorPane.rightAnchor="356.0" AnchorPane.topAnchor="315.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Panel Unavailable">
                <font>
@@ -31,30 +31,6 @@
       </HBox>
       <HBox alignment="CENTER_RIGHT" layoutX="175.0" prefHeight="52.0" prefWidth="921.0" spacing="15.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="52.0" prefWidth="168.0" spacing="10.0">
-               <HBox.margin>
-                  <Insets right="10.0" />
-               </HBox.margin>
-               <children>
-                  <ImageView fitHeight="21.0" fitWidth="20.0">
-                     <image>
-                        <Image url="@../Images/full-screen.png" />
-                     </image>
-                  </ImageView>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="x:">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Text>
-                  <TextField fx:id="panelXField" onKeyPressed="#setDashboardTileSizes" prefHeight="25.0" prefWidth="35.0" text="503" />
-                  <Text layoutX="85.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="y:">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Text>
-                  <TextField fx:id="panelYField" layoutX="97.0" layoutY="24.0" onKeyPressed="#setDashboardTileSizes" prefHeight="25.0" prefWidth="35.0" text="470" />
-               </children>
-            </HBox>
             <HBox alignment="CENTER" prefHeight="52.0" prefWidth="24.0" spacing="30.0">
                <children>
                   <ImageView fitHeight="29.0" fitWidth="30.0" onMouseClicked="#setFullScreen">
@@ -143,9 +119,30 @@
             </VBox>
          </children>
       </Pane>
-      <ScrollPane fx:id="dashboardScrollPane" layoutX="175.0" layoutY="49.0" prefHeight="2396.0" prefWidth="1340.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="49.0">
+      <HBox fx:id="dashboardResizerContainer" alignment="CENTER" layoutX="176.0" layoutY="52.0" prefHeight="36.0" prefWidth="167.0" spacing="10.0">
+         <children>
+            <ImageView fitHeight="21.0" fitWidth="20.0">
+               <image>
+                  <Image url="@../Images/full-screen.png" />
+               </image>
+            </ImageView>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="x:">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Text>
+            <TextField fx:id="panelXField" onKeyPressed="#setDashboardTileSizes" prefHeight="25.0" prefWidth="35.0" text="503" />
+            <Text layoutX="85.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="y:">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Text>
+            <TextField fx:id="panelYField" layoutX="97.0" layoutY="24.0" onKeyPressed="#setDashboardTileSizes" prefHeight="25.0" prefWidth="35.0" text="470" />
+         </children>
+      </HBox>
+      <ScrollPane fx:id="dashboardScrollPane" layoutX="175.0" layoutY="90.0" prefHeight="591.0" prefWidth="923.0" style="-fx-background-color: #F2F1EC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
          <content>
-            <TilePane fx:id="dashboardTilePane" alignment="TOP_CENTER" hgap="50.0" prefHeight="2557.0" prefWidth="823.0" vgap="50.0">
+            <TilePane fx:id="dashboardTilePane" alignment="TOP_CENTER" hgap="50.0" prefHeight="2525.0" prefWidth="823.0" vgap="50.0">
                <children>
                   <VBox alignment="TOP_CENTER" prefHeight="470.0" prefWidth="503.0" spacing="3.0" style="-fx-background-color: white;">
                      <children>
@@ -232,7 +229,7 @@
             </TilePane>
          </content>
       </ScrollPane>
-      <AnchorPane fx:id="campersAnchorPane" layoutX="174.0" layoutY="52.0" prefHeight="676.0" prefWidth="1037.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <AnchorPane fx:id="campersAnchorPane" layoutX="174.0" layoutY="52.0" prefHeight="676.0" prefWidth="1037.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
          <children>
             <TableView fx:id="camperTableView" layoutX="434.0" onMouseClicked="#fillCamperFields" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columns>
@@ -294,7 +291,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="accountsAnchorPane" layoutX="174.0" layoutY="49.0" prefHeight="676.0" prefWidth="1037.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <AnchorPane fx:id="accountsAnchorPane" layoutX="174.0" layoutY="49.0" prefHeight="676.0" prefWidth="1037.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
          <children>
             <TableView fx:id="accountTableView" layoutX="434.0" onMouseClicked="#fillAccountFields" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <columnResizePolicy>
@@ -378,7 +375,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <TabPane fx:id="logsTabPane" layoutX="174.0" layoutY="49.0" prefHeight="678.0" prefWidth="1038.0" tabClosingPolicy="UNAVAILABLE" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <TabPane fx:id="logsTabPane" layoutX="174.0" layoutY="49.0" prefHeight="678.0" prefWidth="1038.0" style="-fx-background-color: #F2F1EC;" tabClosingPolicy="UNAVAILABLE" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
         <tabs>
             <Tab text="Account Activity">
                <content>
@@ -481,7 +478,7 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <ImageView fx:id="accountActivityCancel" fitHeight="32.0" fitWidth="32.0" layoutX="387.0" layoutY="1.0">
+                                    <ImageView fx:id="accountActivityCancel" fitHeight="32.0" fitWidth="32.0" layoutX="385.0" layoutY="1.0">
                                        <image>
                                           <Image url="@../Images/error.png" />
                                        </image>
@@ -687,7 +684,7 @@
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="When making new announcement, author and datetime fields are ignored." underline="true" />
                                        </children>
                                     </VBox>
-                                    <ImageView fx:id="announcementsCancel" layoutX="391.0" layoutY="1.0">
+                                    <ImageView fx:id="announcementsCancel" fitHeight="32.0" fitWidth="32.0" layoutX="387.0" layoutY="1.0">
                                        <image>
                                           <Image url="@../Images/error.png" />
                                        </image>

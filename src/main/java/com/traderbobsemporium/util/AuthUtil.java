@@ -1,5 +1,6 @@
 package main.java.com.traderbobsemporium.util;
 
+import main.java.com.traderbobsemporium.auth.BobsVeryOwnJbdcRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
@@ -29,7 +30,7 @@ public final class AuthUtil {
         ModularRealmAuthorizer authorizer = new ModularRealmAuthorizer();
         authorizer.setPermissionResolver(new WildcardPermissionResolver());
         defaultSecurityManager.setAuthorizer(authorizer);
-        JdbcRealm realm = new JdbcRealm();
+        JdbcRealm realm = new BobsVeryOwnJbdcRealm();
         realm.setDataSource(DatabaseUtil.DATA_SOURCE);
         realm.setAuthenticationQuery("SELECT password FROM account WHERE username = ?");
         realm.setUserRolesQuery("SELECT accountRole FROM account WHERE username = ?");

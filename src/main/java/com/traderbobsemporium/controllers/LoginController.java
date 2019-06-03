@@ -48,7 +48,6 @@ public class LoginController implements Initializable {
     @FXML
     private void login(){
         if (credentialsAreValid(usernameField.getText(), passwordField.getText())) {
-            System.out.println(SecurityUtils.getSubject().getSession().getAttribute("permissions"));
             GUI gui;
             GUIManager guiManager = GUIManager.getInstance();
             if (SecurityUtils.getSubject().hasRole(AccountRole.EMPLOYEE.name()))
@@ -73,7 +72,8 @@ public class LoginController implements Initializable {
 
     private boolean credentialsAreValid(String username, String password) {
         try {
-            subject.login(new UsernamePasswordToken(username, password));
+            UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
+            subject.login(usernamePasswordToken);
             authSubjectRole();
             return true;
         } catch (UnknownAccountException uae) {

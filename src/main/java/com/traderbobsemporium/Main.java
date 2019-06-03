@@ -7,6 +7,7 @@ import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import org.apache.shiro.SecurityUtils;
 
 import java.sql.SQLException;
 

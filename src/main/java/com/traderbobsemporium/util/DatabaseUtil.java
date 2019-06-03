@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javafx.fxml.FXML;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresUser;
 
 import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
@@ -30,7 +31,7 @@ public final class DatabaseUtil {
         DATA_SOURCE = new HikariDataSource(CONFIG);
     }
 
-    @RequiresAuthentication
+    @RequiresUser
     public static ResultSet REQUEST_RESULT_SET(String query) throws SQLException {
         CachedRowSet cachedRowSet = new CachedRowSetImpl();
         Connection connection = DATA_SOURCE.getConnection();
@@ -41,7 +42,7 @@ public final class DatabaseUtil {
         return cachedRowSet;
     }
 
-    @RequiresAuthentication
+    @RequiresUser
     public static void UPDATE(String query) throws SQLException {
         Connection connection = DATA_SOURCE.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(query);
