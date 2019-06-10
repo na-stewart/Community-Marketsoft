@@ -533,8 +533,7 @@ public class EmployeeController implements Initializable {
                 for (Account account: accountTableView.getSelectionModel().getSelectedItems()) {
                     if (account.getAccountRole() != AccountRole.DISABLED) {
                         accountDAO.updateAll(account, new String[]{usernameField.getText(),
-                                new DefaultPasswordService().encryptPassword(passwordField.getText()),
-                                accountRoleChoiceBox.getValue().name()});
+                               passwordField.getText(), accountRoleChoiceBox.getValue().name()});
 
                         accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, account));
                     } else
@@ -740,9 +739,11 @@ public class EmployeeController implements Initializable {
             @Override
             void delete() {
                 subject.checkPermission("purchasesactivity:delete");
-                for (PurchasesActivity purchasesActivity : purchasesActivityLoggerTableView.getSelectionModel().getSelectedItems())
+                for (PurchasesActivity purchasesActivity : purchasesActivityLoggerTableView.getSelectionModel().getSelectedItems()) {
                     purchasesActivityLogger.delete(purchasesActivity.getId());
+                }
                 populateTableViewWithObservableList(itemDAO, itemsTableView);
+
 
             }
 

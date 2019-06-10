@@ -55,7 +55,6 @@ public class LoginController implements Initializable {
                 gui = new GUI("main/java/com/traderbobsemporium/resources/view/EmployeeGUI.fxml", "EmplGUI");
             else
                 gui = new GUI("main/java/com/traderbobsemporium/resources/view/RetailerGUI.fxml", "RetGUI");
-            gui.getStage().setOnCloseRequest(e -> DatabaseUtil.DATA_SOURCE.close());
             guiManager.getGuiList().add(gui);
             guiManager.openByName(gui.getName());
         }

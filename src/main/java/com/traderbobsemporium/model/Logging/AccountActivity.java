@@ -30,7 +30,7 @@ public class AccountActivity {
 
     public AccountActivity(ActivityType activityType, DataObject profile) {
         this.id = Util.NEW_ID();
-        this.name = SecurityUtils.getSubject().getPrincipal().toString();
+        this.name = String.valueOf(SecurityUtils.getSubject().getPrincipal());
         this.activityType = activityType;
         this.dateTime = Util.dateTime();
         this.affectedName = profile.getName();

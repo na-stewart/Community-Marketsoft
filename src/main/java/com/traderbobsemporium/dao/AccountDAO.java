@@ -3,6 +3,7 @@ package main.java.com.traderbobsemporium.dao;
 import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.AccountRole;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,7 +43,7 @@ public class AccountDAO implements DAO<Account> {
         if (!params[0].isEmpty())
             account.setName(params[0]);
         if (!params[1].isEmpty())
-            account.setPassword(params[1]);
+            account.setPassword(new DefaultPasswordService().encryptPassword(params[1]));
         if (!params[2].isEmpty())
             account.setAccountRoles(AccountRole.valueOf(params[2]));
         update(account);

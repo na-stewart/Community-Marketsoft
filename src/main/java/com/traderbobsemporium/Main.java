@@ -33,11 +33,9 @@ public class Main extends Application {
     }
 
     private void displayLogin(){
-        GUI loginGUI = new GUI("main/java/com/traderbobsemporium/resources/view/LoginGUI.fxml", "LoginGUI");
-        loginGUI.getStage().setOnCloseRequest(e -> DatabaseUtil.DATA_SOURCE.close());
-        GUIManager.getInstance().getGuiList().add(loginGUI);
-        loginGUI.getStage().setWidth(1300);
-        loginGUI.display();
+        GUIManager guiManager = GUIManager.getInstance();
+        guiManager.getGuiList().add(new GUI("main/java/com/traderbobsemporium/resources/view/LoginGUI.fxml", "LoginGUI"));
+        guiManager.openByName("LoginGUI");
     }
 
 }

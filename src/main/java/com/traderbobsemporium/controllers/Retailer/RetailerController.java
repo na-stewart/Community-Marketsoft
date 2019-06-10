@@ -22,6 +22,7 @@ import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.Util;
 import org.controlsfx.dialog.ExceptionDialog;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -143,14 +144,14 @@ public class RetailerController implements Initializable {
     }
 
     private String getCheckoutText(){
-        double total = 0;
+        BigDecimal total = new BigDecimal(0);
         StringBuilder stringBuilder = new StringBuilder("Are you sure you want to checkout?\n");
         stringBuilder.append("=========================================");
         for (Item items : itemsSelectedListView.getItems()) {
             stringBuilder.append(items.getName()).append(" : ").append(items.getPrice()).append("\n");
-            total += items.getPrice().doubleValue();
+            total = total.add(items.getPrice());
         }
-        double remainingBalance = camperTableView.getSelectionModel().getSelectedItem().getBalance().doubleValue() - total;
+        BigDecimal remainingBalance = camperTableView.getSelectionModel().getSelectedItem().getBalance().subtract(total);
         stringBuilder.append("Your total is ").append(total)
                 .append(" and camper remaining balance would be $").append(remainingBalance);
         return String.valueOf(stringBuilder);
