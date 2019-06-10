@@ -1,9 +1,12 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
-import main.java.com.traderbobsemporium.model.Profile;
+import main.java.com.traderbobsemporium.model.DataObject;
+import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,42 +17,64 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class AccountActivity extends Profile {
+public class AccountActivity {
+    private long id;
+    private String name;
     private String ip;
     private String mac;
     private ActivityType activityType;
     private long affectedId;
     private String affectedName;
     private String dateTime;
+    private boolean successful;
 
-    public AccountActivity(ActivityType activityType, Profile profile) {
-        super(Util.NEW_ID(), String.valueOf(SecurityUtils.getSubject().getPrincipal()));
+    public AccountActivity(ActivityType activityType, DataObject profile) {
+        this.id = Util.NEW_ID();
+        this.name = SecurityUtils.getSubject().getPrincipal().toString();
         this.activityType = activityType;
         this.dateTime = Util.dateTime();
         this.affectedName = profile.getName();
         this.affectedId = profile.getId();
-        this.ip = ip();
+        this.successful = DatabaseUtil.SUCCESSFUL_QUERY;
+        this.ip = externalIp();
         this.mac = mac();
     }
 
-    public AccountActivity(String name, String ip, String mac, ActivityType activityType, long affectedItemId, String affectedItemName, String dateTime) {
-        super(Util.NEW_ID(), name);
+
+
+    public AccountActivity(String name, String ip, String mac, ActivityType activityType, long affectedItemId, String affectedItemName, String dateTime, boolean successful) {
+        this.id = Util.NEW_ID();
+        this.name = name;
         this.ip = ip;
         this.mac = mac;
         this.activityType = activityType;
         this.affectedId = affectedItemId;
         this.affectedName = affectedItemName;
         this.dateTime = dateTime;
+        this.successful = successful;
     }
 
     public AccountActivity(ResultSet resultSet) throws SQLException {
-        super(resultSet.getLong("id"), resultSet.getString("username"));
+        this.id = resultSet.getLong("id");
+        this.name = resultSet.getString("username");
         this.ip = resultSet.getString("ip");
         this.mac = resultSet.getString("mac");
         this.activityType = ActivityType.valueOf(resultSet.getString("activityType"));
         this.affectedId = resultSet.getLong("affectedID");
         this.affectedName = resultSet.getString("affectedName");
         this.dateTime = resultSet.getString("dateTime");
+        this.successful = resultSet.getBoolean("successful");
+    }
+
+    private String externalIp(){
+        try {
+            URL whatismyip = new URL("http://checkip.amazonaws.com");
+            BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+            return in.readLine();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private String ip() {
@@ -128,11 +153,29 @@ public class AccountActivity extends Profile {
         this.dateTime = dateTime;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
+
+    public void setSuccessful(boolean successful) {
+        this.successful = successful;
+    }
+
     @Override
     public String toString() {
         return "AccountActivity{" +
-                "id=" + getId() + '\'' +
-                "username='" + getName() + '\'' +
                 ", ip='" + ip + '\'' +
                 ", mac='" + mac + '\'' +
                 ", activityType=" + activityType +

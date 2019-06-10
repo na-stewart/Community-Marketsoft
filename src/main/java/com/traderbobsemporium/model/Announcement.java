@@ -1,6 +1,5 @@
-package main.java.com.traderbobsemporium.model.Logging;
+package main.java.com.traderbobsemporium.model;
 
-import main.java.com.traderbobsemporium.model.Profile;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
 
@@ -13,7 +12,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class Announcement extends Profile implements Comparable<Announcement> {
+public class Announcement extends DataObject implements Comparable<Announcement> {
     private String title;
     private String dialog;
     private String dateTime;

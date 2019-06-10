@@ -17,8 +17,9 @@ import java.util.List;
 public interface DAO<T> {
     T get(long id) throws SQLException;
     List<T> getAll() throws SQLException;
-    void update(T t, String[] params) throws SQLException;
-    void add(T t) throws SQLException;
-    void delete(long id) throws SQLException;
+    void updateAll(T t, String[] params);
+    void update(T updated);
+    void add(T t);
+    void delete(long id);
 
 }

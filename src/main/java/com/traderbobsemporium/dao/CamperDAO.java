@@ -4,6 +4,7 @@ package main.java.com.traderbobsemporium.dao;
 import main.java.com.traderbobsemporium.model.Camper;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,22 +40,29 @@ public class CamperDAO implements DAO<Camper> {
     }
 
     @Override
-    public void update(Camper camper, String[] params) throws SQLException {
-        camper.setName(params[0]);
-        camper.setBalance(Integer.parseInt(params[1]));
-        DatabaseUtil.UPDATE("UPDATE camper SET name = '" + camper.getName() + "'," +
-                "balance = '" + camper.getBalance() + "' WHERE id =" + camper.getId() + ";");
+    public void updateAll(Camper camper, String[] params) {
+        if (!params[0].isEmpty())
+            camper.setName(params[0]);
+        if (!params[1].isEmpty())
+            camper.setBalance(new BigDecimal(params[1]));
+        update(camper);
+    }
+
+    @Override
+    public void update(Camper updated) {
+        DatabaseUtil.UPDATE("UPDATE camper SET name = '" + updated.getName() + "'," +
+                "balance = '" + updated.getBalance() + "' WHERE id =" + updated.getId() + ";");
     }
 
 
     @Override
-    public void add(Camper camper) throws SQLException {
+    public void add(Camper camper) {
         DatabaseUtil.UPDATE("INSERT INTO camper VALUES('" + camper.getId() + "','" + camper.getName() + "','" +
                 camper.getBalance() + "')");
     }
 
     @Override
-    public void delete(long id) throws SQLException {
+    public void delete(long id) {
         DatabaseUtil.UPDATE("DELETE FROM camper WHERE id = '" + id + "'");
     }
 }

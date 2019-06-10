@@ -38,27 +38,32 @@ public class AccountDAO implements DAO<Account> {
     }
 
     @Override
-    public void update(Account account, String[] params) throws SQLException {
-        account.setName(params[0]);
-        account.setPassword(params[1]);
-        account.setAccountRoles(AccountRole.valueOf(params[2]));
-        account.setPermissions(params[3]);
-        DatabaseUtil.UPDATE("UPDATE account SET username = '" + account.getName() + "'," +
-                "password = '" + account.getPassword() + "'," +
-                "accountRole = '" + account.getAccountRole().name() + "'," +
-                "permissions = '" + account.getPermissions() + "'" +
-                " WHERE id =" + account.getId() + ";");
+    public void updateAll(Account account, String[] params) {
+        if (!params[0].isEmpty())
+            account.setName(params[0]);
+        if (!params[1].isEmpty())
+            account.setPassword(params[1]);
+        if (!params[2].isEmpty())
+            account.setAccountRoles(AccountRole.valueOf(params[2]));
+        update(account);
     }
 
     @Override
-    public void add(Account account) throws SQLException {
+    public void update(Account updated) {
+        DatabaseUtil.UPDATE("UPDATE account SET username = '" + updated.getName() + "'," +
+                "password = '" + updated.getPassword() + "'," +
+                "accountRole = '" + updated.getAccountRole().name() + "'" +
+                " WHERE id =" + updated.getId() + ";");
+    }
+
+    @Override
+    public void add(Account account) {
         DatabaseUtil.UPDATE("INSERT INTO account VALUES('" + account.getId() + "','" + account.getName() + "','" +
-                account.getPassword() + "','" + account.getAccountRole().name() + "','" +
-                account.getPermissions() + "')");
+                account.getPassword() + "','" + account.getAccountRole().name() + "')");
     }
 
     @Override
-    public void delete(long id ) throws SQLException {
+    public void delete(long id ) {
         DatabaseUtil.UPDATE("DELETE FROM account WHERE id = '" + id  + "'");
     }
 }

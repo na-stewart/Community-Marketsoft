@@ -10,6 +10,7 @@ import javafx.scene.layout.StackPane;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.model.AccountRole;
+import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -54,9 +55,9 @@ public class LoginController implements Initializable {
                 gui = new GUI("main/java/com/traderbobsemporium/resources/view/EmployeeGUI.fxml", "EmplGUI");
             else
                 gui = new GUI("main/java/com/traderbobsemporium/resources/view/RetailerGUI.fxml", "RetGUI");
-            guiManager.getByName("LoginGUI").getStage().close();
+            gui.getStage().setOnCloseRequest(e -> DatabaseUtil.DATA_SOURCE.close());
             guiManager.getGuiList().add(gui);
-            gui.display();
+            guiManager.openByName(gui.getName());
         }
     }
 
@@ -77,16 +78,16 @@ public class LoginController implements Initializable {
             authSubjectRole();
             return true;
         } catch (UnknownAccountException uae) {
-            Util.displayError("Account does not exist!", Alert.AlertType.ERROR);
+            Util.displayAlert("Account does not exist!", Alert.AlertType.ERROR);
         } catch (IncorrectCredentialsException ice) {
-            Util.displayError("Username or password is incorrect!", Alert.AlertType.ERROR);
+            Util.displayAlert("Username or password is incorrect!", Alert.AlertType.ERROR);
         } catch (ConcurrentAccessException cae){
-            Util.displayError("Account already authenticated!", Alert.AlertType.ERROR);
+            Util.displayAlert("Account already authenticated!", Alert.AlertType.ERROR);
         } catch (AccountLockedException e) {
-            Util.displayError("Account is locked and you cannot login! Please notify an administrator to " +
+            Util.displayAlert("Account is locked and you cannot login! Please notify an administrator to " +
                     "assign you your designated account role and permissions and/or to unlock your account.", Alert.AlertType.ERROR);
         } catch (DisabledAccountException e) {
-            Util.displayError("This account is disabled. Please register with a new account. If there is an " +
+            Util.displayAlert("This account is disabled. Please register with a new account. If there is an " +
                     "issue related to your account being disabled please notify an administrator" , Alert.AlertType.ERROR);
         } catch (AuthenticationException ae) {
             new ExceptionDialog(ae).showAndWait();

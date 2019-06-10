@@ -1,6 +1,8 @@
 package main.java.com.traderbobsemporium.util;
 
 import main.java.com.traderbobsemporium.auth.BobsVeryOwnJbdcRealm;
+import main.java.com.traderbobsemporium.gui.GUI;
+import main.java.com.traderbobsemporium.gui.GUIManager;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
@@ -9,6 +11,8 @@ import org.apache.shiro.authz.ModularRealmAuthorizer;
 import org.apache.shiro.authz.permission.WildcardPermissionResolver;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.jdbc.JdbcRealm;
+
+import java.util.Iterator;
 
 /**
  * @Author Aidan Stewart
@@ -20,6 +24,13 @@ public final class AuthUtil {
 
     private AuthUtil(){
 
+    }
+
+    public static void LOGOUT(){
+        GUIManager guiManager = GUIManager.getInstance();
+        guiManager.openByName("LoginGUI");
+        guiManager.getGuiList().removeIf(value -> !value.getName().equals("LoginGUI"));
+        SecurityUtils.getSubject().logout();
     }
 
     public static void INIT_AUTH(){
@@ -34,7 +45,7 @@ public final class AuthUtil {
         realm.setDataSource(DatabaseUtil.DATA_SOURCE);
         realm.setAuthenticationQuery("SELECT password FROM account WHERE username = ?");
         realm.setUserRolesQuery("SELECT accountRole FROM account WHERE username = ?");
-        realm.setPermissionsQuery("SELECT permissions FROM account WHERE username = ?");
+        realm.setPermissionsQuery("SELECT permission FROM accountpermissions WHERE username = ?");
         realm.setPermissionsLookupEnabled(true);
         realm.setCredentialsMatcher(new PasswordMatcher());
         defaultSecurityManager.setRealm(realm);

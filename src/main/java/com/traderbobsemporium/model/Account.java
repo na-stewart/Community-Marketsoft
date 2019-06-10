@@ -2,8 +2,10 @@ package main.java.com.traderbobsemporium.model;
 
 import main.java.com.traderbobsemporium.util.Util;
 
+import java.security.Permission;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @Author Aidan Stewart
@@ -11,32 +13,21 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class Account extends Profile {
+public class Account extends DataObject {
 
     private String password;
-    private String permissions;
     private AccountRole accountRoles;
 
-    public Account(String name, String password, String permissions, AccountRole accountRoles) {
+    public Account(String name, String password, AccountRole accountRoles) {
         super(Util.NEW_ID(), name);
         this.password = password;
-        this.permissions = permissions;
         this.accountRoles = accountRoles;
     }
 
     public Account(ResultSet resultSet) throws SQLException {
         super(resultSet.getLong("id"), resultSet.getString("username"));
         this.password = resultSet.getString("password");
-        this.permissions = resultSet.getString("permissions");
         this.accountRoles = AccountRole.valueOf(resultSet.getString("accountRole"));
-    }
-
-    public String getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(String permissions) {
-        this.permissions = permissions;
     }
 
     public AccountRole getAccountRole() {
@@ -44,7 +35,8 @@ public class Account extends Profile {
     }
 
     public void setAccountRoles(AccountRole accountRoles) {
-        this.accountRoles = accountRoles;
+        if (accountRoles != null)
+            this.accountRoles = accountRoles;
     }
 
     public String getPassword() {
@@ -52,7 +44,7 @@ public class Account extends Profile {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+            this.password = password;
     }
 
 
@@ -61,7 +53,6 @@ public class Account extends Profile {
         return "Account{" +
                 "name=" + getName() +
                 "password='" + password + '\'' +
-                ", permissions='" + permissions + '\'' +
                 ", accountRoles=" + accountRoles +
                 '}';
     }

@@ -4,6 +4,7 @@ import main.java.com.traderbobsemporium.model.Item;
 import main.java.com.traderbobsemporium.model.ItemType;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -39,25 +40,47 @@ public class ItemDAO implements DAO<Item> {
         return items;
     }
 
-    @Override
-    public void update(Item item, String[] params) throws SQLException {
-        item.setName(params[0]);
-        item.setImageURL(params[1]);
-        item.setPrice(Integer.parseInt(params[2]));
-        item.setItemType(ItemType.valueOf(params[3]));
-        DatabaseUtil.UPDATE("UPDATE item SET name = '" + item.getName() + "'," +
-                "url = '" + item.getImageURL() + "'," + "price = '" + item.getPrice() + "',"
-                + "itemType = '" + item.getItemType().name() +"' WHERE id =" + item.getId() + ";");
+    public List<Item> getAllWithType(ItemType itemType) throws SQLException {
+        List<Item> items = new ArrayList<>();
+        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("item WHERE itemType = '" + itemType.name() + "'");
+        while (resultSet.next())
+            items.add(new Item(resultSet));
+        resultSet.close();
+        return items;
     }
 
     @Override
-    public void add(Item item) throws SQLException {
+    public void updateAll(Item item, String[] params) {
+        if (!params[0].isEmpty())
+            item.setName(params[0]);
+        if (!params[1].isEmpty())
+            item.setQuantity(Integer.parseInt(params[1]));
+        if (!params[2].isEmpty())
+            item.setPrice(new BigDecimal(params[2]));
+        if (!params[3].isEmpty())
+            item.setImageURL(params[3]);
+        if (!params[4].isEmpty())
+            item.setItemType(ItemType.valueOf(params[4]));
+        update(item);
+    }
+
+    @Override
+    public void update(Item updated) {
+        DatabaseUtil.UPDATE("UPDATE item SET name = '" + updated.getName() + "'," +
+                "imageURL = '" + updated.getImageURL() + "'," + "price = '" + updated.getPrice() + "'," +
+                "quantity = '" + updated.getQuantity() + "'," + "itemType = '" + updated.getItemType().name() +
+                "' WHERE id =" + updated.getId() + ";");
+    }
+
+    @Override
+    public void add(Item item) {
         DatabaseUtil.UPDATE("INSERT INTO item VALUES('" + item.getId() + "','" + item.getName() + "','" +
-                item.getImageURL()+ "','" + item.getPrice()+ "')");
+                item.getPrice() + "','" + item.getQuantity() + "','" + item.getImageURL() + "','"
+                + item.getItemType().name() + "')");
     }
 
     @Override
-    public void delete(long id) throws SQLException {
+    public void delete(long id) {
         DatabaseUtil.UPDATE("DELETE FROM item WHERE id = '" + id + "'");
     }
 }

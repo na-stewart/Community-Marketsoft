@@ -358,11 +358,47 @@
 
 /*******************************************************************************
  *                                                                             *
- * Buttons                                                                   *
+ * Buttons                                                                     *
  *                                                                             *
  ******************************************************************************/
 
 .button {
     -fx-background-color: #F9F9F6;
+}
+
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+.tab-pane
+{
+    -fx-tab-min-width:90px;
+}
+
+.tab{
+    -fx-background-insets: 0 1 0 1,0,0;
+}
+.tab-pane .tab
+{
+    -fx-background-color: #e6e6e6;
+}
+
+.tab-pane .tab:selected
+{
+     -fx-faint-focus-color: transparent;
+     -fx-focus-color: rgba(56,2,15,0.2);
+}
+
+.tab .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #828282;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.tab:selected .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #96b946;
 }
 

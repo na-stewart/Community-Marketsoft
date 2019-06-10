@@ -1,11 +1,8 @@
 package main.java.com.traderbobsemporium.dao;
 
-import main.java.com.traderbobsemporium.dao.DAO;
-import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
-import main.java.com.traderbobsemporium.model.Logging.Announcement;
+import main.java.com.traderbobsemporium.model.Announcement;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
-import java.net.MalformedURLException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,7 +15,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class AnnouncementsLogger implements DAO<Announcement> {
+public class AnnouncementDeclarer implements DAO<Announcement> {
 
 
     @Override
@@ -43,27 +40,36 @@ public class AnnouncementsLogger implements DAO<Announcement> {
     }
 
     @Override
-    public void update(Announcement announcement, String[] params) throws SQLException {
-        announcement.setName(params[0]);
-        announcement.setTitle(params[1]);
-        announcement.setDialog(params[2]);
-        announcement.setDateTime(params[3]);
-        DatabaseUtil.UPDATE("UPDATE announcement SET username = '" + announcement.getName() + "'," +
-                "title = '" + announcement.getTitle() + "'," +
-                "dialog = '" + announcement.getDialog() + "'," +
-                "dateTime = '" + announcement.getDateTime() + "'" +
-                " WHERE id =" + announcement.getId() + ";");
+    public void updateAll(Announcement announcement, String[] params) {
+        if (!params[0].isEmpty())
+            announcement.setName(params[0]);
+        if (!params[1].isEmpty())
+            announcement.setTitle(params[1]);
+        if (!params[2].isEmpty())
+            announcement.setDialog(params[2]);
+        if (!params[3].isEmpty())
+            announcement.setDateTime(params[3]);
+        update(announcement);
     }
 
     @Override
-    public void add(Announcement announcement) throws SQLException {
+    public void update(Announcement updated) {
+        DatabaseUtil.UPDATE("UPDATE announcement SET username = '" + updated.getName() + "'," +
+                "title = '" + updated.getTitle() + "'," +
+                "dialog = '" + updated.getDialog() + "'," +
+                "dateTime = '" + updated.getDateTime() + "'" +
+                " WHERE id =" + updated.getId() + ";");
+    }
+
+    @Override
+    public void add(Announcement announcement) {
         DatabaseUtil.UPDATE("INSERT INTO announcement VALUES('" +announcement.getId() + "','" +
                 announcement.getName() + "','" +announcement.getTitle() + "','" + announcement.getDialog() +
                 "','" + announcement.getDateTime() + "')");
     }
 
     @Override
-    public void delete(long id) throws SQLException {
+    public void delete(long id) {
         DatabaseUtil.UPDATE("DELETE FROM announcement WHERE id = '" + id  + "'");
     }
 }

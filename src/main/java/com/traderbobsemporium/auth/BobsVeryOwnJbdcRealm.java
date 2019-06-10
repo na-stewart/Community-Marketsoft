@@ -32,9 +32,10 @@ public class BobsVeryOwnJbdcRealm extends JdbcRealm {
         preparedStatement.setString(1, username);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next())
-            permissions.add(resultSet.getString("permissions"));
+            permissions.add(resultSet.getString("permission"));
         preparedStatement.close();
         resultSet.close();
         return permissions;
+
     }
 }
