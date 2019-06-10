@@ -19,7 +19,7 @@ Screen Shots:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/items.PNG)
 
-![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/logs.PNG)
+![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/log.jpg)
 
 # Retailer Interface :
 
