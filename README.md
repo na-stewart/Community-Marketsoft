@@ -9,7 +9,7 @@ A youtube demo is here: https://www.youtube.com/upload
 
 Screen Shots:
 
-# Login
+# Login:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/login.PNG)
 
