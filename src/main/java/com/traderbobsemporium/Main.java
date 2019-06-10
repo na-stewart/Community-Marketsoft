@@ -8,6 +8,7 @@ import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import org.apache.shiro.SecurityUtils;
+import org.controlsfx.dialog.ExceptionDialog;
 
 import java.sql.SQLException;
 
@@ -21,9 +22,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        DatabaseUtil.CONFIG_SETUP();
-        AuthUtil.INIT_AUTH();
-        displayLogin();
+        try {
+            DatabaseUtil.CONFIG_SETUP();
+            AuthUtil.INIT_AUTH();
+            displayLogin();
+        }catch (Exception e){
+            new ExceptionDialog(e).showAndWait();
+        }
+
     }
 
     private void displayLogin(){

@@ -29,13 +29,11 @@ import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.model.Announcement;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
-import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.subject.Subject;
 import org.controlsfx.control.table.TableFilter;
-import org.controlsfx.dialog.ExceptionDialog;
 
 import java.math.BigDecimal;
 import java.net.URL;
@@ -182,6 +180,8 @@ public class EmployeeController implements Initializable {
     private TextArea dialogField;
     @FXML
     private Button announcementsAdd, announcementsUpdate, announcementsDelete;
+    @FXML
+    private AnchorPane helpAnchorPane;
 
 
     @Override
@@ -189,14 +189,12 @@ public class EmployeeController implements Initializable {
         panels = new EmployeePanel[]{new EmployeePanel(dashboardScrollPane, "Dashboard"),
                 new EmployeePanel(dashboardResizerContainer, "Dashboard"), new EmployeePanel(campersAnchorPane, "Campers"),
                 new EmployeePanel(accountsAnchorPane, "Accounts"), new EmployeePanel(logsTabPane, "Logs"),
-                new EmployeePanel(itemsAnchorPane, "Items")};
+                new EmployeePanel(itemsAnchorPane, "Items"), new EmployeePanel(helpAnchorPane, "Help",false)};
         setCellValueFactory();
         initDashboard();
         loadDataManagerEventHandlers();
         loadPanelsChoiceBox();
         setTableSelectionMethods();
-
-
     }
 
     private void setTableSelectionMethods(){
@@ -248,18 +246,16 @@ public class EmployeeController implements Initializable {
         loadDashboard();
     }
 
-
     @FXML
-    private void openPanel(MouseEvent mouseEvent){
-        displayPanel(((Text) mouseEvent.getSource()).getText());
-    }
-
-    private void displayPanel(String display){
-        for (EmployeePanel guiPanel : panels)
-            if (guiPanel.getName().equals(display) && subject.isPermitted(guiPanel.getName() + ":Display"))
-                guiPanel.getNode().setVisible(true);
-            else
+    private void openPanel(MouseEvent mouseEvent) {
+        for (EmployeePanel guiPanel : panels) {
+            if (guiPanel.getName().equals(((Text) mouseEvent.getSource()).getText())) {
+                if (subject.isPermitted(guiPanel.getName() + ":Display") || !guiPanel.getRequiresPermissions())
+                    guiPanel.getNode().setVisible(true);
+            } else {
                 guiPanel.getNode().setVisible(false);
+            }
+        }
     }
 
     @FXML
@@ -347,7 +343,7 @@ public class EmployeeController implements Initializable {
                data.add(new PieChart.Data(name, Collections.frequency(listOfItemNames(), name)));
             itemsBoughtFrequencyChart.setData(data);
         } catch (Exception e) {
-            new ExceptionDialog(e).showAndWait();
+            e.printStackTrace();
         }
     }
 
@@ -394,7 +390,7 @@ public class EmployeeController implements Initializable {
 
             @Override
             void update() {
-                subject.checkPermission("items:updateAll");
+                subject.checkPermission("items:update");
                 for (Item item : itemsTableView.getSelectionModel().getSelectedItems()) {
                     itemDAO.updateAll(item, new String[]{itemNameField.getText(), itemQuantityField.getText(),
                     itemPriceField.getText(), itemImageUrlField.getText(), itemTypeChoiceBox.getValue().name()});
@@ -467,7 +463,7 @@ public class EmployeeController implements Initializable {
 
             @Override
             void update() {
-                subject.checkPermission("campers:updateAll");
+                subject.checkPermission("campers:update");
                 for (Camper camper : camperTableView.getSelectionModel().getSelectedItems()) {
                     camperDAO.updateAll(camper, new String[]{camperNameField.getText(), camperBalanceField.getText()});
                     accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, camper));
@@ -524,7 +520,7 @@ public class EmployeeController implements Initializable {
 
             @Override
             void add() {
-                subject.checkPermission("account:add");
+                subject.checkPermission("accounts:add");
                 Account account = new Account(usernameField.getText(),
                         new DefaultPasswordService().encryptPassword(passwordField.getText()),
                        accountRoleChoiceBox.getValue());
@@ -533,7 +529,7 @@ public class EmployeeController implements Initializable {
             }
             @Override
             void update() {
-                subject.checkPermission("account:updateAll");
+                subject.checkPermission("accounts:update");
                 for (Account account: accountTableView.getSelectionModel().getSelectedItems()) {
                     if (account.getAccountRole() != AccountRole.DISABLED) {
                         accountDAO.updateAll(account, new String[]{usernameField.getText(),
@@ -549,7 +545,7 @@ public class EmployeeController implements Initializable {
 
             @Override
             void delete() {
-                subject.checkPermission("account:delete");
+                subject.checkPermission("accounts:delete");
                 for (Account account : accountTableView.getSelectionModel().getSelectedItems()) {
                     accountDAO.delete(account.getId());
                     accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, account));
@@ -652,7 +648,7 @@ public class EmployeeController implements Initializable {
 
             @Override
             void update() {
-                subject.checkPermission("accountactivity:updateAll");
+                subject.checkPermission("accountactivity:update");
                 for (AccountActivity activityType : accountActivityLoggerTableView.getSelectionModel().getSelectedItems()) {
                     accountActivityLogger.updateAll(activityType, new String[]{activityUsernameField.getText(),
                             ipField.getText(), macField.getText(), activityTypeChoiceBox.getValue().name(), affectedIdField.getText(),

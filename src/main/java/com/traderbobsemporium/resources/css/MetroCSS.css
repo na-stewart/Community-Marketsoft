@@ -343,9 +343,7 @@
     -fx-highlight-fill: rgb(45,137,239);
     -fx-background-radius: 0;
 }
-.text-area *.text {
-    -fx-text-alignment: center;
-}
+
 .text-area .scroll-pane .scroll-bar .track,
 .text-area .scroll-pane .scroll-bar .scroll-bar,
 .text-area .scroll-pane .scroll-bar .track-background {
