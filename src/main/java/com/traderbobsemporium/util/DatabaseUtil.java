@@ -21,9 +21,6 @@ public final class DatabaseUtil {
     }
 
     public static void CONFIG_SETUP() {
-        CONFIG.setJdbcUrl("jdbc:mysql://" + "localhost" + ":3306/traderbobsemporium2.0");
-        CONFIG.setUsername("root");
-        CONFIG.setPassword("root");
 
         CONFIG.setJdbcUrl("jdbc:mysql://" + "localhost" + ":3306/******** + ?verifyServerCertificate=FALSE" +
                 "&useSSL=TRUE &requireSSL=TRUE");
