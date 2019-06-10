@@ -60,6 +60,7 @@ public class RegisterController implements Initializable {
     private void tryToRegister(){
         if (captcha.isCorrect(captchaField.getText())) {
             register();
+            createCaptcha();
         } else{
             Util.displayAlert("Captcha is incorrect!", Alert.AlertType.WARNING);
             createCaptcha();

@@ -92,7 +92,6 @@ abstract class EmployeePanelHandler {
             }
             afterEvent();
             clearFields();
-            System.out.println(DatabaseUtil.SUCCESSFUL_QUERY);
 
         }
          catch (AuthorizationException e) {

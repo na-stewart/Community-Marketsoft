@@ -790,10 +790,12 @@ public class EmployeeController implements Initializable {
          EventHandler<Event> panelEventHandler = new EmployeePanelHandler(announcementTableView) {
 
              void add() {
-                 subject.checkPermission("announcement:add");
-                 Announcement announcement = new Announcement(titleField.getText(), dialogField.getText());
-                 announcementLogger.add(announcement);
-                 accountActivityLogger.add(new AccountActivity(ActivityType.ADD, announcement));
+                 if (!dialogField.isFocused()) {
+                     subject.checkPermission("announcement:add");
+                     Announcement announcement = new Announcement(titleField.getText(), dialogField.getText());
+                     announcementLogger.add(announcement);
+                     accountActivityLogger.add(new AccountActivity(ActivityType.ADD, announcement));
+                 }
              }
 
              @Override

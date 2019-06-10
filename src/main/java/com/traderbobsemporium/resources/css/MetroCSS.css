@@ -305,6 +305,10 @@
  .text-field:focused {
      -fx-background-color: -fx-focus-color, -fx-background ;
  }
+
+.centeredTextArea .scroll-pane .content .text {
+     -fx-text-alignment: center;
+ }
 /*
 .text-field {
     -fx-font: 12px "Segoe UI";

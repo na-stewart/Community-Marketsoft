@@ -4,7 +4,6 @@ import main.java.com.traderbobsemporium.model.DataObject;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.*;

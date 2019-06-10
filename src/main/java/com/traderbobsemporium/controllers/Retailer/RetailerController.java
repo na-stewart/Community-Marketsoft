@@ -14,6 +14,8 @@ import javafx.util.Callback;
 import main.java.com.traderbobsemporium.dao.CamperDAO;
 import main.java.com.traderbobsemporium.dao.ItemDAO;
 import main.java.com.traderbobsemporium.dao.Loggers.PurchasesActivityLogger;
+import main.java.com.traderbobsemporium.gui.GUI;
+import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.model.Camper;
 import main.java.com.traderbobsemporium.model.Item;
 import main.java.com.traderbobsemporium.model.ItemType;
@@ -133,7 +135,6 @@ public class RetailerController implements Initializable {
 
     @FXML
     private void delete(){
-        System.out.println("hi");
         itemsSelectedListView.getItems().remove(itemsSelectedListView.getSelectionModel().getSelectedIndex());
     }
 
@@ -160,6 +161,12 @@ public class RetailerController implements Initializable {
     @FXML
     private void logout(){
         AuthUtil.LOGOUT();
+    }
+
+    @FXML
+    private void setFullScreen(){
+        GUI thisGUI = GUIManager.getInstance().getByName("RetGUI");
+        thisGUI.getStage().setFullScreen(!thisGUI.getStage().isFullScreen());
     }
 
     private void setChoiceBox() {

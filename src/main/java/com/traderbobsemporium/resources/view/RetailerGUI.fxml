@@ -48,5 +48,6 @@
          </children>
       </HBox>
       <ChoiceBox fx:id="itemTypeChoiceBox" layoutX="474.0" layoutY="27.0" prefHeight="25.0" prefWidth="237.0" AnchorPane.leftAnchor="474.0" AnchorPane.topAnchor="27.0" />
+      <Button layoutX="990.0" layoutY="14.0" mnemonicParsing="false" onAction="#setFullScreen" prefHeight="25.0" prefWidth="74.0" style="-fx-background-color: white;" text="Full Screen" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="14.0" />
    </children>
 </AnchorPane>
