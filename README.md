@@ -4,7 +4,7 @@ Trader Bobs Emporium is an application for a summer camp. This camp has a store 
 
 https://github.com/sw1pe/Trader-Bobs-Emporium/projects
 
-A youtube demo is here: https://www.youtube.com/upload
+A youtube demo is here: https://www.youtube.com/watch?v=kj8cPJ-QkEI&t
 
 Screen Shots:
 
