@@ -27,9 +27,13 @@ Screen Shots:
 # Librarys:
 
 Hikari CP https://mvnrepository.com/artifact/com.zaxxer/HikariCP/3.3.1
-Mysql Connector Java 8.0 https://dev.mysql.com/downloads/connector/j/
+
+Mysql Connector https://dev.mysql.com/downloads/connector/j/
+
 Apache Shiro https://mvnrepository.com/artifact/org.apache.shiro/shiro-core/1.4.1
+
 Controlsfx https://mvnrepository.com/artifact/org.controlsfx/controlsfx/8.40.15
+
 Simplecaptcha http://simplecaptcha.sourceforge.net/
 
 
