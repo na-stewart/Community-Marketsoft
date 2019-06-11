@@ -41,8 +41,6 @@ import java.util.ResourceBundle;
 public class RetailerController implements Initializable {
     private ItemDAO itemDAO = new ItemDAO();
     private CamperDAO camperDAO = new CamperDAO();
-
-
     @FXML
     private TextField filterTextField;
     @FXML
@@ -77,15 +75,21 @@ public class RetailerController implements Initializable {
                 if (item.getItemType() == itemTypeChoiceBox.getValue()) {
                     ItemVBox itemVBox = new ItemVBox(item);
                     itemTilePane.getChildren().add(itemVBox);
-                    itemVBox.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-                        if (camperTableView.getSelectionModel().getSelectedItem() != null)
-                            itemsSelectedListView.getItems().add(itemVBox.getItem());
-                    });
+                    addListner(itemVBox);
                 }
             }
         } catch (SQLException e) {
             new ExceptionDialog(e).showAndWait();
         }
+    }
+
+    private void addListner(ItemVBox itemVBox){
+        itemVBox.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+            if (camperTableView.getSelectionModel().getSelectedItem() != null) {
+                itemsSelectedListView.getItems().add(itemVBox.getItem());
+
+            }
+        });
     }
 
     private Callback<ListView<Item>, ListCell<Item>> selectedItemsTableViewCallback(){
@@ -107,13 +111,14 @@ public class RetailerController implements Initializable {
     }
 
     @FXML
-    private void checkout(){
+    private void checkout() throws SQLException {
         Camper selectedCamper = camperTableView.getSelectionModel().getSelectedItem();
         List<Item> selectedItems = itemsSelectedListView.getItems();
         List<String> itemsNotCheckedOut = new ArrayList<>();
         boolean checkoutWarning = false;
         Util.displayAlert(getCheckoutText(), Alert.AlertType.CONFIRMATION);
-        for (Item item : selectedItems) {
+        for (Item selectedItem : selectedItems) {
+            Item item = itemDAO.get(selectedItem.getId());
             if (item.getPrice().doubleValue() <= selectedCamper.getBalance().doubleValue() && item.getQuantity() > 0) {
                 item.setQuantity(item.getQuantity() - 1);
                 selectedCamper.setBalance(selectedCamper.getBalance().subtract(item.getPrice()));
@@ -127,7 +132,6 @@ public class RetailerController implements Initializable {
             Util.displayAlert("The following items did not checkout due to the campers insufficient balance " +
                             "or the item is out of stock!\n" + itemsNotCheckedOut, Alert.AlertType.WARNING);
         camperDAO.update(selectedCamper);
-        camperTableView.setItems(getUnfilteredCamperData());
         logPurchasedItems(selectedCamper, selectedItems);
         tryToPopulateTilePane();
         selectedItems.clear();

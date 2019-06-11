@@ -25,8 +25,7 @@ public class EmployeePanel {
     }
 
 
-
-    public Node getNode() {
+    Node getNode() {
         return node;
     }
 
@@ -42,7 +41,7 @@ public class EmployeePanel {
         this.name = name;
     }
 
-    public Boolean getRequiresPermissions() {
+    Boolean getRequiresPermissions() {
         return requiresPermissions;
     }
 

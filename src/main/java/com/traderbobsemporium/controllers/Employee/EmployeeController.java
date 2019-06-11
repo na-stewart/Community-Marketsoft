@@ -192,6 +192,7 @@ public class EmployeeController implements Initializable {
                 new EmployeePanel(itemsAnchorPane, "Items"), new EmployeePanel(helpAnchorPane, "Help",false)};
         setCellValueFactory();
         initDashboard();
+        reloadAllPanels();
         loadDataManagerEventHandlers();
         loadPanelsChoiceBox();
         setTableSelectionMethods();
@@ -211,18 +212,18 @@ public class EmployeeController implements Initializable {
 
 
     private void loadDataManagerEventHandlers() {
-        populateAccountRoleChoiceBox();
         createItemsPanelEventHandler();
         createCamperPanelEventHandler();
         createPurchasesActivityPanelEventHandler();
         createAccountPanelEventHandler();
         createAnnouncementPanelEventHandler();
         createAccountActivitiesPanelEventHandler();
-        reloadAllPanels();
+
 
     }
 
     private void loadPanelsChoiceBox(){
+        populateAccountRoleChoiceBox();
         populateItemsBoughtFrequencyChoiceBox();
         populateAccountActivityTypeChoiceBox();
         populateItemTypeChoiceBox();
@@ -485,6 +486,7 @@ public class EmployeeController implements Initializable {
             void clearFields() {
                 camperNameField.clear();
                 camperBalanceField.clear();
+                camperNameField.requestFocus();
             }
 
             @Override
@@ -563,7 +565,6 @@ public class EmployeeController implements Initializable {
             @Override
             void populateFields() {
                 Account account = accountTableView.getSelectionModel().getSelectedItem();
-                usernameField.requestFocus();
                 usernameField.setText(account.getName());
                 populatePermissionsTable();
                 accountRoleChoiceBox.setValue(account.getAccountRole());
@@ -572,9 +573,8 @@ public class EmployeeController implements Initializable {
             @Override
             void afterEvent() {
                 populateTableViewWithObservableList(accountDAO, accountTableView);
+
             }
-
-
         }.getEventHandler();
         accountsCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, accountEventHandler);
         accountAdd.addEventHandler(ActionEvent.ACTION, accountEventHandler);
@@ -682,7 +682,6 @@ public class EmployeeController implements Initializable {
             @Override
             void populateFields() {
                 AccountActivity accountActivity = accountActivityLoggerTableView.getSelectionModel().getSelectedItem();
-                activityUsernameField.requestFocus();
                 activityUsernameField.setText(accountActivity.getName());
                 ipField.setText(accountActivity.getIp());
                 macField.setText(accountActivity.getMac());
@@ -835,7 +834,6 @@ public class EmployeeController implements Initializable {
              @Override
              void populateFields() {
                  Announcement announcement = announcementTableView.getSelectionModel().getSelectedItem();
-                 titleField.requestFocus();
                  titleField.setText(announcement.getTitle());
                  authorField.setText(announcement.getName());
                  dialogField.setText(announcement.getDialog());

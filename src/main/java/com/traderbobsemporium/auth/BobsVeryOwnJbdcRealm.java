@@ -1,14 +1,6 @@
 package main.java.com.traderbobsemporium.auth;
 
-import main.java.com.traderbobsemporium.dao.AccountDAO;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.Permission;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.authz.permission.WildcardPermission;
 import org.apache.shiro.realm.jdbc.JdbcRealm;
-import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.JdbcUtils;
-import org.springframework.context.annotation.Bean;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

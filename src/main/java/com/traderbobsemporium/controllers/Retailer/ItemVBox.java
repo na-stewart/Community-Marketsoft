@@ -3,7 +3,6 @@ package main.java.com.traderbobsemporium.controllers.Retailer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import main.java.com.traderbobsemporium.model.Item;
@@ -25,14 +24,14 @@ public class ItemVBox extends VBox {
     public ItemVBox(Item item) {
         super();
         this.item = item;
-        vBoxBuilder();
+        buildVbox();
     }
 
     public Item getItem() {
         return item;
     }
 
-    private void vBoxBuilder() {
+    public void buildVbox() {
         addChildren();
         setAlignment(Pos.TOP_CENTER);
         setStyle("-fx-background-color: white");
