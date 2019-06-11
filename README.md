@@ -9,11 +9,11 @@ A youtube demo is here: https://www.youtube.com/upload
 
 Screen Shots:
 
-# Login
+# Login:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/login.PNG)
 
-# Data Manager :
+# Data Manager:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/dashboard.PNG)
 
@@ -21,7 +21,7 @@ Screen Shots:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/log.jpg)
 
-# Retailer Interface :
+# Retailer Interface:
 
 ![alt text](https://github.com/sw1pe/Trader-Bobs-Emporium/blob/master/Screen%20Shots/retailer.PNG)
 
