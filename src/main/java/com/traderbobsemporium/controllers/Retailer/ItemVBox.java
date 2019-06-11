@@ -18,20 +18,20 @@ import java.net.URL;
  * Copyright (c)
  * All rights reserved.
  */
-public class ItemVBox extends VBox {
+class ItemVBox extends VBox {
     private Item item;
 
-    public ItemVBox(Item item) {
+    ItemVBox(Item item) {
         super();
         this.item = item;
         buildVbox();
     }
 
-    public Item getItem() {
+    Item getItem() {
         return item;
     }
 
-    public void buildVbox() {
+    private void buildVbox() {
         addChildren();
         setAlignment(Pos.TOP_CENTER);
         setStyle("-fx-background-color: white");

@@ -13,12 +13,12 @@ public class EmployeePanel {
     private String name;
     private Boolean requiresPermissions = true;
 
-    public EmployeePanel(Node node, String name){
+    EmployeePanel(Node node, String name){
         this.node = node;
         this.name = name;
     }
 
-    public EmployeePanel(Node node, String name, boolean requiresPermission){
+    EmployeePanel(Node node, String name, boolean requiresPermission){
         this.name = name;
         this.node = node;
         this.requiresPermissions = requiresPermission;

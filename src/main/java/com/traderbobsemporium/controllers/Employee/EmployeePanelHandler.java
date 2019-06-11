@@ -23,7 +23,7 @@ abstract class EmployeePanelHandler {
     private TableView tableView;
     private EventHandler<Event> eventHandler = this::onEvent;
 
-    public EmployeePanelHandler(TableView tableView) {
+    EmployeePanelHandler(TableView tableView) {
         this.tableView = tableView;
     }
 
