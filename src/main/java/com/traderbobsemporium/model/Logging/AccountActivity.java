@@ -37,8 +37,6 @@ public class AccountActivity {
         this.mac = mac();
     }
 
-
-
     public AccountActivity(String name, String ip, String mac, ActivityType activityType, long affectedItemId, String affectedItemName, String dateTime) {
         this.id = Util.NEW_ID();
         this.name = name;

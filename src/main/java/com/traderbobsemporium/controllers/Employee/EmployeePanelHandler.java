@@ -36,7 +36,7 @@ abstract class EmployeePanelHandler<T>{
     private T t;
     private String[] params;
     private String panelName;
-    private AccountActivityLogger accountActivityLogger;
+    private AccountActivityLogger accountActivityLogger = new AccountActivityLogger();
 
     public EmployeePanelHandler(TableView<T> tableView, DAO<T> dao, String panelName){
         this.panelName = panelName.toLowerCase();
@@ -44,9 +44,9 @@ abstract class EmployeePanelHandler<T>{
         this.dao = dao;
     }
 
-    abstract void beforeCommandExecute();
+    abstract void beforeEvent();
 
-    abstract void afterCommandExecute();
+    abstract void afterEvent();
 
     abstract void populateFields();
 
@@ -80,7 +80,10 @@ abstract class EmployeePanelHandler<T>{
         } catch (AuthorizationException e) {
             e.printStackTrace();
             Util.displayAlert("Insufficient Permissions!", Alert.AlertType.WARNING);
-        } catch (SQLException e){
+        } catch (NumberFormatException e){
+            Util.displayAlert("A field that requires a number has a non numerical character!", Alert.AlertType.ERROR);
+        } catch (Exception e){
+            e.printStackTrace();
             new ExceptionDialog(e).showAndWait();
         }
     }
@@ -112,38 +115,45 @@ abstract class EmployeePanelHandler<T>{
 
     private void add() throws SQLException {
         subject.checkPermission(panelName + ":add");
-        beforeCommandExecute();
+        beforeEvent();
         dao.add(t);
-        afterExecute(ActivityType.ADD);
+        logActivity(ActivityType.ADD);
+        afterExecute();
     }
 
     private void update() throws SQLException {
         subject.checkPermission(panelName + ":update");
-        beforeCommandExecute();
-        for (T t : tableView.getSelectionModel().getSelectedItems())
+        beforeEvent();
+        for (T t : tableView.getSelectionModel().getSelectedItems()) {
             dao.updateAll(t, params);
-        afterExecute(ActivityType.UPDATE);
+            logActivity(ActivityType.UPDATE);
+        }
+        afterExecute();
     }
 
     private void delete() throws SQLException {
         subject.checkPermission(panelName + ":delete");
-        for (T t : tableView.getSelectionModel().getSelectedItems())
+        for (T t : tableView.getSelectionModel().getSelectedItems()) {
             dao.delete(t);
-        afterExecute(ActivityType.DELETE);
+            logActivity(ActivityType.DELETE);
+        }
+        afterExecute();
     }
 
-    private void afterExecute(ActivityType activityType){
-        new Thread(() -> tryToExecuteActivityLogger(activityType));
-        afterCommandExecute();
+    private void afterExecute(){
+
+        afterEvent();
         clearFields();
     }
 
-    private void tryToExecuteActivityLogger(ActivityType accountType){
-        try {
-            accountActivityLogger.add(new AccountActivity(accountType, (DataObject) t));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private void logActivity(ActivityType accountType){
+        new Thread(() -> {
+            try {
+                accountActivityLogger.add(new AccountActivity(accountType, (DataObject) t));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void onMouseEvent(MouseEvent mouseEvent){

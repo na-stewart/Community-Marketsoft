@@ -370,7 +370,7 @@ public class EmployeeController implements Initializable {
     private void createItemsPanelEventHandler() {
         EventHandler<Event> itemEventHandler = new EmployeePanelHandler<Item>(itemsTableView, itemDAO, "items") {
             @Override
-            void beforeCommandExecute() {
+            void beforeEvent() {
                 String[] params = new String[]{itemNameField.getText(), itemQuantityField.getText(), itemPriceField.getText(),
                 itemImageUrlField.getText(),itemTypeChoiceBox.getValue().name()};
                 setDataObject(new Item(params[0], Integer.parseInt(params[1]), new BigDecimal(params[2]), params[3],
@@ -378,7 +378,7 @@ public class EmployeeController implements Initializable {
                 setUpdateParams(params);
             }
             @Override
-            void afterCommandExecute() {
+            void afterEvent() {
                 populateTableViewWithObservableList(itemDAO, itemsTableView);
             }
 
@@ -424,13 +424,13 @@ public class EmployeeController implements Initializable {
     private void createCamperPanelEventHandler() {
         EventHandler<Event> camperEventHandler = new EmployeePanelHandler<Camper>(camperTableView, camperDAO, "campers" ) {
             @Override
-            void beforeCommandExecute() {
+            void beforeEvent() {
                 String[] params = new String[]{camperNameField.getText(), camperBalanceField.getText()};
                 setDataObject(new Camper(params[0], new BigDecimal(params[1])));
                 setUpdateParams(new String[]{params[0], params[1]});
             }
             @Override
-            void afterCommandExecute() {
+            void afterEvent() {
                 populateTableViewWithObservableList(camperDAO, camperTableView);
             }
 
@@ -481,7 +481,7 @@ public class EmployeeController implements Initializable {
             }
 
             @Override
-            void beforeCommandExecute() {
+            void beforeEvent() {
                 String[] params = new String[]{usernameField.getText(), new DefaultPasswordService().encryptPassword(passwordField.getText()),
                 accountRoleChoiceBox.getValue().name()};
                 setDataObject(new Account(params[0], params[1], AccountRole.valueOf(params[2])));
@@ -489,7 +489,7 @@ public class EmployeeController implements Initializable {
             }
 
             @Override
-            void afterCommandExecute() {
+            void afterEvent() {
                 populateTableViewWithObservableList(accountDAO, accountTableView);
             }
         }.getEventHandler();
@@ -560,7 +560,7 @@ public class EmployeeController implements Initializable {
         EventHandler<Event> panelEventHandler = new EmployeePanelHandler<AccountActivity>(accountActivityLoggerTableView,
                 accountActivityLogger, "accountactivity") {
             @Override
-            void beforeCommandExecute() {
+            void beforeEvent() {
                 String[] params = new String[]{activityUsernameField.getText(), ipField.getText(), macField.getText(),
                 activityTypeChoiceBox.getValue().name(), affectedIdField.getText(), affectedNameField.getText(),
                 activityDateTimeField.getText()};
@@ -569,7 +569,7 @@ public class EmployeeController implements Initializable {
             }
 
             @Override
-            void afterCommandExecute() {
+            void afterEvent() {
                 populateTableViewWithObservableList(accountActivityLogger, accountActivityLoggerTableView);
             }
 
@@ -626,7 +626,7 @@ public class EmployeeController implements Initializable {
         EventHandler<Event> panelEventHandler = new EmployeePanelHandler<PurchasesActivity>(purchasesActivityLoggerTableView,
                 purchasesActivityLogger, "purchasesactivity") {
             @Override
-            void beforeCommandExecute() {
+            void beforeEvent() {
                 String[] params = new String[]{purchasesCamperNameField.getText(), purchasesCamperBalanceField.getText(),
                 purchasesItemIdField.getText(), purchasesItemNameField.getText()};
                 setDataObject(new PurchasesActivity(params[0], new BigDecimal(params[1]), Long.parseLong(params[2]), params[3]));
@@ -634,7 +634,7 @@ public class EmployeeController implements Initializable {
             }
 
             @Override
-            void afterCommandExecute() {
+            void afterEvent() {
                 populateTableViewWithObservableList(purchasesActivityLogger, purchasesActivityLoggerTableView);
             }
 
@@ -676,7 +676,7 @@ public class EmployeeController implements Initializable {
          EventHandler<Event> panelEventHandler = new EmployeePanelHandler<Announcement>(announcementTableView,
                  announcementDeclarer, "announcement") {
              @Override
-             void beforeCommandExecute() {
+             void beforeEvent() {
                  String[] params = new String[]{authorField.getText(), titleField.getText(),
                          dialogField.getText(), announcementDateTimeField.getText()};
                  setDataObject(new Announcement(params[1], params[2]));
@@ -684,7 +684,7 @@ public class EmployeeController implements Initializable {
              }
 
              @Override
-             void afterCommandExecute() {
+             void afterEvent() {
                  populateTableViewWithObservableList(announcementDeclarer, announcementTableView);
              }
 
