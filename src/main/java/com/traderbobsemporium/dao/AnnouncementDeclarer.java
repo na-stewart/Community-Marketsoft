@@ -1,10 +1,10 @@
 package main.java.com.traderbobsemporium.dao;
 
+import main.java.com.traderbobsemporium.model.AccountPermission;
 import main.java.com.traderbobsemporium.model.Announcement;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,31 +16,43 @@ import java.util.List;
  * All rights reserved.
  */
 public class AnnouncementDeclarer implements DAO<Announcement> {
-
+    private final String receiveQuery = "SELECT * FROM announcement ";
 
     @Override
     public Announcement get(long id) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("announcement WHERE id =" + id);
         Announcement announcement = null;
-        if (resultSet.next())
-            announcement = new Announcement(resultSet);
-        resultSet.close();
-        return announcement;
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(receiveQuery + "WHERE id = " + id)) {
+                if (resultSet.next())
+                    announcement = new Announcement(resultSet);
+                return announcement;
+            }
+        }
     }
 
     @Override
     public List<Announcement> getAll() throws SQLException {
+        return getAll(null);
+    }
+
+
+    @Override
+    public List<Announcement> getAll(String[] clause) throws SQLException {
+        String query = clause != null ? receiveQuery + "WHERE " + clause[0] + " = '" + clause[1] + "'" : receiveQuery;
         List<Announcement> announcements = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("announcement");
-        while (resultSet.next())
-            announcements.add(new Announcement(resultSet));
-        Collections.reverse(announcements);
-        resultSet.close();
-        return announcements;
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(query)) {
+                while (resultSet.next())
+                    announcements.add(new Announcement(resultSet));
+                return announcements;
+            }
+        }
     }
 
     @Override
-    public void updateAll(Announcement announcement, String[] params) {
+    public void updateAll(Announcement announcement, String[] params) throws SQLException {
         if (!params[0].isEmpty())
             announcement.setName(params[0]);
         if (!params[1].isEmpty())
@@ -53,23 +65,34 @@ public class AnnouncementDeclarer implements DAO<Announcement> {
     }
 
     @Override
-    public void update(Announcement updated) {
-        DatabaseUtil.UPDATE("UPDATE announcement SET username = '" + updated.getName() + "'," +
-                "title = '" + updated.getTitle() + "'," +
-                "dialog = '" + updated.getDialog() + "'," +
-                "dateTime = '" + updated.getDateTime() + "'" +
-                " WHERE id =" + updated.getId() + ";");
+    public void update(Announcement updated) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE announcement SET " +
+                     "username = '" + updated.getName() + "'," +
+                     "title = '" + updated.getTitle() + "'," +
+                     "dialog = '" + updated.getDialog() + "'," +
+                     "dateTime = '" + updated.getDateTime() + "'" +
+                     " WHERE id =" + updated.getId() + ";")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
-    public void add(Announcement announcement) {
-        DatabaseUtil.UPDATE("INSERT INTO announcement VALUES('" +announcement.getId() + "','" +
-                announcement.getName() + "','" +announcement.getTitle() + "','" + announcement.getDialog() +
-                "','" + announcement.getDateTime() + "')");
+    public void add(Announcement announcement) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO announcement VALUES('" +announcement.getId() + "','" +
+                             announcement.getName() + "','" +announcement.getTitle() + "','" + announcement.getDialog() +
+                             "','" + announcement.getDateTime() + "')")) {
+            preparedStatement.execute();
+        }
+
     }
 
     @Override
-    public void delete(long id) {
-        DatabaseUtil.UPDATE("DELETE FROM announcement WHERE id = '" + id  + "'");
+    public void delete(Announcement announcement) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM announcement WHERE id = '" + announcement.getId() + "'")) {
+            preparedStatement.execute();
+        }
     }
 }

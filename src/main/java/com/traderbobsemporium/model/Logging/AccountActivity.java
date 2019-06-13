@@ -25,7 +25,6 @@ public class AccountActivity {
     private long affectedId;
     private String affectedName;
     private String dateTime;
-    private boolean successful;
 
     public AccountActivity(ActivityType activityType, DataObject profile) {
         this.id = Util.NEW_ID();
@@ -34,14 +33,13 @@ public class AccountActivity {
         this.dateTime = Util.dateTime();
         this.affectedName = profile.getName();
         this.affectedId = profile.getId();
-        this.successful = DatabaseUtil.SUCCESSFUL_QUERY;
         this.ip = externalIp();
         this.mac = mac();
     }
 
 
 
-    public AccountActivity(String name, String ip, String mac, ActivityType activityType, long affectedItemId, String affectedItemName, String dateTime, boolean successful) {
+    public AccountActivity(String name, String ip, String mac, ActivityType activityType, long affectedItemId, String affectedItemName, String dateTime) {
         this.id = Util.NEW_ID();
         this.name = name;
         this.ip = ip;
@@ -50,7 +48,6 @@ public class AccountActivity {
         this.affectedId = affectedItemId;
         this.affectedName = affectedItemName;
         this.dateTime = dateTime;
-        this.successful = successful;
     }
 
     public AccountActivity(ResultSet resultSet) throws SQLException {
@@ -62,7 +59,6 @@ public class AccountActivity {
         this.affectedId = resultSet.getLong("affectedID");
         this.affectedName = resultSet.getString("affectedName");
         this.dateTime = resultSet.getString("dateTime");
-        this.successful = resultSet.getBoolean("successful");
     }
 
     private String externalIp(){
@@ -103,6 +99,22 @@ public class AccountActivity {
         return null;
     }
 
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public long getAffectedId() {
         return affectedId;
@@ -150,26 +162,6 @@ public class AccountActivity {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isSuccessful() {
-        return successful;
-    }
-
-    public void setSuccessful(boolean successful) {
-        this.successful = successful;
     }
 
     @Override

@@ -1,13 +1,10 @@
 package main.java.com.traderbobsemporium.dao;
 
-import jdk.nashorn.internal.ir.LiteralNode;
-import main.java.com.traderbobsemporium.dao.DAO;
 import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.AccountPermission;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,33 +15,44 @@ import java.util.List;
  * All rights reserved.
  */
 public class AccountPermissionDAO implements DAO<AccountPermission> {
+    private final String receiveQuery = "SELECT * FROM accountpermissions ";
 
     @Override
     public AccountPermission get(long id) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("accountpermissions WHERE id = " + id);
-        AccountPermission account = null;
-        if (resultSet.next())
-            account = new AccountPermission(resultSet);
-        resultSet.close();
-        return account;
+        AccountPermission accountPermissions = null;
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(receiveQuery + "WHERE id = " + id)) {
+                if (resultSet.next())
+                    accountPermissions = new AccountPermission(resultSet);
+                return accountPermissions;
+            }
+        }
     }
 
     @Override
-    public List<AccountPermission> getAll() {
-      throw new UnsupportedOperationException();
+    public List<AccountPermission> getAll() throws SQLException {
+        return getAll(null);
     }
 
-    public List<AccountPermission> getAllWithUsername(String username) throws SQLException {
+
+    @Override
+    public List<AccountPermission> getAll(String[] clause) throws SQLException {
+        String query = clause != null ? receiveQuery + "WHERE " + clause[0] + " = '" + clause[1] + "'" : receiveQuery;
         List<AccountPermission> accountPermissions = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("accountpermissions WHERE username ='" + username + "'");
-        while (resultSet.next())
-            accountPermissions.add(new AccountPermission(resultSet));
-        resultSet.close();
-        return accountPermissions;
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(query)) {
+                while (resultSet.next())
+                    accountPermissions.add(new AccountPermission(resultSet));
+                return accountPermissions;
+            }
+        }
     }
 
+
     @Override
-    public void updateAll(AccountPermission accountPermission, String[] params) {
+    public void updateAll(AccountPermission accountPermission, String[] params) throws SQLException {
         if (!params[0].isEmpty())
             accountPermission.setPermission(params[0]);
         if (!params[2].isEmpty())
@@ -53,20 +61,31 @@ public class AccountPermissionDAO implements DAO<AccountPermission> {
     }
 
     @Override
-    public void update(AccountPermission updated) {
-        DatabaseUtil.UPDATE("UPDATE accountpermissions SET permission = '" + updated.getPermission() + "'," +
-                "username = '" + updated.getName() + "'" +
-                " WHERE id = " + updated.getId() + ";");
+    public void update(AccountPermission updated) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE accountpermissions SET " +
+                     "permission = '" + updated.getPermission() + "'," +
+                     "username = '" + updated.getName() + "'" +
+                     " WHERE id = " + updated.getId() + ";")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
-    public void add(AccountPermission accountPermission)  {
-        DatabaseUtil.UPDATE("INSERT INTO accountpermissions VALUES('" + accountPermission.getId() + "','"
-                + accountPermission.getPermission()+ "','" + accountPermission.getName() + "')");
+    public void add(AccountPermission accountPermission) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO accountpermissions " +
+                     "VALUES('" + accountPermission.getId() + "','" + accountPermission.getPermission() + "','" +
+                     accountPermission.getName() + "')")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
-    public void delete(long id)  {
-        DatabaseUtil.UPDATE("DELETE FROM accountpermissions WHERE id = '" + id  + "'");
+    public void delete(AccountPermission accountPermission) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM accountpermissions WHERE id = '" + accountPermission.getId() + "'")) {
+            preparedStatement.execute();
+        }
     }
 }

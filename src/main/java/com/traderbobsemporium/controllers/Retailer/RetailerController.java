@@ -55,6 +55,7 @@ public class RetailerController implements Initializable {
     private TilePane itemTilePane;
     @FXML
     private ChoiceBox<ItemType> itemTypeChoiceBox;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setCellFactory();
@@ -69,21 +70,20 @@ public class RetailerController implements Initializable {
 
 
     private void tryToPopulateTilePane() {
+        itemTilePane.getChildren().clear();
         try {
-            itemTilePane.getChildren().clear();
-            for (Item item : itemDAO.getAll()) {
-                if (item.getItemType() == itemTypeChoiceBox.getValue()) {
-                    ItemVBox itemVBox = new ItemVBox(item);
-                    itemTilePane.getChildren().add(itemVBox);
-                    addListner(itemVBox);
-                }
+            for (Item item : itemDAO.getAll(new String[]{"itemType", itemTypeChoiceBox.getValue().name()})) {
+                ItemVBox itemVBox = new ItemVBox(item);
+                itemTilePane.getChildren().add(itemVBox);
+                addListener(itemVBox);
             }
         } catch (SQLException e) {
-            new ExceptionDialog(e).showAndWait();
+            e.printStackTrace();
         }
     }
 
-    private void addListner(ItemVBox itemVBox){
+
+    private void addListener(ItemVBox itemVBox){
         itemVBox.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             if (camperTableView.getSelectionModel().getSelectedItem() != null) {
                 itemsSelectedListView.getItems().add(itemVBox.getItem());
@@ -144,7 +144,11 @@ public class RetailerController implements Initializable {
 
     private void logPurchasedItems(Camper camper, List<Item> selectedItems){
         for (Item item : selectedItems){
-            new PurchasesActivityLogger().add(new PurchasesActivity(item, camper));
+            try {
+                new PurchasesActivityLogger().add(new PurchasesActivity(item, camper));
+            } catch (SQLException e) {
+                new ExceptionDialog(e).showAndWait();
+            }
         }
     }
 

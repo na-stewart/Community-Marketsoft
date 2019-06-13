@@ -33,10 +33,6 @@ public class EmployeePanel {
         return name;
     }
 
-    public void setNode(Node node) {
-        this.node = node;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -45,7 +41,4 @@ public class EmployeePanel {
         return requiresPermissions;
     }
 
-    public void setRequiresPermissions(Boolean requiresPermissions) {
-        this.requiresPermissions = requiresPermissions;
-    }
 }

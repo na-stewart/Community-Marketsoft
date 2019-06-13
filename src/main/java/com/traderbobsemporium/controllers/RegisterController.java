@@ -7,10 +7,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-
-import main.java.com.traderbobsemporium.dao.Loggers.AccountActivityLogger;
 import main.java.com.traderbobsemporium.dao.AccountDAO;
-import main.java.com.traderbobsemporium.gui.GUIManager;
+import main.java.com.traderbobsemporium.dao.Loggers.AccountActivityLogger;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.model.Account;
@@ -19,8 +17,9 @@ import main.java.com.traderbobsemporium.util.Util;
 import nl.captcha.Captcha;
 import nl.captcha.backgrounds.SquigglesBackgroundProducer;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
-
+import org.controlsfx.dialog.ExceptionDialog;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -72,8 +71,13 @@ public class RegisterController implements Initializable {
         Account account = new Account(usernameField.getText(),
                 new DefaultPasswordService().encryptPassword(passwordField.getText()),
                 AccountRole.UNCONFIRMED);
-        new AccountActivityLogger().add(new AccountActivity(ActivityType.REGISTER, account));
-        new AccountDAO().add(account);
+        try {
+            new AccountDAO().add(account);
+            new AccountActivityLogger().add(new AccountActivity(ActivityType.REGISTER, account));
+        } catch (SQLException e){
+            e.printStackTrace();
+            new ExceptionDialog(e).showAndWait();
+        }
         Util.displayAlert("Your account has been registered! Please wait for your account to be " +
                 "assigned a designated role by an administrator.", Alert.AlertType.INFORMATION);
     }

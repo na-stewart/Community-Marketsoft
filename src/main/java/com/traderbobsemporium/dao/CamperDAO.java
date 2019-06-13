@@ -1,12 +1,12 @@
 package main.java.com.traderbobsemporium.dao;
 
 
+import main.java.com.traderbobsemporium.model.Announcement;
 import main.java.com.traderbobsemporium.model.Camper;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,30 +17,42 @@ import java.util.List;
  * All rights reserved.
  */
 public class CamperDAO implements DAO<Camper> {
-
+    private final String receiveQuery = "SELECT * FROM camper ";
 
     @Override
     public Camper get(long id) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("camper WHERE id =" + id);
         Camper camper = null;
-        if (resultSet.next())
-            camper = new Camper(resultSet);
-        resultSet.close();
-        return camper;
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(receiveQuery + "WHERE id = " + id)) {
+                if (resultSet.next())
+                    camper = new Camper(resultSet);
+                return camper;
+            }
+        }
     }
 
     @Override
     public List<Camper> getAll() throws SQLException {
-        List<Camper> campers = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("camper");
-        while (resultSet.next())
-            campers.add(new Camper(resultSet));
-        resultSet.close();
-        return campers;
+        return getAll(null);
     }
 
     @Override
-    public void updateAll(Camper camper, String[] params) {
+    public List<Camper> getAll(String[] clause) throws SQLException {
+        String query = clause != null ? receiveQuery + "WHERE " + clause[0] + " = '" + clause[1] + "'" : receiveQuery;
+        List<Camper> campers = new ArrayList<>();
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(query)) {
+                while (resultSet.next())
+                    campers.add(new Camper(resultSet));
+                return campers;
+            }
+        }
+    }
+
+    @Override
+    public void updateAll(Camper camper, String[] params) throws SQLException {
         if (!params[0].isEmpty())
             camper.setName(params[0]);
         if (!params[1].isEmpty())
@@ -49,20 +61,32 @@ public class CamperDAO implements DAO<Camper> {
     }
 
     @Override
-    public void update(Camper updated) {
-        DatabaseUtil.UPDATE("UPDATE camper SET name = '" + updated.getName() + "'," +
-                "balance = '" + updated.getBalance() + "' WHERE id =" + updated.getId() + ";");
+    public void update(Camper updated) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE camper SET " +
+                     "name = '" + updated.getName() + "'," +
+                     "balance = '" + updated.getBalance() + "' WHERE id =" + updated.getId() + ";")) {
+            preparedStatement.execute();
+        }
+
     }
 
 
     @Override
-    public void add(Camper camper) {
-        DatabaseUtil.UPDATE("INSERT INTO camper VALUES('" + camper.getId() + "','" + camper.getName() + "','" +
-                camper.getBalance() + "')");
+    public void add(Camper camper) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO camper VALUES" +
+                     "('" + camper.getId() + "','" + camper.getName() + "','" + camper.getBalance() + "')")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
-    public void delete(long id) {
-        DatabaseUtil.UPDATE("DELETE FROM camper WHERE id = '" + id + "'");
+    public void delete(Camper camper) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM camper WHERE id = '" + camper.getId() + "'")) {
+            preparedStatement.execute();
+        }
     }
+
 }

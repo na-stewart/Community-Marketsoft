@@ -29,11 +29,11 @@ import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.model.Announcement;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
-import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.subject.Subject;
 import org.controlsfx.control.table.TableFilter;
+import org.controlsfx.dialog.ExceptionDialog;
 
 import java.math.BigDecimal;
 import java.net.URL;
@@ -53,15 +53,14 @@ import java.util.stream.Collectors;
 
 public class EmployeeController implements Initializable {
     private Subject subject = SecurityUtils.getSubject();
-    private AccountPermissionDAO accountPermissionDAO = new AccountPermissionDAO();
-    private CamperDAO camperDAO = new CamperDAO();
-    private ItemDAO itemDAO = new ItemDAO();
-    private AccountDAO accountDAO = new AccountDAO();
-    private AccountActivityLogger accountActivityLogger = new AccountActivityLogger();
-    private PurchasesActivityLogger purchasesActivityLogger = new PurchasesActivityLogger();
-    private AnnouncementDeclarer announcementLogger = new AnnouncementDeclarer();
+    private final CamperDAO camperDAO = new CamperDAO();
+    private final ItemDAO itemDAO = new ItemDAO();
+    private final AccountDAO accountDAO = new AccountDAO();
+    private final AccountPermissionDAO accountPermissionDAO = new AccountPermissionDAO();
+    private final AccountActivityLogger accountActivityLogger = new AccountActivityLogger();
+    private final PurchasesActivityLogger purchasesActivityLogger = new PurchasesActivityLogger();
+    private final AnnouncementDeclarer announcementDeclarer = new AnnouncementDeclarer();
 
-    //TODO: cleanup var names. aka: Dashboard(Tableview)//Logger(TableView)
     private EmployeePanel[] panels;
     @FXML
     private HBox dashboardResizerContainer;
@@ -183,13 +182,12 @@ public class EmployeeController implements Initializable {
     @FXML
     private AnchorPane helpAnchorPane;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         panels = new EmployeePanel[]{new EmployeePanel(dashboardScrollPane, "Dashboard"),
                 new EmployeePanel(dashboardResizerContainer, "Dashboard"), new EmployeePanel(campersAnchorPane, "Campers"),
                 new EmployeePanel(accountsAnchorPane, "Accounts"), new EmployeePanel(logsTabPane, "Logs"),
-                new EmployeePanel(itemsAnchorPane, "Items"), new EmployeePanel(helpAnchorPane, "Help",false)};
+                new EmployeePanel(itemsAnchorPane, "Items"), new EmployeePanel(helpAnchorPane, "Help", false)};
         setCellValueFactory();
         initDashboard();
         reloadAllPanels();
@@ -198,17 +196,17 @@ public class EmployeeController implements Initializable {
         setTableSelectionMethods();
     }
 
-    private void setTableSelectionMethods(){
+    private void setTableSelectionMethods() {
         camperTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         accountTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         announcementTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         accountActivityLoggerTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         itemsTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         purchasesActivityLoggerTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        accountPermissionTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         accountActivityTableView.setSelectionModel(null);
         purchasesActivityTableView.setSelectionModel(null);
     }
-
 
 
     private void loadDataManagerEventHandlers() {
@@ -222,7 +220,7 @@ public class EmployeeController implements Initializable {
 
     }
 
-    private void loadPanelsChoiceBox(){
+    private void loadPanelsChoiceBox() {
         populateAccountRoleChoiceBox();
         populateItemsBoughtFrequencyChoiceBox();
         populateAccountActivityTypeChoiceBox();
@@ -235,12 +233,11 @@ public class EmployeeController implements Initializable {
     /////////////
      */
 
-
-     @FXML
+    @FXML
     private void reloadAllPanels() {
         populateTableViewWithObservableList(accountDAO, accountTableView);
         populateTableViewWithObservableList(camperDAO, camperTableView);
-        populateTableViewWithObservableList(announcementLogger, announcementTableView);
+        populateTableViewWithObservableList(announcementDeclarer, announcementTableView);
         populateTableViewWithObservableList(accountActivityLogger, accountActivityLoggerTableView);
         populateTableViewWithObservableList(itemDAO, itemsTableView);
         populateTableViewWithObservableList(purchasesActivityLogger, purchasesActivityLoggerTableView);
@@ -260,12 +257,12 @@ public class EmployeeController implements Initializable {
     }
 
     @FXML
-    private void logout(){
+    private void logout() {
         AuthUtil.LOGOUT();
     }
 
     @FXML
-    private void setFullScreen(){
+    private void setFullScreen() {
         GUI thisGUI = GUIManager.getInstance().getByName("EmplGUI");
         thisGUI.getStage().setFullScreen(!thisGUI.getStage().isFullScreen());
     }
@@ -276,8 +273,7 @@ public class EmployeeController implements Initializable {
     /////////////
      */
 
-
-    private void initDashboard(){
+    private void initDashboard() {
         itemsBoughtFrequencyChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) ->
                 populatePurchasedItemsFrequencyChart());
         dashboardTilePane.prefWidthProperty().bind(dashboardScrollPane.widthProperty());
@@ -296,10 +292,8 @@ public class EmployeeController implements Initializable {
         }
     }
 
-
-
     @FXML
-    private void setDashboardTileSizes(KeyEvent keyEvent){
+    private void setDashboardTileSizes(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             dashboardTilePane.setPrefTileWidth(Double.parseDouble(panelXField.getText()));
             dashboardTilePane.setPrefTileHeight(Double.parseDouble(panelYField.getText()));
@@ -308,7 +302,7 @@ public class EmployeeController implements Initializable {
 
     private void populateAnnouncementsTextArea() throws SQLException {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Announcement announcement : announcementLogger.getAll()) {
+        for (Announcement announcement : announcementDeclarer.getAll()) {
             stringBuilder.append(announcement.getTitle()).append("\n");
             stringBuilder.append("Author: ").append(announcement.getName()).append("\n");
             stringBuilder.append(announcement.getDateTime()).append("\n");
@@ -326,7 +320,7 @@ public class EmployeeController implements Initializable {
         ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
         String[] activityTypes = Arrays.stream(ActivityType.class.getEnumConstants()).map(Enum::name).toArray(String[]::new);
         for (String activityType : activityTypes) {
-            for (AccountActivity accountActivity: accountActivityLogger.getAll()) {
+            for (AccountActivity accountActivity : accountActivityLogger.getAll()) {
                 if (accountActivity.getActivityType().name().equals(activityType))
                     frequency++;
             }
@@ -337,38 +331,33 @@ public class EmployeeController implements Initializable {
         accountActivityFrequencyChart.setData(data);
     }
 
-    private void populatePurchasedItemsFrequencyChart(){
+    private void populatePurchasedItemsFrequencyChart() {
         ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
         try {
             for (String name : listOfItemNames().stream().distinct().collect(Collectors.toList()))
-               data.add(new PieChart.Data(name, Collections.frequency(listOfItemNames(), name)));
+                data.add(new PieChart.Data(name, Collections.frequency(listOfItemNames(), name)));
             itemsBoughtFrequencyChart.setData(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
     }
 
     private List<String> listOfItemNames() throws SQLException {
         List<String> list = new ArrayList<>();
-        for (PurchasesActivity purchasesActivity : purchasesActivityLogger.getAll()) {
-            if (itemDAO.get(purchasesActivity.getItemId()).getItemType() == itemsBoughtFrequencyChoiceBox.getValue()) {
-                list.add(purchasesActivity.getItemName());
-            }
+        for (PurchasesActivity purchasesActivity : purchasesActivityLogger.getAll(new String[]{"itemName", itemsBoughtFrequencyChoiceBox.getValue().name()})) {
+            list.add(purchasesActivity.getItemName());
         }
-
         return list;
     }
 
-    private void removeUnusedData(ObservableList<PieChart.Data> data){
+    private void removeUnusedData(ObservableList<PieChart.Data> data) {
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i).getPieValue() == 0)
                 data.remove(i--);
         }
     }
 
-    private void populateItemsBoughtFrequencyChoiceBox(){
+    private void populateItemsBoughtFrequencyChoiceBox() {
         for (ItemType activityType : ItemType.values())
-           itemsBoughtFrequencyChoiceBox.getItems().add(activityType);
+            itemsBoughtFrequencyChoiceBox.getItems().add(activityType);
         itemsBoughtFrequencyChoiceBox.setValue(ItemType.CHIPS);
     }
 
@@ -378,38 +367,18 @@ public class EmployeeController implements Initializable {
     //////////////
     */
 
-    private void createItemsPanelEventHandler(){
-        EventHandler<Event> itemEventHandler = new EmployeePanelHandler(itemsTableView) {
+    private void createItemsPanelEventHandler() {
+        EventHandler<Event> itemEventHandler = new EmployeePanelHandler<Item>(itemsTableView, itemDAO, "items") {
             @Override
-            void add() {
-                subject.checkPermission("items:add");
-                Item item = new Item(itemNameField.getText(), Integer.parseInt(itemQuantityField.getText()),
-                        new BigDecimal(itemPriceField.getText()), itemImageUrlField.getText(), itemTypeChoiceBox.getValue());
-                itemDAO.add(item);
-                accountActivityLogger.add(new AccountActivity(ActivityType.ADD, item));
+            void beforeCommandExecute() {
+                String[] params = new String[]{itemNameField.getText(), itemQuantityField.getText(), itemPriceField.getText(),
+                itemImageUrlField.getText(),itemTypeChoiceBox.getValue().name()};
+                setDataObject(new Item(params[0], Integer.parseInt(params[1]), new BigDecimal(params[2]), params[3],
+                        ItemType.valueOf(params[4])));
+                setUpdateParams(params);
             }
-
             @Override
-            void update() {
-                subject.checkPermission("items:update");
-                for (Item item : itemsTableView.getSelectionModel().getSelectedItems()) {
-                    itemDAO.updateAll(item, new String[]{itemNameField.getText(), itemQuantityField.getText(),
-                    itemPriceField.getText(), itemImageUrlField.getText(), itemTypeChoiceBox.getValue().name()});
-                    accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, item));
-                }
-            }
-
-            @Override
-            void delete() {
-                subject.checkPermission("items:delete");
-                for (Item item : itemsTableView.getSelectionModel().getSelectedItems()) {
-                    itemDAO.delete(item.getId());
-                    accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, item));
-                }
-            }
-
-            @Override
-            void afterEvent() {
+            void afterCommandExecute() {
                 populateTableViewWithObservableList(itemDAO, itemsTableView);
             }
 
@@ -439,7 +408,7 @@ public class EmployeeController implements Initializable {
         itemsTableView.addEventHandler(MouseEvent.MOUSE_PRESSED, itemEventHandler);
     }
 
-    private void populateItemTypeChoiceBox(){
+    private void populateItemTypeChoiceBox() {
         for (ItemType itemType : ItemType.values())
             itemTypeChoiceBox.getItems().add(itemType);
         itemTypeChoiceBox.setValue(ItemType.CANDY);
@@ -452,37 +421,19 @@ public class EmployeeController implements Initializable {
     //////////////
      */
 
-    private void createCamperPanelEventHandler(){
-        EventHandler<Event> camperEventHandler = new EmployeePanelHandler(camperTableView) {
+    private void createCamperPanelEventHandler() {
+        EventHandler<Event> camperEventHandler = new EmployeePanelHandler<Camper>(camperTableView, camperDAO, "campers" ) {
             @Override
-            void add() {
-                subject.checkPermission("campers:add");
-                Camper camper = new Camper(camperNameField.getText(), new BigDecimal(camperBalanceField.getText()));
-                camperDAO.add(camper);
-                accountActivityLogger.add(new AccountActivity(ActivityType.ADD, camper));
+            void beforeCommandExecute() {
+                String[] params = new String[]{camperNameField.getText(), camperBalanceField.getText()};
+                setDataObject(new Camper(params[0], new BigDecimal(params[1])));
+                setUpdateParams(new String[]{params[0], params[1]});
+            }
+            @Override
+            void afterCommandExecute() {
+                populateTableViewWithObservableList(camperDAO, camperTableView);
             }
 
-            @Override
-            void update() {
-                subject.checkPermission("campers:update");
-                for (Camper camper : camperTableView.getSelectionModel().getSelectedItems()) {
-                    camperDAO.updateAll(camper, new String[]{camperNameField.getText(), camperBalanceField.getText()});
-                    accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, camper));
-                }
-
-
-            }
-
-            @Override
-            void delete() {
-                subject.checkPermission("campers:delete");
-                for (Camper camper : camperTableView.getSelectionModel().getSelectedItems()) {
-                    camperDAO.delete(camper.getId());
-                    accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, camper));
-                }
-            }
-
-            @Override
             void clearFields() {
                 camperNameField.clear();
                 camperBalanceField.clear();
@@ -495,15 +446,8 @@ public class EmployeeController implements Initializable {
                 camperNameField.setText(camper.getName());
                 camperBalanceField.setText(String.valueOf(camper.getBalance()));
             }
-
-            @Override
-            void afterEvent() {
-                populateTableViewWithObservableList(camperDAO, camperTableView);
-            }
         }.getEventHandler();
-
-
-        camperUpdate.addEventHandler(ActionEvent.ACTION , camperEventHandler);
+        camperUpdate.addEventHandler(ActionEvent.ACTION, camperEventHandler);
         camperDelete.addEventHandler(ActionEvent.ACTION, camperEventHandler);
         camperAdd.addEventHandler(ActionEvent.ACTION, camperEventHandler);
         campersCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, camperEventHandler);
@@ -517,42 +461,8 @@ public class EmployeeController implements Initializable {
     //////////////
      */
 
-    private void createAccountPanelEventHandler(){
-        EventHandler<Event> accountEventHandler = new EmployeePanelHandler(accountTableView) {
-
-            @Override
-            void add() {
-                subject.checkPermission("accounts:add");
-                Account account = new Account(usernameField.getText(),
-                        new DefaultPasswordService().encryptPassword(passwordField.getText()),
-                       accountRoleChoiceBox.getValue());
-                accountDAO.add(account);
-                accountActivityLogger.add(new AccountActivity(ActivityType.ADD, account));
-            }
-            @Override
-            void update() {
-                subject.checkPermission("accounts:update");
-                for (Account account: accountTableView.getSelectionModel().getSelectedItems()) {
-                    if (account.getAccountRole() != AccountRole.DISABLED) {
-                        accountDAO.updateAll(account, new String[]{usernameField.getText(),
-                               passwordField.getText(), accountRoleChoiceBox.getValue().name()});
-
-                        accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, account));
-                    } else
-                        Util.displayAlert(account.getName() + " is disabled and cannot be edited!",
-                                Alert.AlertType.ERROR);
-                }
-            }
-
-            @Override
-            void delete() {
-                subject.checkPermission("accounts:delete");
-                for (Account account : accountTableView.getSelectionModel().getSelectedItems()) {
-                    accountDAO.delete(account.getId());
-                    accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, account));
-                }
-            }
-
+    private void createAccountPanelEventHandler() {
+        EventHandler<Event> accountEventHandler = new EmployeePanelHandler<Account>(accountTableView, accountDAO, "accounts") {
             @Override
             void clearFields() {
                 usernameField.requestFocus();
@@ -571,9 +481,16 @@ public class EmployeeController implements Initializable {
             }
 
             @Override
-            void afterEvent() {
-                populateTableViewWithObservableList(accountDAO, accountTableView);
+            void beforeCommandExecute() {
+                String[] params = new String[]{usernameField.getText(), new DefaultPasswordService().encryptPassword(passwordField.getText()),
+                accountRoleChoiceBox.getValue().name()};
+                setDataObject(new Account(params[0], params[1], AccountRole.valueOf(params[2])));
+                setUpdateParams(params);
+            }
 
+            @Override
+            void afterCommandExecute() {
+                populateTableViewWithObservableList(accountDAO, accountTableView);
             }
         }.getEventHandler();
         accountsCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, accountEventHandler);
@@ -584,22 +501,19 @@ public class EmployeeController implements Initializable {
         accountsAnchorPane.addEventFilter(KeyEvent.KEY_RELEASED, accountEventHandler);
     }
 
-    private void populatePermissionsTable()  {
+    private void populatePermissionsTable() {
         try {
-            accountPermissionTableView.getItems().setAll(accountPermissionDAO.getAllWithUsername(usernameField.getText()));
-        } catch (SQLException e){
+            accountPermissionTableView.getItems().setAll(accountPermissionDAO.getAll(new String[]{"username", usernameField.getText()}));
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-
-    private void populateAccountRoleChoiceBox(){
+    private void populateAccountRoleChoiceBox() {
         for (AccountRole accountType : AccountRole.values())
             accountRoleChoiceBox.getItems().add(accountType);
         accountRoleChoiceBox.setValue(AccountRole.UNCONFIRMED);
     }
-
 
       /*
     //////////////
@@ -607,25 +521,33 @@ public class EmployeeController implements Initializable {
     //////////////
     */
 
+    @FXML
+    private void addPermission() {
+        subject.checkPermission("accounts:add");
+        AccountPermission accountPermission = new AccountPermission(usernameField.getText(), permissionsField.getText());
+        try {
+            accountPermissionDAO.add(accountPermission);
+            accountActivityLogger.add(new AccountActivity(ActivityType.ADD, accountPermission));
+        } catch (SQLException e){
+            new ExceptionDialog(e).showAndWait();
+        }
+        populatePermissionsTable();
 
-      @FXML
-      private void addPermission(){
-          subject.checkPermission("accounts:add");
-          AccountPermission accountPermission = new AccountPermission(usernameField.getText(), permissionsField.getText());
-          accountPermissionDAO.add(accountPermission);
-          populatePermissionsTable();
-          accountActivityLogger.add(new AccountActivity(ActivityType.ADD, accountPermission));
-      }
+    }
 
-      @FXML
-      private void deletePermission(){
-          subject.checkPermission("accounts:delete");
-          for (AccountPermission accountPermission: accountPermissionTableView.getSelectionModel().getSelectedItems()) {
-              accountPermissionDAO.delete(accountPermission.getId());
-              accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, accountPermission));
-          }
-          populatePermissionsTable();
-      }
+    @FXML
+    private void deletePermission() {
+        subject.checkPermission("accounts:delete");
+        try {
+            for (AccountPermission accountPermission : accountPermissionTableView.getSelectionModel().getSelectedItems()) {
+                accountPermissionDAO.add(accountPermission);
+                accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, accountPermission));
+            }
+        } catch (SQLException e){
+            new ExceptionDialog(e).showAndWait();
+        }
+        populatePermissionsTable();
+    }
 
 
       /*
@@ -635,35 +557,19 @@ public class EmployeeController implements Initializable {
     */
 
     private void createAccountActivitiesPanelEventHandler() {
-        EventHandler<Event> panelEventHandler = new EmployeePanelHandler(accountActivityLoggerTableView) {
+        EventHandler<Event> panelEventHandler = new EmployeePanelHandler<AccountActivity>(accountActivityLoggerTableView,
+                accountActivityLogger, "accountactivity") {
             @Override
-            void add() {
-                subject.checkPermission("accountactivity:add");
-                AccountActivity accountActivity = new AccountActivity(activityUsernameField.getText(), ipField.getText(),
-                        macField.getText(), activityTypeChoiceBox.getValue(), Long.parseLong(affectedIdField.getText()),
-                        affectedNameField.getText(), activityDateTimeField.getText(), Boolean.parseBoolean(activitySuccessfulField.getText()));
-                accountActivityLogger.add(accountActivity);
+            void beforeCommandExecute() {
+                String[] params = new String[]{activityUsernameField.getText(), ipField.getText(), macField.getText(),
+                activityTypeChoiceBox.getValue().name(), affectedIdField.getText(), affectedNameField.getText(),
+                activityDateTimeField.getText()};
+                setDataObject(new AccountActivity(params[0], params[1], params[2], ActivityType.valueOf(params[3]),
+                        Long.parseLong(params[4]), params[5], params[6]));
             }
 
             @Override
-            void update() {
-                subject.checkPermission("accountactivity:update");
-                for (AccountActivity activityType : accountActivityLoggerTableView.getSelectionModel().getSelectedItems()) {
-                    accountActivityLogger.updateAll(activityType, new String[]{activityUsernameField.getText(),
-                            ipField.getText(), macField.getText(), activityTypeChoiceBox.getValue().name(), affectedIdField.getText(),
-                            affectedNameField.getText(), activityDateTimeField.getText(), activitySuccessfulField.getText()});
-                }
-            }
-
-            @Override
-            void delete() {
-                subject.checkPermission("accountactivity:delete");
-                for (AccountActivity accountActivity : accountActivityLoggerTableView.getSelectionModel().getSelectedItems())
-                    accountActivityLogger.delete(accountActivity.getId());
-            }
-
-            @Override
-            void afterEvent() {
+            void afterCommandExecute() {
                 populateTableViewWithObservableList(accountActivityLogger, accountActivityLoggerTableView);
             }
 
@@ -688,7 +594,6 @@ public class EmployeeController implements Initializable {
                 affectedIdField.setText(String.valueOf(accountActivity.getAffectedId()));
                 affectedNameField.setText(accountActivity.getAffectedName());
                 activityDateTimeField.setText(accountActivity.getDateTime());
-                activitySuccessfulField.setText(String.valueOf(accountActivity.isSuccessful()));
                 activityTypeChoiceBox.setValue(accountActivity.getActivityType());
 
             }
@@ -702,7 +607,8 @@ public class EmployeeController implements Initializable {
         accountActivityLoggerTableView.addEventHandler(MouseEvent.MOUSE_PRESSED, panelEventHandler);
     }
 
-    private void populateAccountActivityTypeChoiceBox(){
+
+    private void populateAccountActivityTypeChoiceBox() {
         for (ActivityType activityType : ActivityType.values())
             activityTypeChoiceBox.getItems().add(activityType);
         activityTypeChoiceBox.setValue(ActivityType.ADD);
@@ -715,39 +621,20 @@ public class EmployeeController implements Initializable {
     //////////////
      */
 
-    private void createPurchasesActivityPanelEventHandler(){
-        EventHandler<Event> panelEventHandler = new EmployeePanelHandler(purchasesActivityLoggerTableView) {
+    private void createPurchasesActivityPanelEventHandler() {
+
+        EventHandler<Event> panelEventHandler = new EmployeePanelHandler<PurchasesActivity>(purchasesActivityLoggerTableView,
+                purchasesActivityLogger, "purchasesactivity") {
             @Override
-            void add() {
-                subject.checkPermission("purchasesactivity:add");
-                PurchasesActivity purchasesActivity = new PurchasesActivity(purchasesCamperNameField.getText(),
-                        new BigDecimal(Double.parseDouble(purchasesCamperBalanceField.getText())),
-                        Long.parseLong(purchasesItemIdField.getText()), purchasesItemNameField.getText());
-                purchasesActivityLogger.add(purchasesActivity);
+            void beforeCommandExecute() {
+                String[] params = new String[]{purchasesCamperNameField.getText(), purchasesCamperBalanceField.getText(),
+                purchasesItemIdField.getText(), purchasesItemNameField.getText()};
+                setDataObject(new PurchasesActivity(params[0], new BigDecimal(params[1]), Long.parseLong(params[2]), params[3]));
+                setUpdateParams(params);
             }
 
             @Override
-            void update() {
-                subject.checkPermission("purchasesactivity:update");
-                for (PurchasesActivity purchasesActivity : purchasesActivityLoggerTableView.getSelectionModel().getSelectedItems()) {
-                    purchasesActivityLogger.updateAll(purchasesActivity, new String[]{purchasesCamperNameField.getText(),
-                            purchasesCamperBalanceField.getText(), purchasesItemIdField.getText(), purchasesItemNameField.getText()});
-                }
-            }
-
-            @Override
-            void delete() {
-                subject.checkPermission("purchasesactivity:delete");
-                for (PurchasesActivity purchasesActivity : purchasesActivityLoggerTableView.getSelectionModel().getSelectedItems()) {
-                    purchasesActivityLogger.delete(purchasesActivity.getId());
-                }
-                populateTableViewWithObservableList(itemDAO, itemsTableView);
-
-
-            }
-
-            @Override
-            void afterEvent() {
+            void afterCommandExecute() {
                 populateTableViewWithObservableList(purchasesActivityLogger, purchasesActivityLoggerTableView);
             }
 
@@ -763,7 +650,7 @@ public class EmployeeController implements Initializable {
             @Override
             void populateFields() {
                 PurchasesActivity purchasesActivity = purchasesActivityLoggerTableView.getSelectionModel().getSelectedItem();
-                purchasesCamperNameField.setText(purchasesActivity.getCamperName());
+                purchasesCamperNameField.setText(purchasesActivity.getName());
                 purchasesCamperBalanceField.setText(String.valueOf(purchasesActivity.getCamperBalance()));
                 purchasesItemIdField.setText(String.valueOf(purchasesActivity.getItemId()));
                 purchasesItemNameField.setText(purchasesActivity.getItemName());
@@ -786,40 +673,19 @@ public class EmployeeController implements Initializable {
      */
 
      private void createAnnouncementPanelEventHandler(){
-         EventHandler<Event> panelEventHandler = new EmployeePanelHandler(announcementTableView) {
-
-             void add() {
-                 if (!dialogField.isFocused()) {
-                     subject.checkPermission("announcement:add");
-                     Announcement announcement = new Announcement(titleField.getText(), dialogField.getText());
-                     announcementLogger.add(announcement);
-                     accountActivityLogger.add(new AccountActivity(ActivityType.ADD, announcement));
-                 }
+         EventHandler<Event> panelEventHandler = new EmployeePanelHandler<Announcement>(announcementTableView,
+                 announcementDeclarer, "announcement") {
+             @Override
+             void beforeCommandExecute() {
+                 String[] params = new String[]{authorField.getText(), titleField.getText(),
+                         dialogField.getText(), announcementDateTimeField.getText()};
+                 setDataObject(new Announcement(params[1], params[2]));
+                 setUpdateParams(params);
              }
 
              @Override
-             void update() {
-                 subject.checkPermission("announcement:update");
-                 for (Announcement announcement : announcementTableView.getSelectionModel().getSelectedItems()) {
-                     announcementLogger.updateAll(announcement, new String[]{authorField.getText(), titleField.getText(),
-                             dialogField.getText(), announcementDateTimeField.getText()});
-                     accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, announcement));
-                 }
-             }
-
-             @Override
-             void delete() {
-                 subject.checkPermission("announcement:delete");
-                 for (Announcement announcement : announcementTableView.getSelectionModel().getSelectedItems()) {
-                     announcementLogger.delete(announcement.getId());
-                     accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, announcement));
-                 }
-
-             }
-
-             @Override
-             void afterEvent() {
-                 populateTableViewWithObservableList(announcementLogger, announcementTableView);
+             void afterCommandExecute() {
+                 populateTableViewWithObservableList(announcementDeclarer, announcementTableView);
              }
 
              @Override
@@ -860,7 +726,6 @@ public class EmployeeController implements Initializable {
          }
      }
 
-
     private void setCellValueFactory(){
         usernameActivityColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         ipColumn.setCellValueFactory(new PropertyValueFactory<>("ip"));
@@ -899,7 +764,7 @@ public class EmployeeController implements Initializable {
         imageURLColumn.setCellValueFactory(new PropertyValueFactory<>("imageURL"));
         itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
         purchasesIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        purchasesCamperNameColumn.setCellValueFactory(new PropertyValueFactory<>("camperName"));
+        purchasesCamperNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         purchasesCamperBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("camperBalanceString"));
         purchasesItemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         purchasesItemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));

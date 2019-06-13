@@ -5,10 +5,7 @@ import main.java.com.traderbobsemporium.model.ItemType;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,38 +16,43 @@ import java.util.List;
  * All rights reserved.
  */
 public class ItemDAO implements DAO<Item> {
+    private final String receiveQuery = "SELECT * FROM item ";
 
     @Override
     public Item get(long id) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("item WHERE id =" + id);
         Item item = null;
-        if (resultSet.next())
-            item = new Item(resultSet);
-        resultSet.close();
-        return item;
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(receiveQuery + "WHERE id = " + id)) {
+                if (resultSet.next())
+                    item = new Item(resultSet);
+                return item;
+            }
+        }
     }
 
     @Override
     public List<Item> getAll() throws SQLException {
-        List<Item> items = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("item");
-        while (resultSet.next())
-            items.add(new Item(resultSet));
-        resultSet.close();
-        return items;
+        return getAll(null);
     }
 
-    public List<Item> getAllWithType(ItemType itemType) throws SQLException {
+
+    @Override
+    public List<Item> getAll(String[] clause) throws SQLException {
+        String query = clause != null ? receiveQuery + "WHERE " + clause[0] + " = '" + clause[1] + "'" : receiveQuery;
         List<Item> items = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("item WHERE itemType = '" + itemType.name() + "'");
-        while (resultSet.next())
-            items.add(new Item(resultSet));
-        resultSet.close();
-        return items;
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(query)) {
+                while (resultSet.next())
+                    items.add(new Item(resultSet));
+                return items;
+            }
+        }
     }
 
     @Override
-    public void updateAll(Item item, String[] params) {
+    public void updateAll(Item item, String[] params) throws SQLException {
         if (!params[0].isEmpty())
             item.setName(params[0]);
         if (!params[1].isEmpty())
@@ -65,22 +67,32 @@ public class ItemDAO implements DAO<Item> {
     }
 
     @Override
-    public void update(Item updated) {
-        DatabaseUtil.UPDATE("UPDATE item SET name = '" + updated.getName() + "'," +
-                "imageURL = '" + updated.getImageURL() + "'," + "price = '" + updated.getPrice() + "'," +
-                "quantity = '" + updated.getQuantity() + "'," + "itemType = '" + updated.getItemType().name() +
-                "' WHERE id =" + updated.getId() + ";");
+    public void update(Item updated) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE item SET name = '" + updated.getName() + "'," +
+                     "imageURL = '" + updated.getImageURL() + "'," + "price = '" + updated.getPrice() + "'," +
+                     "quantity = '" + updated.getQuantity() + "'," + "itemType = '" + updated.getItemType().name() +
+                     "' WHERE id =" + updated.getId() + ";")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
-    public void add(Item item) {
-        DatabaseUtil.UPDATE("INSERT INTO item VALUES('" + item.getId() + "','" + item.getName() + "','" +
-                item.getPrice() + "','" + item.getQuantity() + "','" + item.getImageURL() + "','"
-                + item.getItemType().name() + "')");
+    public void add(Item item) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO item VALUES('" +
+                     item.getId() + "','" + item.getName() + "','" + item.getPrice() + "','" + item.getQuantity() +
+                     "','" + item.getImageURL() + "','" + item.getItemType().name() + "')")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
-    public void delete(long id) {
-        DatabaseUtil.UPDATE("DELETE FROM item WHERE id = '" + id + "'");
+    public void delete(Item item) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM item WHERE id = '" + item.getId() + "'")) {
+            preparedStatement.execute();
+        }
     }
+
 }

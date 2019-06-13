@@ -126,7 +126,7 @@
             </VBox>
          </children>
       </Pane>
-      <HBox fx:id="dashboardResizerContainer" alignment="CENTER" layoutX="176.0" layoutY="52.0" prefHeight="36.0" prefWidth="167.0" spacing="10.0" visible="false">
+      <HBox fx:id="dashboardResizerContainer" alignment="CENTER" layoutX="176.0" layoutY="52.0" prefHeight="36.0" prefWidth="167.0" spacing="10.0">
          <children>
             <ImageView fitHeight="21.0" fitWidth="20.0">
                <image>
@@ -147,7 +147,7 @@
             <TextField fx:id="panelYField" layoutX="97.0" layoutY="24.0" onKeyPressed="#setDashboardTileSizes" prefHeight="25.0" prefWidth="35.0" text="470" />
          </children>
       </HBox>
-      <ScrollPane fx:id="dashboardScrollPane" layoutX="175.0" layoutY="90.0" prefHeight="591.0" prefWidth="923.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
+      <ScrollPane fx:id="dashboardScrollPane" layoutX="175.0" layoutY="90.0" prefHeight="591.0" prefWidth="923.0" style="-fx-background-color: #F2F1EC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
          <content>
             <TilePane fx:id="dashboardTilePane" alignment="TOP_CENTER" hgap="50.0" prefHeight="2525.0" prefWidth="823.0" vgap="50.0">
                <children>
@@ -231,7 +231,7 @@
             </TilePane>
          </content>
       </ScrollPane>
-      <AnchorPane fx:id="campersAnchorPane" layoutX="174.0" layoutY="52.0" prefHeight="676.0" prefWidth="1037.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <AnchorPane fx:id="campersAnchorPane" layoutX="174.0" layoutY="52.0" prefHeight="676.0" prefWidth="1037.0" style="-fx-background-color: #F2F1EC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
          <children>
             <TableView fx:id="camperTableView" layoutX="434.0" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columns>
@@ -298,7 +298,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="accountsAnchorPane" layoutX="174.0" layoutY="49.0" prefHeight="676.0" prefWidth="1037.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <AnchorPane fx:id="accountsAnchorPane" layoutX="174.0" layoutY="49.0" prefHeight="676.0" prefWidth="1037.0" style="-fx-background-color: #F2F1EC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
          <children>
             <TableView fx:id="accountTableView" layoutX="434.0" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <columnResizePolicy>
@@ -408,7 +408,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <TabPane fx:id="logsTabPane" layoutX="174.0" layoutY="49.0" prefHeight="678.0" prefWidth="1038.0" style="-fx-background-color: #F2F1EC;" tabClosingPolicy="UNAVAILABLE" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <TabPane fx:id="logsTabPane" layoutX="174.0" layoutY="49.0" prefHeight="678.0" prefWidth="1038.0" style="-fx-background-color: #F2F1EC;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
         <tabs>
             <Tab text="Account Activity">
                <content>
@@ -752,7 +752,7 @@
             </Tab>
         </tabs>
       </TabPane>
-      <AnchorPane fx:id="itemsAnchorPane" layoutX="175.0" layoutY="51.0" minHeight="0.0" minWidth="0.0" prefHeight="629.0" prefWidth="924.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <AnchorPane fx:id="itemsAnchorPane" layoutX="175.0" layoutY="51.0" minHeight="0.0" minWidth="0.0" prefHeight="629.0" prefWidth="924.0" style="-fx-background-color: #F2F1EC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
          <children>
             <ScrollPane prefHeight="1035.0" prefWidth="436.0" style="-fx-background: #F2F1EC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                <content>

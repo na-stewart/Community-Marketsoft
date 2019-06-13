@@ -9,9 +9,18 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import main.java.com.traderbobsemporium.dao.DAO;
+import main.java.com.traderbobsemporium.dao.Loggers.AccountActivityLogger;
+import main.java.com.traderbobsemporium.model.DataObject;
+import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
+import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.util.Util;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.subject.Subject;
+import org.controlsfx.dialog.ExceptionDialog;
+
+import java.sql.SQLException;
 
 /**
  * @Author Aidan Stewart
@@ -19,27 +28,32 @@ import org.apache.shiro.authz.AuthorizationException;
  * Copyright (c)
  * All rights reserved.
  */
-abstract class EmployeePanelHandler {
-    private TableView tableView;
+abstract class EmployeePanelHandler<T>{
+    private Subject subject = SecurityUtils.getSubject();
+    private TableView<T> tableView;
+    private DAO<T> dao;
     private EventHandler<Event> eventHandler = this::onEvent;
+    private T t;
+    private String[] params;
+    private String panelName;
+    private AccountActivityLogger accountActivityLogger;
 
-    EmployeePanelHandler(TableView tableView) {
+    public EmployeePanelHandler(TableView<T> tableView, DAO<T> dao, String panelName){
+        this.panelName = panelName.toLowerCase();
         this.tableView = tableView;
+        this.dao = dao;
     }
 
-    abstract void add();
+    abstract void beforeCommandExecute();
 
-    abstract void update();
-
-    abstract void delete();
-
-    abstract void afterEvent();
-
-    abstract void clearFields();
+    abstract void afterCommandExecute();
 
     abstract void populateFields();
 
-    void onEvent(Event event) {
+    abstract void clearFields();
+
+
+    private void onEvent(Event event) {
         switch (event.getEventType().getName()) {
             case "KEY_RELEASED":
                 onKeyEvent((KeyEvent) event);
@@ -50,11 +64,7 @@ abstract class EmployeePanelHandler {
             case "MOUSE_PRESSED":
                 onMouseEvent((MouseEvent) event);
                 break;
-
-
         }
-
-
     }
 
     private void onKeyEvent(KeyEvent keyEvent) {
@@ -64,38 +74,75 @@ abstract class EmployeePanelHandler {
                     update();
                 else
                     add();
-                afterEvent();
-                clearFields();
-            } else if (keyEvent.getCode() == KeyCode.DELETE) {
-                delete();
-                afterEvent();
-                clearFields();
             }
+            else if (keyEvent.getCode() == KeyCode.DELETE)
+                delete();
         } catch (AuthorizationException e) {
+            e.printStackTrace();
             Util.displayAlert("Insufficient Permissions!", Alert.AlertType.WARNING);
+        } catch (SQLException e){
+            new ExceptionDialog(e).showAndWait();
         }
     }
 
     private void onActionEvent(ActionEvent actionEvent) {
         String buttonText = ((Button) actionEvent.getSource()).getText();
         try {
-          switch (buttonText){
-              case "Add":
-                  add();
-                  break;
-              case "Update":
-                  update();
-                  break;
-              case "Delete":
-                  delete();
-                  break;
+            switch (buttonText) {
+                case "Add":
+                    add();
+                    break;
+                case "Update":
+                    update();
+                    break;
+                case "Delete":
+                    delete();
+                    break;
             }
-            afterEvent();
-            clearFields();
-
         }
          catch (AuthorizationException e) {
             Util.displayAlert("Insufficient Permissions!", Alert.AlertType.WARNING);
+        } catch (NumberFormatException e){
+            Util.displayAlert("A field that requires a number has a non numerical character!", Alert.AlertType.ERROR);
+        } catch (Exception e){
+            e.printStackTrace();
+            new ExceptionDialog(e).showAndWait();
+        }
+    }
+
+    private void add() throws SQLException {
+        subject.checkPermission(panelName + ":add");
+        beforeCommandExecute();
+        dao.add(t);
+        afterExecute(ActivityType.ADD);
+    }
+
+    private void update() throws SQLException {
+        subject.checkPermission(panelName + ":update");
+        beforeCommandExecute();
+        for (T t : tableView.getSelectionModel().getSelectedItems())
+            dao.updateAll(t, params);
+        afterExecute(ActivityType.UPDATE);
+    }
+
+    private void delete() throws SQLException {
+        subject.checkPermission(panelName + ":delete");
+        for (T t : tableView.getSelectionModel().getSelectedItems())
+            dao.delete(t);
+        afterExecute(ActivityType.DELETE);
+    }
+
+    private void afterExecute(ActivityType activityType){
+        new Thread(() -> tryToExecuteActivityLogger(activityType));
+        afterCommandExecute();
+        clearFields();
+    }
+
+    private void tryToExecuteActivityLogger(ActivityType accountType){
+        try {
+            accountActivityLogger.add(new AccountActivity(accountType, (DataObject) t));
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -105,15 +152,18 @@ abstract class EmployeePanelHandler {
             populateFields();
         else
             clearFields();
-
     }
-
 
 
     EventHandler<Event> getEventHandler() {
         return eventHandler;
     }
 
+    public void setDataObject(T t) {
+        this.t = t;
+    }
 
-
+    public void setUpdateParams(String[] params) {
+        this.params = params;
+    }
 }

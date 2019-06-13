@@ -5,12 +5,9 @@ import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.Util;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 
 /**
@@ -20,29 +17,42 @@ import java.util.function.Consumer;
  * All rights reserved.
  */
 public class AccountActivityLogger implements DAO<AccountActivity> {
+    private final String receiveQuery = "SELECT * FROM accountactivity ";
 
     @Override
     public AccountActivity get(long id) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("accountactivity WHERE id =" + id);
         AccountActivity accountActivity = null;
-        if (resultSet.next())
-             accountActivity = new AccountActivity(resultSet);
-        resultSet.close();
-        return accountActivity;
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(receiveQuery + "WHERE id = "+ id)) {
+                if (resultSet.next())
+                    accountActivity = new AccountActivity(resultSet);
+                return accountActivity;
+            }
+        }
     }
 
     @Override
     public List<AccountActivity> getAll() throws SQLException {
-        List<AccountActivity> accountActivities = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("accountactivity");
-        while (resultSet.next())
-            accountActivities.add(new AccountActivity(resultSet));
-        resultSet.close();
-        return accountActivities;
+        return getAll(null);
     }
 
     @Override
-    public void updateAll(AccountActivity accountActivity, String[] params) {
+    public List<AccountActivity> getAll(String[] clause) throws SQLException {
+        String query = clause != null ? receiveQuery + "WHERE " + clause[0] + " = '"+ clause[1] + "'": receiveQuery;
+        List<AccountActivity> accountActivities = new ArrayList<>();
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(query)) {
+                while (resultSet.next())
+                    accountActivities.add(new AccountActivity(resultSet));
+                return accountActivities;
+            }
+        }
+    }
+
+    @Override
+    public void updateAll(AccountActivity accountActivity, String[] params) throws SQLException {
         if (!params[0].isEmpty())
             accountActivity.setName(params[0]);
         if (!params[1].isEmpty())
@@ -57,39 +67,42 @@ public class AccountActivityLogger implements DAO<AccountActivity> {
             accountActivity.setAffectedName(params[5]);
         if (!params[6].isEmpty())
             accountActivity.setDateTime(params[6]);
-        if (!params[7].isEmpty())
-            accountActivity.setSuccessful(Boolean.parseBoolean(params[7].toLowerCase()));
         update(accountActivity);
     }
 
     @Override
-    public void update(AccountActivity updated) {
-        DatabaseUtil.UPDATE("UPDATE accountactivity SET username = '" + updated.getName() + "'," +
-                "ip = '" + updated.getIp() + "'," +
-                "mac = '" + updated.getMac() + "'," +
-                "activityType = '" + updated.getActivityType().name() + "'," +
-                "affectedID = '" + updated.getAffectedId() + "'," +
-                "affectedName = '" + updated.getAffectedName() + "'," +
-                "dateTime = '" + updated.getDateTime() + "'," +
-                "successful = '" +  booleanAsInt(updated.isSuccessful()) + "'" +
-                " WHERE id =" + updated.getId() + ";");
+    public void update(AccountActivity updated) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE accountactivity SET username = '" + updated.getName() + "'," +
+                     "ip = '" + updated.getIp() + "'," +
+                     "mac = '" + updated.getMac() + "'," +
+                     "activityType = '" + updated.getActivityType().name() + "'," +
+                     "affectedID = '" + updated.getAffectedId() + "'," +
+                     "affectedName = '" + updated.getAffectedName() + "'," +
+                     "dateTime = '" + updated.getDateTime() + "'" +
+                     " WHERE id =" + updated.getId() + ";")) {
+            preparedStatement.execute();
+        }
     }
 
 
     @Override
-    public void add(AccountActivity accountActivity) {
-        DatabaseUtil.UPDATE("INSERT INTO accountactivity VALUES(' "+ accountActivity.getId() +  "','" +
-                accountActivity.getName() + "','" + accountActivity.getIp() + "','" + accountActivity.getMac() +
-                "','" + accountActivity.getActivityType() + "','" + accountActivity.getAffectedId() + "','" +
-                accountActivity.getAffectedName() + "','" + Util.dateTime() + "','" + booleanAsInt(accountActivity.isSuccessful()) + "')");
+    public void add(AccountActivity accountActivity) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO accountactivity VALUES(' "+
+                     accountActivity.getId() +  "','" + accountActivity.getName() + "','" + accountActivity.getIp()
+                     + "','" + accountActivity.getMac() + "','" + accountActivity.getActivityType() + "','" + accountActivity.getAffectedId() + "','" +
+                     accountActivity.getAffectedName() + "','" + Util.dateTime() + "')")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
-    public void delete(long id) {
-        DatabaseUtil.UPDATE("DELETE FROM accountactivity WHERE id = '" + id  + "'");
-    }
-
-    private int booleanAsInt(boolean bool){
-         return bool ? 1 : 0;
+    public void delete(AccountActivity accountActivity) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM accountactivity WHERE " +
+                     "id = '" + accountActivity.getId() + "'")) {
+            preparedStatement.execute();
+        }
     }
 }

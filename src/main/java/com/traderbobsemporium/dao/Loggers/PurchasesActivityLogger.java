@@ -1,15 +1,11 @@
 package main.java.com.traderbobsemporium.dao.Loggers;
 
-import com.sun.org.apache.regexp.internal.RE;
 import main.java.com.traderbobsemporium.dao.DAO;
-import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,30 +16,44 @@ import java.util.List;
  * All rights reserved.
  */
 public class PurchasesActivityLogger implements DAO<PurchasesActivity> {
+    private final String receiveQuery = "SELECT * FROM purchasesactivity ";
+
     @Override
     public PurchasesActivity get(long id) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("purchasesactivity WHERE id =" + id);
         PurchasesActivity purchasesActivity = null;
-        if (resultSet.next())
-            purchasesActivity = new PurchasesActivity(resultSet);
-        resultSet.close();
-        return purchasesActivity;
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(receiveQuery + "WHERE id = "+ id)) {
+                if (resultSet.next())
+                    purchasesActivity = new PurchasesActivity(resultSet);
+                return purchasesActivity;
+            }
+        }
     }
 
     @Override
     public List<PurchasesActivity> getAll() throws SQLException {
-        ArrayList<PurchasesActivity> purchases = new ArrayList<>();
-        ResultSet resultSet = DatabaseUtil.REQUEST_RESULT_SET("purchasesactivity");
-        while (resultSet.next())
-            purchases.add(new PurchasesActivity(resultSet));
-        resultSet.close();
-        return purchases;
+        return getAll(null);
     }
 
     @Override
-    public void updateAll(PurchasesActivity purchasesActivity, String[] params) {
+    public List<PurchasesActivity> getAll(String[] clause) throws SQLException {
+        String query = clause != null ? receiveQuery + "WHERE " + clause[0] + " = '" + clause[1] + "'" : receiveQuery;
+        List<PurchasesActivity> purchasesActivities = new ArrayList<>();
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(query)) {
+                while (resultSet.next())
+                    purchasesActivities.add(new PurchasesActivity(resultSet));
+                return purchasesActivities;
+            }
+        }
+    }
+
+    @Override
+    public void updateAll(PurchasesActivity purchasesActivity, String[] params) throws SQLException {
         if (!params[0].isEmpty())
-            purchasesActivity.setCamperName(params[0]);
+            purchasesActivity.setName(params[0]);
         if (!params[1].isEmpty())
             purchasesActivity.setCamperBalance(BigDecimal.valueOf(Long.parseLong(params[1])));
         if (!params[2].isEmpty())
@@ -54,26 +64,37 @@ public class PurchasesActivityLogger implements DAO<PurchasesActivity> {
     }
 
     @Override
-    public void update(PurchasesActivity updated) {
-        DatabaseUtil.UPDATE("UPDATE purchasesactivity SET camperName = '" + updated.getCamperName() + "'," +
-                "camperBalance = '" + updated.getCamperBalance() + "'," +
-                "itemId = '" + updated.getItemId() + "'," +
-                "itemName = '" + updated.getItemName() + "'" +
-                " WHERE id =" + updated.getId() + ";");
+    public void update(PurchasesActivity updated) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE purchasesactivity SET " +
+                     "camperName = '" + updated.getName() + "'," +
+                     "camperBalance = '" + updated.getCamperBalance() + "'," +
+                     "itemId = '" + updated.getItemId() + "'," +
+                     "itemName = '" + updated.getItemName() + "'" +
+                     " WHERE id =" + updated.getId() + ";")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
-    public void add(PurchasesActivity purchasesActivity) {
-        DatabaseUtil.UPDATE("INSERT INTO purchasesactivity VALUES('" + purchasesActivity.getId() + "','" +
-                purchasesActivity.getCamperName() + "','" + purchasesActivity.getCamperBalance() + "','" +
-                purchasesActivity.getItemId() + "','" + purchasesActivity.getItemName() + "')");
+    public void add(PurchasesActivity purchasesActivity) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO purchasesactivity " +
+                     "VALUES('" + purchasesActivity.getId() + "','" + purchasesActivity.getName() + "','" +
+                     purchasesActivity.getCamperBalance() + "','" + purchasesActivity.getItemId() + "','" +
+                     purchasesActivity.getItemName() + "')")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
-    public void delete(long id) {
-        DatabaseUtil.UPDATE("DELETE FROM purchasesactivity WHERE id = '" + id  + "'");
-
+    public void delete(PurchasesActivity purchasesActivity) throws SQLException {
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM purchasesactivity WHERE id =" +purchasesActivity.getItemId())) {
+            preparedStatement.execute();
+        }
     }
+
 
 
 }
