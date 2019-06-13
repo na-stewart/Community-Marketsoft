@@ -128,7 +128,7 @@ abstract class EmployeePanelHandler<T>{
         subject.checkPermission(panelName + ":add");
         beforeEvent();
         dao.add(profileBeingAdded);
-        accountActivityLogger.add(new AccountActivity(ActivityType.ADD, (Profile) profileBeingAdded));
+        logActivity(ActivityType.ADD, profileBeingAdded);
         afterExecute();
 
     }
@@ -138,7 +138,7 @@ abstract class EmployeePanelHandler<T>{
         beforeEvent();
         for (T t : tableView.getSelectionModel().getSelectedItems()) {
             dao.updateAll(t, updateParams);
-            accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, (Profile) t));
+            logActivity(ActivityType.UPDATE, t);
         }
         afterExecute();
     }
@@ -147,7 +147,7 @@ abstract class EmployeePanelHandler<T>{
         subject.checkPermission(panelName + ":delete");
         for (T t : tableView.getSelectionModel().getSelectedItems()) {
             dao.delete(t);
-            accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, (Profile) t));
+            logActivity(ActivityType.DELETE, t);
         }
         afterExecute();
     }
@@ -157,6 +157,11 @@ abstract class EmployeePanelHandler<T>{
         clearFields();
     }
 
+    private void logActivity(ActivityType accountType, T t) throws SQLException {
+        if (doLog)
+            accountActivityLogger.add(new AccountActivity(accountType, (Profile) t));
+    }
+
     private void onMouseEvent(MouseEvent mouseEvent){
         String name =  mouseEvent.getSource().getClass().getSimpleName();
         if (name.equals("TableView") && tableView.getSelectionModel().getSelectedItems().size() == 1)
@@ -164,6 +169,8 @@ abstract class EmployeePanelHandler<T>{
         else
             clearFields();
     }
+
+
     EventHandler<Event> getEventHandler() {
         return eventHandler;
     }
