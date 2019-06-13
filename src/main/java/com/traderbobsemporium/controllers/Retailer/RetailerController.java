@@ -132,7 +132,7 @@ public class RetailerController implements Initializable {
             Util.displayAlert("The following items did not checkout due to the campers insufficient balance " +
                             "or the item is out of stock!\n" + itemsNotCheckedOut, Alert.AlertType.WARNING);
         camperDAO.update(selectedCamper);
-        logPurchasedItems(selectedCamper, selectedItems);
+        new Thread(() -> logPurchasedItems(selectedCamper, selectedItems)).start();
         tryToPopulateTilePane();
         selectedItems.clear();
     }

@@ -6,11 +6,11 @@ package main.java.com.traderbobsemporium.model;
  * Copyright (c)
  * All rights reserved.
  */
-public class DataObject {
+public class Profile {
     private long id;
     private String name;
 
-   public DataObject(long id, String name) {
+   public Profile(long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -29,7 +29,7 @@ public class DataObject {
 
     @Override
     public String toString() {
-        return "DataObject{" +
+        return "Profile{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

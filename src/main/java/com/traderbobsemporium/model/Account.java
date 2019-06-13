@@ -2,10 +2,8 @@ package main.java.com.traderbobsemporium.model;
 
 import main.java.com.traderbobsemporium.util.Util;
 
-import java.security.Permission;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * @Author Aidan Stewart
@@ -13,7 +11,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class Account extends DataObject {
+public class Account extends Profile {
 
     private String password;
     private AccountRole accountRoles;

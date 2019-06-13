@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class AccountPermission extends DataObject{
+public class AccountPermission extends Profile {
     private String permission;
 
     public AccountPermission(String username, String permission) {

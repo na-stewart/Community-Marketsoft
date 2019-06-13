@@ -1,12 +1,11 @@
-package main.java.com.traderbobsemporium.dao;
+package main.java.com.traderbobsemporium.dao.Loggers;
 
-import main.java.com.traderbobsemporium.model.AccountPermission;
-import main.java.com.traderbobsemporium.model.Announcement;
+import main.java.com.traderbobsemporium.dao.DAO;
+import main.java.com.traderbobsemporium.model.Logging.Announcement;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class AnnouncementDeclarer implements DAO<Announcement> {
+public class AnnouncementLogger implements DAO<Announcement> {
     private final String receiveQuery = "SELECT * FROM announcement ";
 
     @Override

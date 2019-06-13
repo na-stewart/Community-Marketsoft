@@ -1,7 +1,7 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
 import main.java.com.traderbobsemporium.model.Camper;
-import main.java.com.traderbobsemporium.model.DataObject;
+import main.java.com.traderbobsemporium.model.Profile;
 import main.java.com.traderbobsemporium.model.Item;
 import main.java.com.traderbobsemporium.util.Util;
 
@@ -17,7 +17,7 @@ import java.util.Locale;
  * Copyright (c)
  * All rights reserved.
  */
-public class PurchasesActivity  extends DataObject {
+public class PurchasesActivity  extends Profile {
     private BigDecimal camperBalance;
     private long itemId;
     private String itemName;

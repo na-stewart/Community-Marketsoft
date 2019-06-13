@@ -1,4 +1,4 @@
-package main.java.com.traderbobsemporium.model;
+package main.java.com.traderbobsemporium.model.Logging;
 
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
@@ -12,28 +12,28 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class Announcement extends DataObject implements Comparable<Announcement> {
+
+// TODO: 6/13/2019 Turn into logger or make name title. 
+public class Announcement implements Comparable<Announcement> {
+    private long id;
+    private String name;
     private String title;
     private String dialog;
     private String dateTime;
 
     public Announcement(String title, String dialog) {
-        super(Util.NEW_ID(), String.valueOf(SecurityUtils.getSubject().getPrincipal()));
+        this.id = Util.NEW_ID();
+        this.name = String.valueOf(SecurityUtils.getSubject().getPrincipal());
         this.title = title;
         this.dialog = dialog;
         this.dateTime = Util.dateTime();
     }
 
-    public Announcement(String name, String title, String dialog, String dateTime) {
-        super(Util.NEW_ID(), name);
-        this.title = title;
-        this.dialog = dialog;
-        this.dateTime = dateTime;
-    }
 
     public Announcement(ResultSet resultSet) throws SQLException {
-        super(resultSet.getLong("id"), resultSet.getString("username"));
-        title  = resultSet.getString("title");
+        this.id = resultSet.getLong("id");
+        this.name = resultSet.getString("username");
+        title  = resultSet.getString("title");;
         dialog = resultSet.getString("dialog");
         dateTime = resultSet.getString("dateTime");
     }
@@ -62,10 +62,22 @@ public class Announcement extends DataObject implements Comparable<Announcement>
         this.dateTime = dateTime;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "Announcement{" +
-                "id=" + getId() + '\'' +
+                "id=" + id + '\'' +
                 "title='" + title + '\'' +
                 ", dialog='" + dialog + '\'' +
                 ", dateTime='" + dateTime + '\'' +

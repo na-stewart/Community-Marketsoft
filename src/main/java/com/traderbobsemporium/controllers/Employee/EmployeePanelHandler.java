@@ -11,7 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import main.java.com.traderbobsemporium.dao.DAO;
 import main.java.com.traderbobsemporium.dao.Loggers.AccountActivityLogger;
-import main.java.com.traderbobsemporium.model.DataObject;
+import main.java.com.traderbobsemporium.model.Profile;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.util.Util;
@@ -33,12 +33,23 @@ abstract class EmployeePanelHandler<T>{
     private TableView<T> tableView;
     private DAO<T> dao;
     private EventHandler<Event> eventHandler = this::onEvent;
-    private T t;
-    private String[] params;
+    private String[] updateParams;
+    private T profileBeingAdded;
     private String panelName;
-    private AccountActivityLogger accountActivityLogger = new AccountActivityLogger();
+    private boolean doLog;
+    private AccountActivityLogger accountActivityLogger;
+
+    public EmployeePanelHandler(TableView<T> tableView, DAO<T> dao, String panelName, AccountActivityLogger accountActivityLogger){
+        this.doLog = true;
+        this.accountActivityLogger = accountActivityLogger;
+        this.panelName = panelName.toLowerCase();
+        this.tableView = tableView;
+        this.dao = dao;
+    }
+
 
     public EmployeePanelHandler(TableView<T> tableView, DAO<T> dao, String panelName){
+        this.doLog = false;
         this.panelName = panelName.toLowerCase();
         this.tableView = tableView;
         this.dao = dao;
@@ -116,17 +127,18 @@ abstract class EmployeePanelHandler<T>{
     private void add() throws SQLException {
         subject.checkPermission(panelName + ":add");
         beforeEvent();
-        dao.add(t);
-        logActivity(ActivityType.ADD);
+        dao.add(profileBeingAdded);
+        accountActivityLogger.add(new AccountActivity(ActivityType.ADD, (Profile) profileBeingAdded));
         afterExecute();
+
     }
 
     private void update() throws SQLException {
         subject.checkPermission(panelName + ":update");
         beforeEvent();
         for (T t : tableView.getSelectionModel().getSelectedItems()) {
-            dao.updateAll(t, params);
-            logActivity(ActivityType.UPDATE);
+            dao.updateAll(t, updateParams);
+            accountActivityLogger.add(new AccountActivity(ActivityType.UPDATE, (Profile) t));
         }
         afterExecute();
     }
@@ -135,25 +147,14 @@ abstract class EmployeePanelHandler<T>{
         subject.checkPermission(panelName + ":delete");
         for (T t : tableView.getSelectionModel().getSelectedItems()) {
             dao.delete(t);
-            logActivity(ActivityType.DELETE);
+            accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, (Profile) t));
         }
         afterExecute();
     }
 
     private void afterExecute(){
-
         afterEvent();
         clearFields();
-    }
-
-    private void logActivity(ActivityType accountType){
-        new Thread(() -> {
-            try {
-                accountActivityLogger.add(new AccountActivity(accountType, (DataObject) t));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }).start();
     }
 
     private void onMouseEvent(MouseEvent mouseEvent){
@@ -163,17 +164,15 @@ abstract class EmployeePanelHandler<T>{
         else
             clearFields();
     }
-
-
     EventHandler<Event> getEventHandler() {
         return eventHandler;
     }
 
     public void setDataObject(T t) {
-        this.t = t;
+        this.profileBeingAdded = t;
     }
 
     public void setUpdateParams(String[] params) {
-        this.params = params;
+        this.updateParams = params;
     }
 }

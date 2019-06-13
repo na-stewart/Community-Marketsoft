@@ -15,7 +15,7 @@ import java.util.Locale;
  * Copyright (c)
  * All rights reserved.
  */
-public class Item extends DataObject {
+public class Item extends Profile {
     private String imageURL;
     private BigDecimal price;
     private int quantity;

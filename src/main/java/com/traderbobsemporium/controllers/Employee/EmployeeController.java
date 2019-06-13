@@ -20,13 +20,14 @@ import javafx.scene.text.Text;
 import main.java.com.traderbobsemporium.dao.*;
 import main.java.com.traderbobsemporium.dao.Loggers.AccountActivityLogger;
 import main.java.com.traderbobsemporium.dao.AccountPermissionDAO;
+import main.java.com.traderbobsemporium.dao.Loggers.AnnouncementLogger;
 import main.java.com.traderbobsemporium.dao.Loggers.PurchasesActivityLogger;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.model.*;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.model.Logging.ActivityType;
-import main.java.com.traderbobsemporium.model.Announcement;
+import main.java.com.traderbobsemporium.model.Logging.Announcement;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
 import org.apache.shiro.SecurityUtils;
@@ -59,7 +60,7 @@ public class EmployeeController implements Initializable {
     private final AccountPermissionDAO accountPermissionDAO = new AccountPermissionDAO();
     private final AccountActivityLogger accountActivityLogger = new AccountActivityLogger();
     private final PurchasesActivityLogger purchasesActivityLogger = new PurchasesActivityLogger();
-    private final AnnouncementDeclarer announcementDeclarer = new AnnouncementDeclarer();
+    private final AnnouncementLogger announcementLogger = new AnnouncementLogger();
 
     private EmployeePanel[] panels;
     @FXML
@@ -73,7 +74,7 @@ public class EmployeeController implements Initializable {
     @FXML
     private TableView<AccountActivity> accountActivityTableView;
     @FXML
-    private TableColumn<AccountActivity, String> usernameActivityColumn, ipColumn, macColumn, activityTypeColumn,
+    private TableColumn<AccountActivity, String> usernameActivityColumn, activityTypeColumn,
             affectedName, affectedID, dateTimeColumnAccount, successfulColumn;
     @FXML
     private TableView<PurchasesActivity> purchasesActivityTableView;
@@ -142,10 +143,10 @@ public class EmployeeController implements Initializable {
     @FXML
     private TableView<AccountActivity> accountActivityLoggerTableView;
     @FXML
-    private TableColumn<AccountActivity, String> activityIdColumn, activityUsernameColumn, activityIpColumn, activityMacColumn,
-            activityActivityTypeColumn, activityAffectedIdColumn, activityAffectedNameColumn, activityDateTimeColumn, activitySuccessfulColumn;
+    private TableColumn<AccountActivity, String> activityIdColumn, activityUsernameColumn, activityActivityTypeColumn,
+            activityAffectedIdColumn, activityAffectedNameColumn, activityDateTimeColumn, activitySuccessfulColumn;
     @FXML
-    private TextField activityUsernameField, ipField, macField, affectedIdField, affectedNameField, activityDateTimeField,
+    private TextField activityUsernameField, affectedIdField, affectedNameField, activityDateTimeField,
             activitySuccessfulField;
     @FXML
     private ChoiceBox<ActivityType> activityTypeChoiceBox;
@@ -184,6 +185,7 @@ public class EmployeeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        accountActivityLogger.start();
         panels = new EmployeePanel[]{new EmployeePanel(dashboardScrollPane, "Dashboard"),
                 new EmployeePanel(dashboardResizerContainer, "Dashboard"), new EmployeePanel(campersAnchorPane, "Campers"),
                 new EmployeePanel(accountsAnchorPane, "Accounts"), new EmployeePanel(logsTabPane, "Logs"),
@@ -237,7 +239,7 @@ public class EmployeeController implements Initializable {
     private void reloadAllPanels() {
         populateTableViewWithObservableList(accountDAO, accountTableView);
         populateTableViewWithObservableList(camperDAO, camperTableView);
-        populateTableViewWithObservableList(announcementDeclarer, announcementTableView);
+        populateTableViewWithObservableList(announcementLogger, announcementTableView);
         populateTableViewWithObservableList(accountActivityLogger, accountActivityLoggerTableView);
         populateTableViewWithObservableList(itemDAO, itemsTableView);
         populateTableViewWithObservableList(purchasesActivityLogger, purchasesActivityLoggerTableView);
@@ -302,7 +304,7 @@ public class EmployeeController implements Initializable {
 
     private void populateAnnouncementsTextArea() throws SQLException {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Announcement announcement : announcementDeclarer.getAll()) {
+        for (Announcement announcement : announcementLogger.getAll()) {
             stringBuilder.append(announcement.getTitle()).append("\n");
             stringBuilder.append("Author: ").append(announcement.getName()).append("\n");
             stringBuilder.append(announcement.getDateTime()).append("\n");
@@ -368,7 +370,8 @@ public class EmployeeController implements Initializable {
     */
 
     private void createItemsPanelEventHandler() {
-        EventHandler<Event> itemEventHandler = new EmployeePanelHandler<Item>(itemsTableView, itemDAO, "items") {
+        EventHandler<Event> itemEventHandler = new EmployeePanelHandler<Item>(itemsTableView, itemDAO, "items",
+                accountActivityLogger) {
             @Override
             void beforeEvent() {
                 String[] params = new String[]{itemNameField.getText(), itemQuantityField.getText(), itemPriceField.getText(),
@@ -422,7 +425,8 @@ public class EmployeeController implements Initializable {
      */
 
     private void createCamperPanelEventHandler() {
-        EventHandler<Event> camperEventHandler = new EmployeePanelHandler<Camper>(camperTableView, camperDAO, "campers" ) {
+        EventHandler<Event> camperEventHandler = new EmployeePanelHandler<Camper>(camperTableView, camperDAO, "campers",
+                accountActivityLogger) {
             @Override
             void beforeEvent() {
                 String[] params = new String[]{camperNameField.getText(), camperBalanceField.getText()};
@@ -462,7 +466,8 @@ public class EmployeeController implements Initializable {
      */
 
     private void createAccountPanelEventHandler() {
-        EventHandler<Event> accountEventHandler = new EmployeePanelHandler<Account>(accountTableView, accountDAO, "accounts") {
+        EventHandler<Event> accountEventHandler = new EmployeePanelHandler<Account>(accountTableView, accountDAO, "accounts",
+                accountActivityLogger) {
             @Override
             void clearFields() {
                 usernameField.requestFocus();
@@ -561,11 +566,11 @@ public class EmployeeController implements Initializable {
                 accountActivityLogger, "accountactivity") {
             @Override
             void beforeEvent() {
-                String[] params = new String[]{activityUsernameField.getText(), ipField.getText(), macField.getText(),
+                String[] params = new String[]{activityUsernameField.getText(),
                 activityTypeChoiceBox.getValue().name(), affectedIdField.getText(), affectedNameField.getText(),
                 activityDateTimeField.getText()};
-                setDataObject(new AccountActivity(params[0], params[1], params[2], ActivityType.valueOf(params[3]),
-                        Long.parseLong(params[4]), params[5], params[6]));
+                setDataObject(new AccountActivity(params[0], ActivityType.valueOf(params[1]), Long.parseLong(params[2]),
+                        params[3], params[4]));
             }
 
             @Override
@@ -577,8 +582,6 @@ public class EmployeeController implements Initializable {
             void clearFields() {
                 activityUsernameField.requestFocus();
                 activityUsernameField.clear();
-                ipField.clear();
-                macField.clear();
                 affectedIdField.clear();
                 affectedNameField.clear();
                 activityDateTimeField.clear();
@@ -589,8 +592,6 @@ public class EmployeeController implements Initializable {
             void populateFields() {
                 AccountActivity accountActivity = accountActivityLoggerTableView.getSelectionModel().getSelectedItem();
                 activityUsernameField.setText(accountActivity.getName());
-                ipField.setText(accountActivity.getIp());
-                macField.setText(accountActivity.getMac());
                 affectedIdField.setText(String.valueOf(accountActivity.getAffectedId()));
                 affectedNameField.setText(accountActivity.getAffectedName());
                 activityDateTimeField.setText(accountActivity.getDateTime());
@@ -674,7 +675,7 @@ public class EmployeeController implements Initializable {
 
      private void createAnnouncementPanelEventHandler(){
          EventHandler<Event> panelEventHandler = new EmployeePanelHandler<Announcement>(announcementTableView,
-                 announcementDeclarer, "announcement") {
+                 announcementLogger, "announcement") {
              @Override
              void beforeEvent() {
                  String[] params = new String[]{authorField.getText(), titleField.getText(),
@@ -685,7 +686,7 @@ public class EmployeeController implements Initializable {
 
              @Override
              void afterEvent() {
-                 populateTableViewWithObservableList(announcementDeclarer, announcementTableView);
+                 populateTableViewWithObservableList(announcementLogger, announcementTableView);
              }
 
              @Override
@@ -728,8 +729,6 @@ public class EmployeeController implements Initializable {
 
     private void setCellValueFactory(){
         usernameActivityColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        ipColumn.setCellValueFactory(new PropertyValueFactory<>("ip"));
-        macColumn.setCellValueFactory(new PropertyValueFactory<>("mac"));
         activityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("activityType"));
         affectedName.setCellValueFactory(new PropertyValueFactory<>("affectedName"));
         affectedID.setCellValueFactory(new PropertyValueFactory<>("affectedId"));
@@ -750,8 +749,6 @@ public class EmployeeController implements Initializable {
         announcementDateTimeColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
         activityIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         activityUsernameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        activityIpColumn.setCellValueFactory(new PropertyValueFactory<>("ip"));
-        activityMacColumn.setCellValueFactory(new PropertyValueFactory<>("mac"));
         activityAffectedIdColumn.setCellValueFactory(new PropertyValueFactory<>("affectedId"));
         activityAffectedNameColumn.setCellValueFactory(new PropertyValueFactory<>("affectedName"));
         activityActivityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("activityType"));
@@ -773,6 +770,5 @@ public class EmployeeController implements Initializable {
         purchasesLoggerCamperBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("camperBalance"));
         purchasesLoggerItemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         purchasesLoggerItemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
-
     }
 }

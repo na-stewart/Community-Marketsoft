@@ -1,7 +1,6 @@
 package main.java.com.traderbobsemporium.dao;
 
 
-import main.java.com.traderbobsemporium.model.Announcement;
 import main.java.com.traderbobsemporium.model.Camper;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 
@@ -84,7 +83,7 @@ public class CamperDAO implements DAO<Camper> {
     @Override
     public void delete(Camper camper) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM camper WHERE id = '" + camper.getId() + "'")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM camper WHERE id = " + camper.getId())) {
             preparedStatement.execute();
         }
     }

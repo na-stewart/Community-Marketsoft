@@ -164,8 +164,6 @@
                            </columnResizePolicy>
                            <columns>
                               <TableColumn fx:id="usernameActivityColumn" prefWidth="75.0" text="Username" />
-                              <TableColumn fx:id="ipColumn" prefWidth="75.0" text="IP" />
-                              <TableColumn fx:id="macColumn" prefWidth="75.0" text="Mac" />
                               <TableColumn fx:id="activityTypeColumn" prefWidth="75.0" text="Activity Type" />
                               <TableColumn fx:id="affectedID" prefWidth="85.0" text="ID" />
                               <TableColumn fx:id="affectedName" prefWidth="85.0" text="Name" />
@@ -437,26 +435,6 @@
                                           </VBox>
                                           <VBox alignment="CENTER" layoutX="59.0" layoutY="103.0" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
                                              <children>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="IP">
-                                                   <font>
-                                                      <Font name="Leelawadee UI" size="27.0" />
-                                                   </font>
-                                                </Text>
-                                                <TextField fx:id="ipField" prefHeight="25.0" prefWidth="317.0" />
-                                             </children>
-                                          </VBox>
-                                          <VBox alignment="CENTER" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
-                                             <children>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mac">
-                                                   <font>
-                                                      <Font name="Leelawadee UI" size="27.0" />
-                                                   </font>
-                                                </Text>
-                                                <TextField fx:id="macField" prefHeight="25.0" prefWidth="317.0" />
-                                             </children>
-                                          </VBox>
-                                          <VBox alignment="CENTER" layoutX="59.0" layoutY="103.0" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
-                                             <children>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Affected ID">
                                                    <font>
                                                       <Font name="Leelawadee UI" size="27.0" />
@@ -539,8 +517,6 @@
                            <columns>
                               <TableColumn fx:id="activityIdColumn" prefWidth="75.0" text="ID" />
                               <TableColumn fx:id="activityUsernameColumn" prefWidth="75.0" text="Username" />
-                              <TableColumn fx:id="activityIpColumn" prefWidth="75.0" text="IP" />
-                              <TableColumn fx:id="activityMacColumn" prefWidth="75.0" text="Mac" />
                               <TableColumn fx:id="activityActivityTypeColumn" prefWidth="75.0" text="Activity Type" />
                               <TableColumn fx:id="activityAffectedIdColumn" prefWidth="75.0" text="Affected ID" />
                               <TableColumn fx:id="activityAffectedNameColumn" prefWidth="75.0" text="Affected Name" />

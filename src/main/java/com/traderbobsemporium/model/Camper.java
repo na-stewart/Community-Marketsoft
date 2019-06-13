@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -17,7 +16,7 @@ import java.util.Locale;
  * Copyright (c)
  * All rights reserved.
  */
-public class Camper extends DataObject {
+public class Camper extends Profile {
     private BigDecimal balance;
 
     public Camper(String name, BigDecimal balance) {

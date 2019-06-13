@@ -4,10 +4,15 @@ import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.Util;
+import org.controlsfx.dialog.ExceptionDialog;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -56,26 +61,21 @@ public class AccountActivityLogger implements DAO<AccountActivity> {
         if (!params[0].isEmpty())
             accountActivity.setName(params[0]);
         if (!params[1].isEmpty())
-            accountActivity.setIp(params[1]);
+            accountActivity.setActivityType(ActivityType.valueOf(params[1]));
         if (!params[2].isEmpty())
-            accountActivity.setMac(params[2]);
+            accountActivity.setAffectedId(Long.parseLong(params[2]));
         if (!params[3].isEmpty())
-            accountActivity.setActivityType(ActivityType.valueOf(params[3]));
+            accountActivity.setAffectedName(params[3]);
         if (!params[4].isEmpty())
-            accountActivity.setAffectedId(Long.parseLong(params[4]));
-        if (!params[5].isEmpty())
-            accountActivity.setAffectedName(params[5]);
-        if (!params[6].isEmpty())
-            accountActivity.setDateTime(params[6]);
+            accountActivity.setDateTime(params[4]);
         update(accountActivity);
     }
 
     @Override
     public void update(AccountActivity updated) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE accountactivity SET username = '" + updated.getName() + "'," +
-                     "ip = '" + updated.getIp() + "'," +
-                     "mac = '" + updated.getMac() + "'," +
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE accountactivity SET " +
+                     "username = '" + updated.getName() + "'," +
                      "activityType = '" + updated.getActivityType().name() + "'," +
                      "affectedID = '" + updated.getAffectedId() + "'," +
                      "affectedName = '" + updated.getAffectedName() + "'," +
@@ -86,12 +86,14 @@ public class AccountActivityLogger implements DAO<AccountActivity> {
     }
 
 
+
+
+
     @Override
     public void add(AccountActivity accountActivity) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO accountactivity VALUES(' "+
-                     accountActivity.getId() +  "','" + accountActivity.getName() + "','" + accountActivity.getIp()
-                     + "','" + accountActivity.getMac() + "','" + accountActivity.getActivityType() + "','" + accountActivity.getAffectedId() + "','" +
+                     accountActivity.getId() +  "','" + accountActivity.getName() + "','" + accountActivity.getActivityType() + "','" + accountActivity.getAffectedId() + "','" +
                      accountActivity.getAffectedName() + "','" + Util.dateTime() + "')")) {
             preparedStatement.execute();
         }
