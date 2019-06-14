@@ -345,13 +345,16 @@ public class EmployeeController implements InitGUI {
             for (String name : listOfItemNames().stream().distinct().collect(Collectors.toList()))
                 data.add(new PieChart.Data(name, Collections.frequency(listOfItemNames(), name)));
             itemsBoughtFrequencyChart.setData(data);
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private List<String> listOfItemNames() throws SQLException {
         List<String> list = new ArrayList<>();
-        for (PurchasesActivity purchasesActivity : purchasesActivityLogger.getAll(new String[]{"itemName", itemsBoughtFrequencyChoiceBox.getValue().name()})) {
-            list.add(purchasesActivity.getItemName());
+        for (PurchasesActivity purchasesActivity : purchasesActivityLogger.getAll()) {
+            if (itemDAO.get(purchasesActivity.getItemId()).getItemType() == itemsBoughtFrequencyChoiceBox.getValue())
+                list.add(purchasesActivity.getItemName());
         }
         return list;
     }
@@ -378,14 +381,20 @@ public class EmployeeController implements InitGUI {
     private void createItemsPanelEventHandler() {
         EventHandler<Event> itemEventHandler = new EmployeePanelHandler<Item>(itemsTableView, itemDAO, "items",
                 accountActivityLogger) {
+
             @Override
-            void beforeEvent() {
-                String[] params = new String[]{itemNameField.getText(), itemQuantityField.getText(), itemPriceField.getText(),
-                itemImageUrlField.getText(),itemTypeChoiceBox.getValue().name()};
-                setDataObject(new Item(params[0], Integer.parseInt(params[1]), new BigDecimal(params[2]), params[3],
-                        ItemType.valueOf(params[4])));
-                setUpdateParams(params);
+            Item newObj() {
+                String[] params = updateParams();
+                return new Item(params[0], Integer.parseInt(params[1]), new BigDecimal(params[2]), params[3],
+                        ItemType.valueOf(params[4]));
             }
+
+            @Override
+            String[] updateParams() {
+                return  new String[]{itemNameField.getText(), itemQuantityField.getText(), itemPriceField.getText(),
+                        itemImageUrlField.getText(),itemTypeChoiceBox.getValue().name()};
+            }
+
             @Override
             void afterEvent() {
                 populateTableViewWithObservableList(itemDAO, itemsTableView);
@@ -434,11 +443,16 @@ public class EmployeeController implements InitGUI {
         EventHandler<Event> camperEventHandler = new EmployeePanelHandler<Camper>(camperTableView, camperDAO, "campers",
                 accountActivityLogger) {
             @Override
-            void beforeEvent() {
-                String[] params = new String[]{camperNameField.getText(), camperBalanceField.getText()};
-                setDataObject(new Camper(params[0], new BigDecimal(params[1])));
-                setUpdateParams(new String[]{params[0], params[1]});
+            Camper newObj() {
+                String[] params = updateParams();
+                return new Camper(params[0], new BigDecimal(params[1]));
             }
+
+            @Override
+            String[] updateParams() {
+                return new String[]{camperNameField.getText(), camperBalanceField.getText()};
+            }
+
             @Override
             void afterEvent() {
                 populateTableViewWithObservableList(camperDAO, camperTableView);
@@ -474,6 +488,19 @@ public class EmployeeController implements InitGUI {
     private void createAccountPanelEventHandler() {
         EventHandler<Event> accountEventHandler = new EmployeePanelHandler<Account>(accountTableView, accountDAO, "accounts",
                 accountActivityLogger) {
+
+            @Override
+            Account newObj() {
+                String[] params = updateParams();
+                return new Account(params[0], params[1], AccountRole.valueOf(params[2]));
+            }
+
+            @Override
+            String[] updateParams() {
+                return new String[]{usernameField.getText(), new DefaultPasswordService().encryptPassword(passwordField.getText()),
+                        accountRoleChoiceBox.getValue().name()};
+            }
+
             @Override
             void clearFields() {
                 usernameField.requestFocus();
@@ -489,14 +516,6 @@ public class EmployeeController implements InitGUI {
                 usernameField.setText(account.getName());
                 populatePermissionsTable();
                 accountRoleChoiceBox.setValue(account.getAccountRole());
-            }
-
-            @Override
-            void beforeEvent() {
-                String[] params = new String[]{usernameField.getText(), new DefaultPasswordService().encryptPassword(passwordField.getText()),
-                accountRoleChoiceBox.getValue().name()};
-                setDataObject(new Account(params[0], params[1], AccountRole.valueOf(params[2])));
-                setUpdateParams(params);
             }
 
             @Override
@@ -570,13 +589,19 @@ public class EmployeeController implements InitGUI {
     private void createAccountActivitiesPanelEventHandler() {
         EventHandler<Event> panelEventHandler = new EmployeePanelHandler<AccountActivity>(accountActivityLoggerTableView,
                 accountActivityLogger, "accountactivity") {
+
+
             @Override
-            void beforeEvent() {
-                String[] params = new String[]{activityUsernameField.getText(),
-                activityTypeChoiceBox.getValue().name(), affectedIdField.getText(), affectedNameField.getText(),
-                activityDateTimeField.getText()};
-                setDataObject(new AccountActivity(params[0], ActivityType.valueOf(params[1]), Long.parseLong(params[2]),
-                        params[3], params[4]));
+            AccountActivity newObj() {
+                String[] params = updateParams();
+                return new AccountActivity(params[0], ActivityType.valueOf(params[1]), Long.parseLong(params[2]),
+                        params[3], params[4]);
+            }
+
+            @Override
+            String[] updateParams() {
+                return new String[]{activityUsernameField.getText(), activityTypeChoiceBox.getValue().name(),
+                        affectedIdField.getText(), affectedNameField.getText(), activityDateTimeField.getText()};
             }
 
             @Override
@@ -629,15 +654,18 @@ public class EmployeeController implements InitGUI {
      */
 
     private void createPurchasesActivityPanelEventHandler() {
-
         EventHandler<Event> panelEventHandler = new EmployeePanelHandler<PurchasesActivity>(purchasesActivityLoggerTableView,
                 purchasesActivityLogger, "purchasesactivity") {
             @Override
-            void beforeEvent() {
-                String[] params = new String[]{purchasesCamperNameField.getText(), purchasesCamperBalanceField.getText(),
-                purchasesItemIdField.getText(), purchasesItemNameField.getText()};
-                setDataObject(new PurchasesActivity(params[0], new BigDecimal(params[1]), Long.parseLong(params[2]), params[3]));
-                setUpdateParams(params);
+            PurchasesActivity newObj() {
+                String[] params = updateParams();
+                 return new PurchasesActivity(params[0], new BigDecimal(params[1]), Long.parseLong(params[2]), params[3]);
+            }
+
+            @Override
+            String[] updateParams() {
+               return new String[]{purchasesCamperNameField.getText(), purchasesCamperBalanceField.getText(),
+                        purchasesItemIdField.getText(), purchasesItemNameField.getText()};
             }
 
             @Override
@@ -657,7 +685,7 @@ public class EmployeeController implements InitGUI {
             @Override
             void populateFields() {
                 PurchasesActivity purchasesActivity = purchasesActivityLoggerTableView.getSelectionModel().getSelectedItem();
-                purchasesCamperNameField.setText(purchasesActivity.getName());
+                purchasesCamperNameField.setText(purchasesActivity.getCamperName());
                 purchasesCamperBalanceField.setText(String.valueOf(purchasesActivity.getCamperBalance()));
                 purchasesItemIdField.setText(String.valueOf(purchasesActivity.getItemId()));
                 purchasesItemNameField.setText(purchasesActivity.getItemName());
@@ -683,11 +711,15 @@ public class EmployeeController implements InitGUI {
          EventHandler<Event> panelEventHandler = new EmployeePanelHandler<Announcement>(announcementTableView,
                  announcementLogger, "announcement") {
              @Override
-             void beforeEvent() {
-                 String[] params = new String[]{authorField.getText(), titleField.getText(),
+             Announcement newObj() {
+                 String[] params = updateParams();
+                 return new Announcement(params[1], params[2]);
+             }
+
+             @Override
+             String[] updateParams() {
+                 return new String[]{authorField.getText(), titleField.getText(),
                          dialogField.getText(), announcementDateTimeField.getText()};
-                 setDataObject(new Announcement(params[1], params[2]));
-                 setUpdateParams(params);
              }
 
              @Override
@@ -765,7 +797,7 @@ public class EmployeeController implements InitGUI {
         imageURLColumn.setCellValueFactory(new PropertyValueFactory<>("imageURL"));
         itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
         purchasesIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        purchasesCamperNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        purchasesCamperNameColumn.setCellValueFactory(new PropertyValueFactory<>("camperName"));
         purchasesCamperBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("camperBalanceString"));
         purchasesItemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         purchasesItemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));

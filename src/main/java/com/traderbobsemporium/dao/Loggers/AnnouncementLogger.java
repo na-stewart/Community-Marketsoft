@@ -79,7 +79,7 @@ public class AnnouncementLogger implements DAO<Announcement> {
     @Override
     public void add(Announcement announcement) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO announcement VALUES('" +announcement.getId() + "','" +
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO announcement VALUES('" + announcement.getId() + "','" +
                              announcement.getName() + "','" +announcement.getTitle() + "','" + announcement.getDialog() +
                              "','" + announcement.getDateTime() + "')")) {
             preparedStatement.execute();

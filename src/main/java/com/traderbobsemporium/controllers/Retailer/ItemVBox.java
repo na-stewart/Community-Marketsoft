@@ -20,10 +20,13 @@ import java.net.URL;
  */
 class ItemVBox extends VBox {
     private Item item;
+    private ImageView imageView = new ImageView();
 
-    ItemVBox(Item item) {
+    public ItemVBox(Item item) {
         super();
         this.item = item;
+        imageView.setFitWidth(210);
+        imageView.setFitHeight(225);
         buildVbox();
     }
 
@@ -43,21 +46,13 @@ class ItemVBox extends VBox {
         getChildren().add(vBoxTextBuilder("Price: " + String.valueOf(item.getPrice())));
         getChildren().add(vBoxTextBuilder("Quantity: " + String.valueOf(item.getQuantity())));
         getChildren().add(vBoxTextBuilder(item.getName()));
-        getChildren().add(imageView());
+        getChildren().add(imageView);
     }
 
     private Text vBoxTextBuilder(String data){
         Text text = new Text(data);
         text.setStyle("-fx-font: 20 arial;");
         return text;
-    }
-
-    private ImageView imageView() {
-        ImageView imageView = new ImageView();
-        new Thread(() -> imageView.setImage(SwingFXUtils.toFXImage(getImage(), null))).start();
-        imageView.setFitWidth(210);
-        imageView.setFitHeight(225);
-        return imageView;
     }
 
     private BufferedImage getImage() {
@@ -74,5 +69,10 @@ class ItemVBox extends VBox {
         }
         return image;
     }
+
+  void setImage() {
+      imageView.setImage(SwingFXUtils.toFXImage(getImage(), null));
+  }
+
 
 }

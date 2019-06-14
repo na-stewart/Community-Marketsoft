@@ -17,30 +17,52 @@ import java.util.Locale;
  * Copyright (c)
  * All rights reserved.
  */
-public class PurchasesActivity  extends Profile {
+public class PurchasesActivity  {
+    private long id;
+    private String camperName;
     private BigDecimal camperBalance;
     private long itemId;
     private String itemName;
 
     public PurchasesActivity(Item item, Camper camper) {
-        super(Util.NEW_ID(), camper.getName());
+        this.id = Util.NEW_ID();
+        this.camperName = camper.getName();
         this.camperBalance = camper.getBalance();
         this.itemId = item.getId();
         this.itemName = item.getName();
     }
 
     public PurchasesActivity(String camperName, BigDecimal camperBalance, long itemId, String itemName) {
-        super(Util.NEW_ID(), camperName);
+        this.id = Util.NEW_ID();
+        this.camperName = camperName;
         this.camperBalance = camperBalance;
         this.itemId = itemId;
         this.itemName = itemName;
     }
 
     public PurchasesActivity(ResultSet resultSet) throws SQLException {
-        super(resultSet.getLong("id"), resultSet.getString("camperName") );
+        this.id = resultSet.getLong("id");
+        this.camperName = resultSet.getString("camperName");
         this.camperBalance = resultSet.getBigDecimal("camperBalance");
         this.itemId = resultSet.getLong("itemId");
         this.itemName = resultSet.getString("itemName");
+    }
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getCamperName() {
+        return camperName;
+    }
+
+    public void setCamperName(String camperName) {
+        this.camperName = camperName;
     }
 
     public long getItemId() {

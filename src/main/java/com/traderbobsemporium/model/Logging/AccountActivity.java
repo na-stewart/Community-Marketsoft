@@ -1,5 +1,6 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
+import main.java.com.traderbobsemporium.model.ItemType;
 import main.java.com.traderbobsemporium.model.Profile;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;

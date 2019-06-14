@@ -33,8 +33,6 @@ abstract class EmployeePanelHandler<T>{
     private TableView<T> tableView;
     private DAO<T> dao;
     private EventHandler<Event> eventHandler = this::onEvent;
-    private String[] updateParams;
-    private T profileBeingAdded;
     private String panelName;
     private AccountActivityLogger accountActivityLogger;
 
@@ -51,8 +49,9 @@ abstract class EmployeePanelHandler<T>{
         this.tableView = tableView;
         this.dao = dao;
     }
+    abstract T newObj();
 
-    abstract void beforeEvent();
+    abstract String[] updateParams();
 
     abstract void afterEvent();
 
@@ -88,8 +87,6 @@ abstract class EmployeePanelHandler<T>{
         } catch (AuthorizationException e) {
             e.printStackTrace();
             Util.displayAlert("Insufficient Permissions!", Alert.AlertType.WARNING);
-        } catch (NumberFormatException e){
-            Util.displayAlert("A field that requires a number has a non numerical character!", Alert.AlertType.ERROR);
         } catch (Exception e){
             e.printStackTrace();
             new ExceptionDialog(e).showAndWait();
@@ -112,10 +109,9 @@ abstract class EmployeePanelHandler<T>{
             }
         }
          catch (AuthorizationException e) {
+            e.printStackTrace();
             Util.displayAlert("Insufficient Permissions!", Alert.AlertType.WARNING);
-        } catch (NumberFormatException e){
-            Util.displayAlert("A field that requires a number has a non numerical character!", Alert.AlertType.ERROR);
-        } catch (Exception e){
+        }  catch (Exception e){
             e.printStackTrace();
             new ExceptionDialog(e).showAndWait();
         }
@@ -123,21 +119,19 @@ abstract class EmployeePanelHandler<T>{
 
     private void add() throws SQLException {
         subject.checkPermission(panelName + ":add");
-        beforeEvent();
-        dao.add(profileBeingAdded);
-        logActivity(ActivityType.ADD, profileBeingAdded);
-        afterExecute();
+        dao.add(newObj());
+        logActivity(ActivityType.ADD, newObj());
+        allAfterEvents();
 
     }
 
     private void update() throws SQLException {
         subject.checkPermission(panelName + ":update");
-        beforeEvent();
         for (T t : tableView.getSelectionModel().getSelectedItems()) {
-            dao.updateAll(t, updateParams);
+            dao.updateAll(t, updateParams());
             logActivity(ActivityType.UPDATE, t);
         }
-        afterExecute();
+        allAfterEvents();
     }
 
     private void delete() throws SQLException {
@@ -146,10 +140,11 @@ abstract class EmployeePanelHandler<T>{
             dao.delete(t);
             logActivity(ActivityType.DELETE, t);
         }
-        afterExecute();
+        allAfterEvents();
     }
 
-    private void afterExecute(){
+
+    private void allAfterEvents(){
         afterEvent();
         clearFields();
     }
@@ -172,11 +167,4 @@ abstract class EmployeePanelHandler<T>{
         return eventHandler;
     }
 
-    public void setDataObject(T t) {
-        this.profileBeingAdded = t;
-    }
-
-    public void setUpdateParams(String[] params) {
-        this.updateParams = params;
-    }
 }

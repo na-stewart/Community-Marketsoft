@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -62,35 +61,48 @@ public class RetailerController implements InitGUI {
     public void initialize(URL location, ResourceBundle resources) {
         setCellFactory();
         setChoiceBox();
-        tryToPopulateTilePane();
-        itemTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> tryToPopulateTilePane());
+        populateAll();
+        itemTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> populateItemTilePane());
         itemTilePane.prefWidthProperty().bind(itemScrollPane.widthProperty());
-        camperTableView.setItems(getUnfilteredCamperData());
         filterTextField.textProperty().addListener(camperTableViewFilter);
 
     }
 
 
-    private void tryToPopulateTilePane() {
+    private void populateAll() {
+        camperTableView.setItems(getUnfilteredCamperData());
+        populateItemTilePane();
+
+    }
+
+
+    private void populateItemTilePane(){
         itemTilePane.getChildren().clear();
         try {
             for (Item item : itemDAO.getAll(new String[]{"itemType", itemTypeChoiceBox.getValue().name()})) {
-                ItemVBox itemVBox = new ItemVBox(item);
-                itemTilePane.getChildren().add(itemVBox);
-                addListener(itemVBox);
+                ItemVBox itemVbox = new ItemVBox(item);
+                itemTilePane.getChildren().add(itemVbox);
+                addListener(itemVbox);
             }
+            setVBoxImage();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    private void setVBoxImage(){
+        new Thread(() -> {
+            for (int i = 0; i < itemTilePane.getChildren().size(); i++) {
+                ItemVBox itemVBox = (ItemVBox) itemTilePane.getChildren().get(i);
+                itemVBox.setImage();
+            }
+        }).start();
+    }
 
     private void addListener(ItemVBox itemVBox){
         itemVBox.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-            if (camperTableView.getSelectionModel().getSelectedItem() != null) {
+            if (camperTableView.getSelectionModel().getSelectedItem() != null)
                 itemsSelectedListView.getItems().add(itemVBox.getItem());
-
-            }
         });
     }
 
@@ -114,45 +126,38 @@ public class RetailerController implements InitGUI {
 
     @FXML
     private void checkout() throws SQLException {
-        Camper selectedCamper = camperTableView.getSelectionModel().getSelectedItem();
-        List<Item> selectedItems = itemsSelectedListView.getItems();
-        List<String> itemsNotCheckedOut = new ArrayList<>();
-        boolean checkoutWarning = false;
         Util.displayAlert(getCheckoutText(), Alert.AlertType.CONFIRMATION);
-        for (Item selectedItem : selectedItems) {
-            Item item = itemDAO.get(selectedItem.getId());
-            if (item.getPrice().doubleValue() <= selectedCamper.getBalance().doubleValue() && item.getQuantity() > 0) {
-                item.setQuantity(item.getQuantity() - 1);
-                selectedCamper.setBalance(selectedCamper.getBalance().subtract(item.getPrice()));
-                itemDAO.update(item);
-            } else{
-                itemsNotCheckedOut.add(item.getName());
-                checkoutWarning = true;
-            }
-        }
-        if (checkoutWarning)
+        List<String> nameOfItemsNotCheckedOut = new ArrayList<>();
+        attemptToCheckoutSelectedItems(nameOfItemsNotCheckedOut);
+        itemsSelectedListView.getItems().clear();
+        populateAll();
+        if (!nameOfItemsNotCheckedOut.isEmpty())
             Util.displayAlert("The following items did not checkout due to the campers insufficient balance " +
-                            "or the item is out of stock!\n" + itemsNotCheckedOut, Alert.AlertType.WARNING);
+                    "or the item is out of stock!\n" + nameOfItemsNotCheckedOut, Alert.AlertType.WARNING);
+    }
+
+    private void attemptToCheckoutSelectedItems(List<String> itemsNotCheckout) throws SQLException {
+        Camper selectedCamper = camperTableView.getSelectionModel().getSelectedItem();
+        for (Item item : itemsSelectedListView.getItems()){
+            Item syncedItem = itemDAO.get(item.getId()); //In case of multiple checkout instances.
+            if (syncedItem.getPrice().compareTo(selectedCamper.getBalance()) <= 0 && syncedItem.getQuantity() > 0)
+                    calculateCheckout(syncedItem, selectedCamper);
+            else
+                itemsNotCheckout.add(item.getName());
+        }
         camperDAO.update(selectedCamper);
-        camperTableView.setItems(getUnfilteredCamperData());
-        logPurchasedItems(selectedCamper, selectedItems);
-        tryToPopulateTilePane();
-        selectedItems.clear();
+    }
+
+    private void calculateCheckout(Item item, Camper camper) throws SQLException {
+        item.setQuantity(item.getQuantity() - 1);
+        camper.setBalance(camper.getBalance().subtract(item.getPrice()));
+        new PurchasesActivityLogger().add(new PurchasesActivity(item, camper));
+        itemDAO.update(item);
     }
 
     @FXML
     private void delete(){
         itemsSelectedListView.getItems().remove(itemsSelectedListView.getSelectionModel().getSelectedIndex());
-    }
-
-    private void logPurchasedItems(Camper camper, List<Item> selectedItems){
-        for (Item item : selectedItems){
-            try {
-                new PurchasesActivityLogger().add(new PurchasesActivity(item, camper));
-            } catch (SQLException e) {
-                new ExceptionDialog(e).showAndWait();
-            }
-        }
     }
 
     private String getCheckoutText(){

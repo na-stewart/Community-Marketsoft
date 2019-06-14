@@ -37,7 +37,7 @@ public class GUI {
 
     public void display() {
         stage.setScene(scene);
-        stage.setTitle("Trader Bobs Emporium v0.2.1");
+        stage.setTitle("Trader Bobs Emporium v0.2.2");
         stage.show();
     }
 

@@ -53,9 +53,9 @@ public class PurchasesActivityLogger implements DAO<PurchasesActivity> {
     @Override
     public void updateAll(PurchasesActivity purchasesActivity, String[] params) throws SQLException {
         if (!params[0].isEmpty())
-            purchasesActivity.setName(params[0]);
+            purchasesActivity.setCamperName(params[0]);
         if (!params[1].isEmpty())
-            purchasesActivity.setCamperBalance(BigDecimal.valueOf(Long.parseLong(params[1])));
+            purchasesActivity.setCamperBalance(new BigDecimal(params[1]));
         if (!params[2].isEmpty())
             purchasesActivity.setItemId(Long.parseLong(params[2]));
         if (!params[3].isEmpty())
@@ -67,7 +67,7 @@ public class PurchasesActivityLogger implements DAO<PurchasesActivity> {
     public void update(PurchasesActivity updated) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE purchasesactivity SET " +
-                     "camperName = '" + updated.getName() + "'," +
+                     "camperName = '" + updated.getCamperName() + "'," +
                      "camperBalance = '" + updated.getCamperBalance() + "'," +
                      "itemId = '" + updated.getItemId() + "'," +
                      "itemName = '" + updated.getItemName() + "'" +
@@ -80,7 +80,7 @@ public class PurchasesActivityLogger implements DAO<PurchasesActivity> {
     public void add(PurchasesActivity purchasesActivity) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO purchasesactivity " +
-                     "VALUES('" + purchasesActivity.getId() + "','" + purchasesActivity.getName() + "','" +
+                     "VALUES('" + purchasesActivity.getId() + "','" + purchasesActivity.getCamperName() + "','" +
                      purchasesActivity.getCamperBalance() + "','" + purchasesActivity.getItemId() + "','" +
                      purchasesActivity.getItemName() + "')")) {
             preparedStatement.execute();
@@ -90,7 +90,8 @@ public class PurchasesActivityLogger implements DAO<PurchasesActivity> {
     @Override
     public void delete(PurchasesActivity purchasesActivity) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM purchasesactivity WHERE id =" +purchasesActivity.getItemId())) {
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM purchasesactivity WHERE id =" +
+                     " '" + purchasesActivity.getId() + "'")) {
             preparedStatement.execute();
         }
     }
