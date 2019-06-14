@@ -24,18 +24,21 @@ import main.java.com.traderbobsemporium.dao.Loggers.AnnouncementLogger;
 import main.java.com.traderbobsemporium.dao.Loggers.PurchasesActivityLogger;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
+import main.java.com.traderbobsemporium.gui.InitGUI;
 import main.java.com.traderbobsemporium.model.*;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.model.Logging.Announcement;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
+import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.subject.Subject;
 import org.controlsfx.control.table.TableFilter;
 import org.controlsfx.dialog.ExceptionDialog;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
@@ -52,7 +55,7 @@ import java.util.stream.Collectors;
 //https://camo.githubusercontent.com/8708a8dcb49d365b1786a5093d8f3fd37aeb18a2/68747470733a2f2f7770696d672e77616c6c7374636e2e636f6d2f61353839346331622d663661662d343536652d383264662d3131353164613038333962662e706e67 <- design link\
 
 
-public class EmployeeController implements Initializable {
+public class EmployeeController implements InitGUI {
     private Subject subject = SecurityUtils.getSubject();
     private final CamperDAO camperDAO = new CamperDAO();
     private final ItemDAO itemDAO = new ItemDAO();
@@ -183,6 +186,8 @@ public class EmployeeController implements Initializable {
     @FXML
     private AnchorPane helpAnchorPane;
 
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         accountActivityLogger.start();
@@ -260,6 +265,7 @@ public class EmployeeController implements Initializable {
 
     @FXML
     private void logout() {
+        accountActivityLogger.stop();
         AuthUtil.LOGOUT();
     }
 
@@ -770,5 +776,11 @@ public class EmployeeController implements Initializable {
         purchasesLoggerCamperBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("camperBalance"));
         purchasesLoggerItemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         purchasesLoggerItemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+    }
+
+    @Override
+    public void exit() {
+        DatabaseUtil.DATA_SOURCE.close();
+        accountActivityLogger.stop();
     }
 }

@@ -36,11 +36,9 @@ abstract class EmployeePanelHandler<T>{
     private String[] updateParams;
     private T profileBeingAdded;
     private String panelName;
-    private boolean doLog;
     private AccountActivityLogger accountActivityLogger;
 
-    public EmployeePanelHandler(TableView<T> tableView, DAO<T> dao, String panelName, AccountActivityLogger accountActivityLogger){
-        this.doLog = true;
+    EmployeePanelHandler(TableView<T> tableView, DAO<T> dao, String panelName, AccountActivityLogger accountActivityLogger){
         this.accountActivityLogger = accountActivityLogger;
         this.panelName = panelName.toLowerCase();
         this.tableView = tableView;
@@ -48,8 +46,7 @@ abstract class EmployeePanelHandler<T>{
     }
 
 
-    public EmployeePanelHandler(TableView<T> tableView, DAO<T> dao, String panelName){
-        this.doLog = false;
+    EmployeePanelHandler(TableView<T> tableView, DAO<T> dao, String panelName){
         this.panelName = panelName.toLowerCase();
         this.tableView = tableView;
         this.dao = dao;
@@ -157,8 +154,8 @@ abstract class EmployeePanelHandler<T>{
         clearFields();
     }
 
-    private void logActivity(ActivityType accountType, T t) throws SQLException {
-        if (doLog)
+    private void logActivity(ActivityType accountType, T t) {
+        if (accountActivityLogger != null)
             accountActivityLogger.add(new AccountActivity(accountType, (Profile) t));
     }
 

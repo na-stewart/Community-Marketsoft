@@ -27,6 +27,7 @@ public class Main extends Application {
             AuthUtil.INIT_AUTH();
             displayLogin();
         }catch (Exception e){
+            e.printStackTrace();
             new ExceptionDialog(e).showAndWait();
         }
 

@@ -21,6 +21,7 @@ public class AccountActivity {
     private String affectedName;
     private String dateTime;
 
+
     public AccountActivity(ActivityType activityType, Profile profile) {
         this.id = Util.NEW_ID();
         this.name = String.valueOf(SecurityUtils.getSubject().getPrincipal());

@@ -16,11 +16,13 @@ import main.java.com.traderbobsemporium.dao.ItemDAO;
 import main.java.com.traderbobsemporium.dao.Loggers.PurchasesActivityLogger;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
+import main.java.com.traderbobsemporium.gui.InitGUI;
 import main.java.com.traderbobsemporium.model.Camper;
 import main.java.com.traderbobsemporium.model.Item;
 import main.java.com.traderbobsemporium.model.ItemType;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
+import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.Util;
 import org.controlsfx.dialog.ExceptionDialog;
 
@@ -38,7 +40,7 @@ import java.util.ResourceBundle;
  * Copyright (c)
  * All rights reserved.
  */
-public class RetailerController implements Initializable {
+public class RetailerController implements InitGUI {
     private ItemDAO itemDAO = new ItemDAO();
     private CamperDAO camperDAO = new CamperDAO();
     @FXML
@@ -209,5 +211,10 @@ public class RetailerController implements Initializable {
             new ExceptionDialog(e).showAndWait();
         }
         return null;
+    }
+
+    @Override
+    public void exit() {
+        DatabaseUtil.DATA_SOURCE.close();
     }
 }

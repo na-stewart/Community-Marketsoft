@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
+import main.java.com.traderbobsemporium.gui.InitGUI;
 import main.java.com.traderbobsemporium.model.AccountRole;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.Util;
@@ -19,6 +20,7 @@ import org.controlsfx.dialog.ExceptionDialog;
 
 
 import javax.security.auth.login.AccountLockedException;
+import javax.sql.DataSource;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -28,7 +30,7 @@ import java.util.ResourceBundle;
  * Copyright (c)
  * All rights reserved.
  */
-public class LoginController implements Initializable {
+public class LoginController implements InitGUI {
     private Subject subject = SecurityUtils.getSubject();
     @FXML
     private TextField usernameField;
@@ -103,4 +105,8 @@ public class LoginController implements Initializable {
     }
 
 
+    @Override
+    public void exit() {
+        DatabaseUtil.DATA_SOURCE.close();
+    }
 }

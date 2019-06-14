@@ -32,13 +32,12 @@ public class GUIManager {
         for (GUI gui : guiList){
             if (gui.getName().equals(name)) {
                 gui.getStage().setWidth(1300);
-                gui.getStage().setOnCloseRequest(e -> DatabaseUtil.DATA_SOURCE.close());
                 gui.display();
-            } else {
+            } else
                 gui.getStage().close();
-            }
         }
     }
+
 
     public GUI getByName(String name){
         for (GUI gui : guiList){

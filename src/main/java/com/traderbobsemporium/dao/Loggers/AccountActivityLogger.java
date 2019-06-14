@@ -23,6 +23,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class AccountActivityLogger implements DAO<AccountActivity> {
     private final String receiveQuery = "SELECT * FROM accountactivity ";
+    private List<AccountActivity> queue = new ArrayList<>();
+    private AtomicBoolean running = new AtomicBoolean();
 
     @Override
     public AccountActivity get(long id) throws SQLException {
@@ -85,18 +87,42 @@ public class AccountActivityLogger implements DAO<AccountActivity> {
         }
     }
 
+    public void start(){
+        running.set(true);
+        new Thread(this::update).start();
+    }
 
+    private void update(){
+        while(running.get()) {
+            for (int i = 0; i < queue.size(); i++)
+               logToDatabase(queue.get(i));
+            queue.clear();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    private void logToDatabase(AccountActivity accountActivity){
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO accountactivity VALUES(' " +
+                     accountActivity.getId() + "','" + accountActivity.getName() + "','" + accountActivity.getActivityType() + "','" +
+                     accountActivity.getAffectedId() + "','" + accountActivity.getAffectedName() + "','" + Util.dateTime() + "')")) {
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void stop(){
+        running.set(false);
+    }
 
     @Override
-    public void add(AccountActivity accountActivity) throws SQLException {
-        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO accountactivity VALUES(' "+
-                     accountActivity.getId() +  "','" + accountActivity.getName() + "','" + accountActivity.getActivityType() + "','" + accountActivity.getAffectedId() + "','" +
-                     accountActivity.getAffectedName() + "','" + Util.dateTime() + "')")) {
-            preparedStatement.execute();
-        }
+    public void add(AccountActivity accountActivity) {
+        queue.add(accountActivity);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package main.java.com.traderbobsemporium.gui;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,17 +23,19 @@ public class GUI {
     public GUI(String path, String name) {
         this.path = path;
         this.name = name;
-        scene = new Scene(root());
-    }
-
-    private Parent root(){
+        Parent parent = null;
+        FXMLLoader fxmlLoader = null;
         try {
-            return FXMLLoader.load(getClass().getClassLoader().getResource(path));
+            fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(path));
+            parent = fxmlLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        InitGUI gui = fxmlLoader.getController();
+        stage.setOnCloseRequest(e -> gui.exit());
+        scene = new Scene(parent);
     }
+
 
     public void display() {
         stage.setScene(scene);
