@@ -17,11 +17,9 @@ import java.io.IOException;
 public class GUI {
     private final Stage stage = new Stage();
     private Scene scene;
-    private String path;
     private String name;
 
     public GUI(String path, String name) {
-        this.path = path;
         this.name = name;
         Parent parent = null;
         FXMLLoader fxmlLoader = null;
@@ -39,7 +37,7 @@ public class GUI {
 
     public void display() {
         stage.setScene(scene);
-        stage.setTitle("Trader Bobs Emporium");
+        stage.setTitle("Trader Bobs Emporium v0.2.1");
         stage.show();
     }
 

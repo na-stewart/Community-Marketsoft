@@ -78,7 +78,7 @@ public class EmployeeController implements InitGUI {
     private TableView<AccountActivity> accountActivityTableView;
     @FXML
     private TableColumn<AccountActivity, String> usernameActivityColumn, activityTypeColumn,
-            affectedName, affectedID, dateTimeColumnAccount, successfulColumn;
+            affectedName, affectedID, dateTimeColumnAccount;
     @FXML
     private TableView<PurchasesActivity> purchasesActivityTableView;
     @FXML
@@ -147,7 +147,7 @@ public class EmployeeController implements InitGUI {
     private TableView<AccountActivity> accountActivityLoggerTableView;
     @FXML
     private TableColumn<AccountActivity, String> activityIdColumn, activityUsernameColumn, activityActivityTypeColumn,
-            activityAffectedIdColumn, activityAffectedNameColumn, activityDateTimeColumn, activitySuccessfulColumn;
+            activityAffectedIdColumn, activityAffectedNameColumn, activityDateTimeColumn;
     @FXML
     private TextField activityUsernameField, affectedIdField, affectedNameField, activityDateTimeField,
             activitySuccessfulField;
@@ -739,7 +739,6 @@ public class EmployeeController implements InitGUI {
         affectedName.setCellValueFactory(new PropertyValueFactory<>("affectedName"));
         affectedID.setCellValueFactory(new PropertyValueFactory<>("affectedId"));
         dateTimeColumnAccount.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
-        successfulColumn.setCellValueFactory(new PropertyValueFactory<>("successful"));
         camperNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         camperIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balanceString"));
@@ -759,7 +758,6 @@ public class EmployeeController implements InitGUI {
         activityAffectedNameColumn.setCellValueFactory(new PropertyValueFactory<>("affectedName"));
         activityActivityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("activityType"));
         activityDateTimeColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
-        activitySuccessfulColumn.setCellValueFactory(new PropertyValueFactory<>("successful"));
         itemsIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         itemsNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         itemsPriceColumn.setCellValueFactory(new PropertyValueFactory<>("priceString"));
@@ -780,7 +778,7 @@ public class EmployeeController implements InitGUI {
 
     @Override
     public void exit() {
-        DatabaseUtil.DATA_SOURCE.close();
         accountActivityLogger.stop();
+        DatabaseUtil.DATA_SOURCE.close();
     }
 }

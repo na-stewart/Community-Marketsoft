@@ -168,7 +168,6 @@
                               <TableColumn fx:id="affectedID" prefWidth="85.0" text="ID" />
                               <TableColumn fx:id="affectedName" prefWidth="85.0" text="Name" />
                               <TableColumn fx:id="dateTimeColumnAccount" prefWidth="74.0" text="Date/Time" />
-                              <TableColumn fx:id="successfulColumn" prefWidth="74.0" text="Successful" />
                            </columns>
                         </TableView>
                      </children>
@@ -521,7 +520,6 @@
                               <TableColumn fx:id="activityAffectedIdColumn" prefWidth="75.0" text="Affected ID" />
                               <TableColumn fx:id="activityAffectedNameColumn" prefWidth="75.0" text="Affected Name" />
                               <TableColumn fx:id="activityDateTimeColumn" prefWidth="75.0" text="Date/Time" />
-                              <TableColumn fx:id="activitySuccessfulColumn" prefWidth="75.0" text="Successful" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
