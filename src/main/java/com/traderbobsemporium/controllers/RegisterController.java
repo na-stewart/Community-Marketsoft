@@ -2,21 +2,18 @@ package main.java.com.traderbobsemporium.controllers;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import main.java.com.traderbobsemporium.dao.AccountDAO;
-import main.java.com.traderbobsemporium.dao.Loggers.AccountActivityLogger;
-import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
-import main.java.com.traderbobsemporium.model.Logging.ActivityType;
+import main.java.com.traderbobsemporium.gui.InitGUI;
 import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.AccountRole;
+import main.java.com.traderbobsemporium.util.LoggingUtil;
 import main.java.com.traderbobsemporium.util.Util;
 import nl.captcha.Captcha;
 import nl.captcha.backgrounds.SquigglesBackgroundProducer;
-import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.controlsfx.dialog.ExceptionDialog;
 import java.net.URL;
 import java.sql.SQLException;
@@ -28,7 +25,7 @@ import java.util.ResourceBundle;
  * Copyright (c)
  * All rights reserved.
  */
-public class RegisterController implements Initializable {
+public class RegisterController implements InitGUI {
     private Captcha captcha;
     @FXML
     private ImageView captchaView;
@@ -68,17 +65,24 @@ public class RegisterController implements Initializable {
 
     @SuppressWarnings("unchecked")
     private void register() {
-        Account account = new Account(usernameField.getText(),
-                new DefaultPasswordService().encryptPassword(passwordField.getText()),
-                AccountRole.UNCONFIRMED);
+        Account account = new Account(usernameField.getText(), passwordField.getText(), AccountRole.UNCONFIRMED);
         try {
+            String registerDialog =  "Your account has been registered! Please wait for your account to be " +
+                    "assigned a designated role by an administrator.";
             new AccountDAO().add(account);
-            new AccountActivityLogger().add(new AccountActivity(ActivityType.REGISTER, account));
+            System.out.println(registerDialog);
+            Util.displayAlert(registerDialog, Alert.AlertType.INFORMATION);
+
         } catch (SQLException e){
             e.printStackTrace();
-            new ExceptionDialog(e).showAndWait();
+            Util.displayAlert("Username or password invalid!", Alert.AlertType.WARNING);
+            LoggingUtil.logExceptionToFile(e);
         }
-        Util.displayAlert("Your account has been registered! Please wait for your account to be " +
-                "assigned a designated role by an administrator.", Alert.AlertType.INFORMATION);
+
+    }
+
+    @Override
+    public void exit() {
+        //ignored
     }
 }

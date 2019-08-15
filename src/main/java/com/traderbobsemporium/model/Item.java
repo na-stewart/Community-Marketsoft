@@ -15,14 +15,14 @@ import java.util.Locale;
  * Copyright (c)
  * All rights reserved.
  */
-public class Item extends Profile {
+public class Item extends Model {
     private String imageURL;
     private BigDecimal price;
     private int quantity;
     private ItemType itemType;
 
-    public Item(String name,  int quantity, BigDecimal price, String imageURL, ItemType itemType) {
-        super(Util.NEW_ID(), name);
+    public Item(String name, int quantity, BigDecimal price, String imageURL, ItemType itemType) {
+        super(name);
         this.imageURL = imageURL;
         this.price = price;
         this.quantity = quantity;
@@ -30,7 +30,7 @@ public class Item extends Profile {
     }
 
     public Item (ResultSet resultSet) throws SQLException {
-        super(resultSet.getLong("id"), resultSet.getString("name"));
+        super(resultSet.getInt("id"), resultSet.getString("name"));
         this.imageURL = resultSet.getString("imageURL");
         this.price = resultSet.getBigDecimal("price");
         this.quantity = resultSet.getInt("quantity");
@@ -79,7 +79,8 @@ public class Item extends Profile {
     public String toString() {
         return "Item{" +
                 "name=" + getName() +
-                "imageURL=" + imageURL +
+                " imageURL=" + imageURL +
+                " quantity=" + quantity +
                 ", price=" + price +
                 ", itemType=" + itemType +
                 '}';

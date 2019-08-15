@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @Author Aidan Stewart
@@ -18,18 +19,18 @@ import java.util.Random;
  * All rights reserved.
  */
 public final class Util {
-    private static final Random random = new Random();
 
     private Util() {
 
     }
 
-    public static long NEW_ID(){
-        return Math.abs(random.nextLong());
+    public static int NEW_ID(){
+        return ThreadLocalRandom.current().nextInt(32767);
     }
 
-    public static String dateTime(){
-        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+    public static String date(boolean time){
+        String format = time ? "MM-dd-yyyy HH:mm:ss" : "MM-dd-yyyy";
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern(format);
         return  LocalDateTime.now().format(myFormatObj);
     }
 

@@ -7,5 +7,5 @@ package main.java.com.traderbobsemporium.model;
  * All rights reserved.
  */
 public enum ItemType {
-    CHIPS, DRINK, CANDY, ICECREAM, MERCH, TOILETRIES;
+    CHIPS, DRINK, CANDY, ICECREAM, MERCH, TOILETRIES
 }

@@ -3,6 +3,7 @@ package main.java.com.traderbobsemporium.dao;
 import main.java.com.traderbobsemporium.model.Account;
 import main.java.com.traderbobsemporium.model.AccountRole;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import main.java.com.traderbobsemporium.util.LoggingUtil;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 
 import java.sql.*;
@@ -15,42 +16,12 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class AccountDAO implements DAO<Account> {
-    private final String receiveQuery = "SELECT * FROM account ";
+public class AccountDAO extends DAO<Account> {
 
-    @Override
-    public Account get(long id) throws SQLException {
-        Account account = null;
-        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery(receiveQuery + "WHERE id = "+ id)) {
-                if (resultSet.next())
-                    account = new Account(resultSet);
-                return account;
-            }
-        }
+
+    public AccountDAO() {
+        super("account");
     }
-
-    @Override
-    public List<Account> getAll() throws SQLException {
-        return getAll(null);
-    }
-
-
-    @Override
-    public List<Account> getAll(String[] clause) throws SQLException {
-        String query = clause != null ? receiveQuery + "WHERE " + clause[0] + " = '" + clause[1] + "'" : receiveQuery;
-        List<Account> account = new ArrayList<>();
-        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery(query)) {
-                while (resultSet.next())
-                    account.add(new Account(resultSet));
-                return account;
-            }
-        }
-    }
-
 
     public void updateAll(Account account, String[] params) throws SQLException {
         if (!params[0].isEmpty())
@@ -66,10 +37,11 @@ public class AccountDAO implements DAO<Account> {
     public void update(Account updated) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE account SET " +
-                     "username = '" + updated.getName() + "'," +
-                     "password = '" + updated.getPassword() + "'," +
-                     "accountRole = '" + updated.getAccountRole().name() + "'" +
-                     " WHERE id =" + updated.getId() + ";")) {
+                     "username = ?, password = ?, accountRole = ? WHERE id = ?")) {
+            preparedStatement.setString(1, updated.getName());
+            preparedStatement.setString(2, updated.getPassword());
+            preparedStatement.setString(3, updated.getAccountRole().name());
+            preparedStatement.setInt(4, updated.getId());
             preparedStatement.execute();
         }
     }
@@ -77,20 +49,14 @@ public class AccountDAO implements DAO<Account> {
     @Override
     public void add(Account account) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO account " +
-                     "VALUES('" + account.getId() + "','" + account.getName() + "','" +
-                     account.getPassword() + "','" + account.getAccountRole().name() + "')")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO account (id, username, password," +
+                     "accountRole) VALUES (?, ?, ?, ?, ?)")) {
+            preparedStatement.setInt(1, account.getId());
+            preparedStatement.setString(2, account.getName());
+            preparedStatement.setString(3, account.getPassword());
+            preparedStatement.setString(4, account.getAccountRole().name());
+            preparedStatement.setInt(5, account.getId());
             preparedStatement.execute();
         }
     }
-
-    @Override
-    public void delete(Account account) throws SQLException {
-        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM account WHERE id = '" + account.getId()  + "'")) {
-            preparedStatement.execute();
-        }
-    }
-
-
 }

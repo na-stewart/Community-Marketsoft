@@ -1,21 +1,28 @@
 package main.java.com.traderbobsemporium.model;
 
+import main.java.com.traderbobsemporium.util.Util;
+
 /**
  * @Author Aidan Stewart
  * @Year 2019
  * Copyright (c)
  * All rights reserved.
  */
-public class Profile {
-    private long id;
+public class Model {
+    private int id;
     private String name;
 
-   public Profile(long id, String name) {
+    public Model (String name){
+        this.id = Util.NEW_ID();
+        this.name = name;
+    }
+
+   public Model(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -25,13 +32,5 @@ public class Profile {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Profile{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

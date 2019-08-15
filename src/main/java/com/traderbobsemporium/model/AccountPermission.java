@@ -12,16 +12,16 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class AccountPermission extends Profile {
+public class AccountPermission extends Model {
     private String permission;
 
     public AccountPermission(String username, String permission) {
-        super (Util.NEW_ID(), username);
+        super (username);
         this.permission = permission;
     }
 
     public AccountPermission(ResultSet resultSet) throws SQLException {
-        super(resultSet.getLong("id"), resultSet.getString("username"));
+        super(resultSet.getInt("id"), resultSet.getString("username"));
         permission = resultSet.getString("permission");
     }
 
@@ -32,5 +32,13 @@ public class AccountPermission extends Profile {
     public void setPermission(String permission) {
         if (!permission.isEmpty())
             this.permission = permission;
+    }
+
+    @Override
+    public String toString() {
+        return "AccountPermission{" +
+                "username='" + getName() + '\'' +
+                " permission='" + permission + '\'' +
+                '}';
     }
 }

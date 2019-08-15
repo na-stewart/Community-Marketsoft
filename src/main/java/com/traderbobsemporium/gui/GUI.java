@@ -1,12 +1,11 @@
 package main.java.com.traderbobsemporium.gui;
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @Author Aidan Stewart
@@ -31,13 +30,13 @@ public class GUI {
         }
         InitGUI gui = fxmlLoader.getController();
         stage.setOnCloseRequest(e -> gui.exit());
-        scene = new Scene(parent);
+        scene = new Scene(Objects.requireNonNull(parent));
     }
 
 
     public void display() {
         stage.setScene(scene);
-        stage.setTitle("Trader Bobs Emporium v0.2.2");
+        stage.setTitle("(undetermined) 0.1");
         stage.show();
     }
 

@@ -16,17 +16,17 @@ import java.util.Locale;
  * Copyright (c)
  * All rights reserved.
  */
-public class Camper extends Profile {
+public class Camper extends Model {
     private BigDecimal balance;
 
     public Camper(String name, BigDecimal balance) {
-        super(Util.NEW_ID(), name);
+        super(name);
         this.balance = balance;
 
     }
 
     public Camper(ResultSet resultset) throws SQLException {
-        super(resultset.getLong("id"), resultset.getString("name"));
+        super(resultset.getInt("id"), resultset.getString("name"));
         this.balance = resultset.getBigDecimal("balance").setScale(2, RoundingMode.HALF_UP);
     }
 
@@ -48,7 +48,7 @@ public class Camper extends Profile {
     public String toString() {
         return "Camper{" +
                 "name=" + getName() +
-                "balance=" + balance +
+                " balance=" + balance +
                 '}';
     }
 }

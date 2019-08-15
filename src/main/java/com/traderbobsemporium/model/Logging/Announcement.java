@@ -1,5 +1,6 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
+import main.java.com.traderbobsemporium.model.Model;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
 
@@ -12,30 +13,24 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-
-// TODO: 6/13/2019 Turn into logger or make name title. 
-public class Announcement implements Comparable<Announcement> {
-    private long id;
-    private String name;
+public class Announcement extends Model implements Comparable<Announcement> {
     private String title;
     private String dialog;
     private String dateTime;
 
     public Announcement(String title, String dialog) {
-        this.id = Util.NEW_ID();
-        this.name = String.valueOf(SecurityUtils.getSubject().getPrincipal());
+        super(SecurityUtils.getSubject().getPrincipal().toString());
         this.title = title;
         this.dialog = dialog;
-        this.dateTime = Util.dateTime();
+        this.dateTime = Util.date(false);
     }
 
 
     public Announcement(ResultSet resultSet) throws SQLException {
-        this.id = resultSet.getLong("id");
-        this.name = resultSet.getString("username");
-        title  = resultSet.getString("title");;
+        super(resultSet.getInt("id"), resultSet.getString("username"));
+        title  = resultSet.getString("title");
         dialog = resultSet.getString("dialog");
-        dateTime = resultSet.getString("dateTime");
+        dateTime = resultSet.getString("date");
     }
 
     public String getTitle() {
@@ -62,25 +57,13 @@ public class Announcement implements Comparable<Announcement> {
         this.dateTime = dateTime;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public String toString() {
         return "Announcement{" +
-                "id=" + id + '\'' +
-                "title='" + title + '\'' +
+                "name='" + getName() + '\'' +
+                ", title='" + title + '\'' +
                 ", dialog='" + dialog + '\'' +
-                ", dateTime='" + dateTime + '\'' +
+                ", date='" + dateTime + '\'' +
                 '}';
     }
 

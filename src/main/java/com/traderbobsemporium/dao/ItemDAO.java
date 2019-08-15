@@ -3,6 +3,7 @@ package main.java.com.traderbobsemporium.dao;
 import main.java.com.traderbobsemporium.model.Item;
 import main.java.com.traderbobsemporium.model.ItemType;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import main.java.com.traderbobsemporium.util.LoggingUtil;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -15,40 +16,11 @@ import java.util.List;
  * Copyright (c)
  * All rights reserved.
  */
-public class ItemDAO implements DAO<Item> {
+public class ItemDAO extends DAO<Item> {
     private final String receiveQuery = "SELECT * FROM item ";
 
-    @Override
-    public Item get(long id) throws SQLException {
-        Item item = null;
-        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery(receiveQuery + "WHERE id = " + id)) {
-                if (resultSet.next())
-                    item = new Item(resultSet);
-                return item;
-            }
-        }
-    }
-
-    @Override
-    public List<Item> getAll() throws SQLException {
-        return getAll(null);
-    }
-
-
-    @Override
-    public List<Item> getAll(String[] clause) throws SQLException {
-        String query = clause != null ? receiveQuery + "WHERE " + clause[0] + " = '" + clause[1] + "'" : receiveQuery;
-        List<Item> items = new ArrayList<>();
-        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery(query)) {
-                while (resultSet.next())
-                    items.add(new Item(resultSet));
-                return items;
-            }
-        }
+    public ItemDAO() {
+        super("item");
     }
 
     @Override
@@ -69,10 +41,14 @@ public class ItemDAO implements DAO<Item> {
     @Override
     public void update(Item updated) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE item SET name = '" + updated.getName() + "'," +
-                     "imageURL = '" + updated.getImageURL() + "'," + "price = '" + updated.getPrice() + "'," +
-                     "quantity = '" + updated.getQuantity() + "'," + "itemType = '" + updated.getItemType().name() +
-                     "' WHERE id =" + updated.getId() + ";")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE item SET " +
+                     "name = ?, imageURL = ?, price = ?, quantity = ?, itemType = ? WHERE id = ?")) {
+            preparedStatement.setString(1, updated.getName());
+            preparedStatement.setString(2, updated.getImageURL());
+            preparedStatement.setBigDecimal(3, updated.getPrice());
+            preparedStatement.setInt(4, updated.getQuantity());
+            preparedStatement.setString(5, updated.getItemType().name());
+            preparedStatement.setInt(6, updated.getId());
             preparedStatement.execute();
         }
     }
@@ -80,19 +56,15 @@ public class ItemDAO implements DAO<Item> {
     @Override
     public void add(Item item) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO item VALUES('" +
-                     item.getId() + "','" + item.getName() + "','" + item.getPrice() + "','" + item.getQuantity() +
-                     "','" + item.getImageURL() + "','" + item.getItemType().name() + "')")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO item (id, name," +
+                     "price, quantity, imageURL, itemType) VALUES (?, ?, ?, ?, ?, ?)")) {
+            preparedStatement.setInt(1, item.getId());
+            preparedStatement.setString(2, item.getName());
+            preparedStatement.setBigDecimal(3, item.getPrice());
+            preparedStatement.setInt(4, item.getQuantity());
+            preparedStatement.setString(5, item.getImageURL());
+            preparedStatement.setString(6, item.getItemType().name());
             preparedStatement.execute();
         }
     }
-
-    @Override
-    public void delete(Item item) throws SQLException {
-        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM item WHERE id = '" + item.getId() + "'")) {
-            preparedStatement.execute();
-        }
-    }
-
 }

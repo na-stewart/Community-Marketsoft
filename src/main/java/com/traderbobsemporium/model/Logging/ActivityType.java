@@ -9,5 +9,5 @@ import java.util.Arrays;
  * All rights reserved.
  */
 public enum ActivityType {
-    ADD, UPDATE, DELETE, REGISTER, TRANSACTION;
+    ADD, UPDATE, DELETE
 }

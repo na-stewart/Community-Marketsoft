@@ -31,6 +31,7 @@ public final class AuthUtil {
         guiManager.openByName("LoginGUI");
         guiManager.getGuiList().removeIf(value -> !value.getName().equals("LoginGUI"));
         SecurityUtils.getSubject().logout();
+        System.out.println("Successfully Logged Out!\n================================");
     }
 
     public static void INIT_AUTH(){

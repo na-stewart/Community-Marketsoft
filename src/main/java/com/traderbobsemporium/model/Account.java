@@ -11,19 +11,19 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class Account extends Profile {
+public class Account extends Model {
 
     private String password;
     private AccountRole accountRoles;
 
     public Account(String name, String password, AccountRole accountRoles) {
-        super(Util.NEW_ID(), name);
+        super(name);
         this.password = password;
         this.accountRoles = accountRoles;
     }
 
     public Account(ResultSet resultSet) throws SQLException {
-        super(resultSet.getLong("id"), resultSet.getString("username"));
+        super(resultSet.getInt("id"), resultSet.getString("username"));
         this.password = resultSet.getString("password");
         this.accountRoles = AccountRole.valueOf(resultSet.getString("accountRole"));
     }
@@ -49,8 +49,7 @@ public class Account extends Profile {
     @Override
     public String toString() {
         return "Account{" +
-                "name=" + getName() +
-                "password='" + password + '\'' +
+                "username='" + getName() + '\'' +
                 ", accountRoles=" + accountRoles +
                 '}';
     }

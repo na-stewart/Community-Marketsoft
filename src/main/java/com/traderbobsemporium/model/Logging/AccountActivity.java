@@ -1,7 +1,6 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
-import main.java.com.traderbobsemporium.model.ItemType;
-import main.java.com.traderbobsemporium.model.Profile;
+import main.java.com.traderbobsemporium.model.Model;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
 
@@ -14,65 +13,42 @@ import java.sql.SQLException;
  * Copyright (c)
  * All rights reserved.
  */
-public class AccountActivity {
-    private long id;
-    private String name;
+public class AccountActivity extends Model {
     private ActivityType activityType;
-    private long affectedId;
+    private int affectedId;
     private String affectedName;
-    private String dateTime;
+    private String date;
 
 
-    public AccountActivity(ActivityType activityType, Profile profile) {
-        this.id = Util.NEW_ID();
-        this.name = String.valueOf(SecurityUtils.getSubject().getPrincipal());
+    public AccountActivity(ActivityType activityType, Model profile) {
+        super(String.valueOf(SecurityUtils.getSubject().getPrincipal()));
         this.activityType = activityType;
         this.affectedName = profile.getName();
         this.affectedId = profile.getId();
-        this.dateTime = Util.dateTime();
+        this.date = Util.date(true);
     }
 
-    public AccountActivity(String name, ActivityType activityType, long affectedItemId, String affectedItemName, String dateTime) {
-        this.id = Util.NEW_ID();
-        this.name = name;
+    public AccountActivity(String name, ActivityType activityType, int affectedItemId, String affectedItemName, String dateTime) {
+        super(name);
         this.activityType = activityType;
         this.affectedId = affectedItemId;
         this.affectedName = affectedItemName;
-        this.dateTime = dateTime;
+        this.date = dateTime;
     }
 
     public AccountActivity(ResultSet resultSet) throws SQLException {
-        this.id = resultSet.getLong("id");
-        this.name = resultSet.getString("username");
+        super(resultSet.getInt("id"), resultSet.getString("username"));
         this.activityType = ActivityType.valueOf(resultSet.getString("activityType"));
-        this.affectedId = resultSet.getLong("affectedID");
+        this.affectedId = resultSet.getInt("affectedID");
         this.affectedName = resultSet.getString("affectedName");
-        this.dateTime = resultSet.getString("dateTime");
+        this.date = resultSet.getString("date");
     }
 
-
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public long getAffectedId() {
+    public int getAffectedId() {
         return affectedId;
     }
 
-    public void setAffectedId(long affectedId) {
+    public void setAffectedId(int affectedId) {
         this.affectedId = affectedId;
     }
 
@@ -92,11 +68,22 @@ public class AccountActivity {
         this.affectedName = affectedName;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public String getDate() {
+        return date;
     }
 
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "AccountActivity{" +
+                "name='" + getName() + '\'' +
+                ", activityType=" + activityType +
+                ", affectedId=" + affectedId +
+                ", affectedName='" + affectedName + '\'' +
+                ", date='" + date + '\'' +
+                '}';
     }
 }
