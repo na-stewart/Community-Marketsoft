@@ -2,6 +2,7 @@ package main.java.com.traderbobsemporium.dao.Loggers;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.model.Logging.ActivityType;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import main.java.com.traderbobsemporium.util.LoggingUtil;
 import main.java.com.traderbobsemporium.util.Util;
 
 import java.sql.*;
@@ -68,6 +69,7 @@ public class AccountActivityLogger extends ThreadedDAO<AccountActivity> {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                LoggingUtil.logExceptionToFile(e);
             }
         }
     }
@@ -85,6 +87,7 @@ public class AccountActivityLogger extends ThreadedDAO<AccountActivity> {
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
     }
 

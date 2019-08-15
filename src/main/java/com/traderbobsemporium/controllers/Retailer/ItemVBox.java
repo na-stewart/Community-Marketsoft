@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import main.java.com.traderbobsemporium.model.Item;
+import main.java.com.traderbobsemporium.util.LoggingUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -65,6 +66,7 @@ class ItemVBox extends VBox {
                 image = ImageIO.read(getClass().getResourceAsStream(path));
             } catch (IOException e) {
                 e.printStackTrace();
+                LoggingUtil.logExceptionToFile(e);
             }
         }
         return image;

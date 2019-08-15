@@ -3,6 +3,7 @@ package main.java.com.traderbobsemporium.dao;
 
 
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import main.java.com.traderbobsemporium.util.LoggingUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public abstract class DAO<T> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
         return null;
     }
@@ -66,6 +68,7 @@ public abstract class DAO<T> {
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
     }
 
@@ -73,7 +76,5 @@ public abstract class DAO<T> {
     public abstract void update(T updated) throws SQLException;
     public abstract  void add(T t) throws SQLException;
 
-    public String getTableBeingSelected() {
-        return tableBeingSelected;
-    }
+
 }

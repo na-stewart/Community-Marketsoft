@@ -8,6 +8,7 @@ import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import main.java.com.traderbobsemporium.util.LoggingUtil;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -31,6 +32,7 @@ public class Main extends Application {
         }catch (Exception e){
             e.printStackTrace();
             Util.displayAlert("Connection to database failed!", Alert.AlertType.ERROR);
+            LoggingUtil.logExceptionToFile(e);
         }
 
     }

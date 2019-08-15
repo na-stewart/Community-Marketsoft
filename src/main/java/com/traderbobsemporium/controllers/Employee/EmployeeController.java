@@ -30,12 +30,16 @@ import main.java.com.traderbobsemporium.model.Logging.Announcement;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import main.java.com.traderbobsemporium.util.LoggingUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.controlsfx.control.table.TableFilter;
 import org.controlsfx.dialog.ExceptionDialog;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,8 +53,7 @@ import java.util.stream.Collectors;
 
 //https://camo.githubusercontent.com/8708a8dcb49d365b1786a5093d8f3fd37aeb18a2/68747470733a2f2f7770696d672e77616c6c7374636e2e636f6d2f61353839346331622d663661662d343536652d383264662d3131353164613038333962662e706e67 <- design link\
 
-    //Multithreaded loading of panels every 20 seconds? Doesnt hang application during reload and is managed on dif thread.
-    //makes sense.
+
 
 public class EmployeeController implements InitGUI {
     private Subject subject = SecurityUtils.getSubject();
@@ -129,7 +132,7 @@ public class EmployeeController implements InitGUI {
     @FXML
     private TableView<AccountPermission> accountPermissionTableView;
     @FXML
-    private TableColumn<AccountPermission, String> permissionsPermissionColumn;
+    private TableColumn<AccountPermission, String> permissionsPermissionColumn, permissionsUsernameColumn;
     @FXML
     private ChoiceBox<AccountRole> accountRoleChoiceBox;
     @FXML
@@ -293,6 +296,7 @@ public class EmployeeController implements InitGUI {
             populateAnnouncementsTextArea();
         } catch (SQLException e) {
             e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
     }
 
@@ -343,10 +347,10 @@ public class EmployeeController implements InitGUI {
             itemsBoughtFrequencyChart.setData(data);
         } catch (Exception e) {
             e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
     }
 
-    //Add item time to purcahsed items log, create retreive query below.
     private List<String> listOfItemNames() throws SQLException {
         List<String> list = new ArrayList<>();
         for (PurchasesActivity purchasesActivity : purchasesActivityLogger.getAll()) {
@@ -492,7 +496,7 @@ public class EmployeeController implements InitGUI {
             void populateFields() {
                 Account account = accountTableView.getSelectionModel().getSelectedItem();
                 usernameField.setText(account.getName());
-                populatePermissionsTable();
+                accountPermissionTableView.getItems().setAll(getEmployeePermissions());
                 accountRoleChoiceBox.setValue(account.getAccountRole());
             }
 
@@ -509,12 +513,25 @@ public class EmployeeController implements InitGUI {
         accountsAnchorPane.addEventFilter(KeyEvent.KEY_RELEASED, accountEventHandler);
     }
 
-    private void populatePermissionsTable() {
-        try {
-            accountPermissionTableView.getItems().setAll(accountPermissionDAO.getAll());
+
+
+    private ObservableList<AccountPermission> getEmployeePermissions(){
+        Account account = accountTableView.getSelectionModel().getSelectedItem();
+        ObservableList<AccountPermission> accountPermissions = FXCollections.observableArrayList();
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM accountpermissions WHERE " +
+                     "username = ?")) {
+            statement.setString(1, account.getName());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                   accountPermissions.add(new AccountPermission(resultSet));
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
+        return accountPermissions;
     }
 
     private void populateAccountRoleChoiceBox() {
@@ -538,9 +555,10 @@ public class EmployeeController implements InitGUI {
             accountActivityLogger.add(new AccountActivity(ActivityType.ADD, accountPermission));
             permissionsField.clear();
         } catch (SQLException e){
-            new ExceptionDialog(e).showAndWait();
+            LoggingUtil.logExceptionToFile(e);
+            e.printStackTrace();
         }
-        populatePermissionsTable();
+        accountPermissionTableView.getItems().setAll(getEmployeePermissions());
 
     }
 
@@ -551,7 +569,7 @@ public class EmployeeController implements InitGUI {
             accountPermissionDAO.delete(accountPermission.getId());
             accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, accountPermission));
         }
-        populatePermissionsTable();
+        accountPermissionTableView.getItems().setAll(getEmployeePermissions());
     }
 
 
@@ -624,7 +642,7 @@ public class EmployeeController implements InitGUI {
                 purchasesActivityLogger, "purchasesactivity") {
             @Override
             String[] panelFields() {
-               return new String[]{purchasesCamperNameField.getText(), purchasesCamperBalanceField.getText(),
+                return new String[]{purchasesCamperNameField.getText(), purchasesCamperBalanceField.getText(),
                         purchasesItemIdField.getText(), purchasesItemNameField.getText(), purchasesDateField.getText()};
             }
 
@@ -669,57 +687,58 @@ public class EmployeeController implements InitGUI {
     //////////////
      */
 
-     private void createAnnouncementPanelEventHandler(){
-         EventHandler<Event> panelEventHandler = new EmployeePanelHandler<Announcement>(announcementTableView,
-                 announcementLogger, "announcement") {
-             @Override
-             String[] panelFields() {
-                 return new String[]{authorField.getText(), titleField.getText(),
-                         dialogField.getText(), announcementDateTimeField.getText()};
-             }
+    private void createAnnouncementPanelEventHandler(){
+        EventHandler<Event> panelEventHandler = new EmployeePanelHandler<Announcement>(announcementTableView,
+                announcementLogger, "announcement") {
+            @Override
+            String[] panelFields() {
+                return new String[]{authorField.getText(), titleField.getText(),
+                        dialogField.getText(), announcementDateTimeField.getText()};
+            }
 
-             @Override
-             void afterEvent() {
-                 populateTableViewWithObservableList(announcementLogger, announcementTableView);
-             }
+            @Override
+            void afterEvent() {
+                populateTableViewWithObservableList(announcementLogger, announcementTableView);
+            }
 
-             @Override
-             void clearFields() {
-                 titleField.requestFocus();
-                 titleField.clear();
-                 authorField.clear();
-                 dialogField.clear();
-                 announcementDateTimeField.clear();
-             }
+            @Override
+            void clearFields() {
+                titleField.requestFocus();
+                titleField.clear();
+                authorField.clear();
+                dialogField.clear();
+                announcementDateTimeField.clear();
+            }
 
-             @Override
-             void populateFields() {
-                 Announcement announcement = announcementTableView.getSelectionModel().getSelectedItem();
-                 titleField.setText(announcement.getTitle());
-                 authorField.setText(announcement.getName());
-                 dialogField.setText(announcement.getDialog());
-                 announcementDateTimeField.setText(announcement.getDateTime());
-             }
-         }.getEventHandler();
-         announcementsCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, panelEventHandler);
-         announcementsUpdate.addEventHandler(ActionEvent.ACTION, panelEventHandler);
-         announcementsDelete.addEventHandler(ActionEvent.ACTION, panelEventHandler);
-         announcementsAnchorPane.addEventFilter(KeyEvent.KEY_RELEASED, panelEventHandler);
-         announcementTableView.addEventHandler(MouseEvent.MOUSE_PRESSED, panelEventHandler);
-         announcementsAdd.addEventHandler(ActionEvent.ACTION, panelEventHandler);
-     }
+            @Override
+            void populateFields() {
+                Announcement announcement = announcementTableView.getSelectionModel().getSelectedItem();
+                titleField.setText(announcement.getTitle());
+                authorField.setText(announcement.getName());
+                dialogField.setText(announcement.getDialog());
+                announcementDateTimeField.setText(announcement.getDateTime());
+            }
+        }.getEventHandler();
+        announcementsCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, panelEventHandler);
+        announcementsUpdate.addEventHandler(ActionEvent.ACTION, panelEventHandler);
+        announcementsDelete.addEventHandler(ActionEvent.ACTION, panelEventHandler);
+        announcementsAnchorPane.addEventFilter(KeyEvent.KEY_RELEASED, panelEventHandler);
+        announcementTableView.addEventHandler(MouseEvent.MOUSE_PRESSED, panelEventHandler);
+        announcementsAdd.addEventHandler(ActionEvent.ACTION, panelEventHandler);
+    }
 
 
-     @SuppressWarnings("unchecked")
-     private void populateTableViewWithObservableList(DAO dao, TableView tableView) {
-         try {
-             ObservableList observableList = FXCollections.observableArrayList(dao.getAll());
-             tableView.setItems(observableList);
-             TableFilter.forTableView(tableView).apply();
-         }catch (Exception e){
-             e.printStackTrace();
-         }
-     }
+    @SuppressWarnings("unchecked")
+    private void populateTableViewWithObservableList(DAO dao, TableView tableView) {
+        try {
+            ObservableList observableList = FXCollections.observableArrayList(dao.getAll());
+            tableView.setItems(observableList);
+            TableFilter.forTableView(tableView).apply();
+        }catch (Exception e){
+            e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
+        }
+    }
 
     private void setCellValueFactory(){
         usernameActivityColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -734,6 +753,7 @@ public class EmployeeController implements InitGUI {
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         passwordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
         permissionsPermissionColumn.setCellValueFactory(new PropertyValueFactory<>("permission"));
+        permissionsUsernameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         accountRoleColumn.setCellValueFactory(new PropertyValueFactory<>("accountRole"));
         announcementIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         announcementAuthorColumn.setCellValueFactory(new PropertyValueFactory<>("name"));

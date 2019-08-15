@@ -2,6 +2,7 @@ package main.java.com.traderbobsemporium.dao.Loggers;
 
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
+import main.java.com.traderbobsemporium.util.LoggingUtil;
 import org.controlsfx.dialog.ExceptionDialog;
 
 import java.math.BigDecimal;
@@ -79,6 +80,7 @@ public class PurchasesActivityLogger extends ThreadedDAO<PurchasesActivity> {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                LoggingUtil.logExceptionToFile(e);
             }
         }
     }
@@ -97,6 +99,7 @@ public class PurchasesActivityLogger extends ThreadedDAO<PurchasesActivity> {
 
         } catch (SQLException e) {
           e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
     }
 

@@ -1,5 +1,6 @@
 package main.java.com.traderbobsemporium.controllers.Retailer;
 
+import com.sun.javafx.image.BytePixelSetter;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -73,9 +74,10 @@ public class RetailerController implements InitGUI {
         itemTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> populateItemTilePane());
         itemTilePane.prefWidthProperty().bind(itemScrollPane.widthProperty());
         filterTextField.textProperty().addListener(camperTableViewFilter);
+        camperPurchasesListView.setSelectionModel(null);
     }
 
-    private void setCellFactories(){
+    private void setCellFactories() {
         itemsSelectedListView.setCellFactory(selectedItemsListViewCallback());
         camperListView.setCellFactory(campersListViewCallback());
     }
@@ -85,7 +87,7 @@ public class RetailerController implements InitGUI {
         populateItemTilePane();
     }
 
-    private void populateItemTilePane(){
+    private void populateItemTilePane() {
         itemTilePane.getChildren().clear();
         try {
             for (Item item : itemDAO.getAll()) {
@@ -96,10 +98,11 @@ public class RetailerController implements InitGUI {
             setVBoxImage();
         } catch (SQLException e) {
             e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
     }
 
-    private void setVBoxImage(){
+    private void setVBoxImage() {
         new Thread(() -> {
             for (int i = 0; i < itemTilePane.getChildren().size(); i++) {
                 ItemVBox itemVBox = (ItemVBox) itemTilePane.getChildren().get(i);
@@ -108,7 +111,7 @@ public class RetailerController implements InitGUI {
         }).start();
     }
 
-    private void addListener(ItemVBox itemVBox){
+    private void addListener(ItemVBox itemVBox) {
         itemVBox.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             if (camperListView.getSelectionModel().getSelectedItem() != null)
                 itemsSelectedListView.getItems().add(itemVBox.getItem());
@@ -116,7 +119,7 @@ public class RetailerController implements InitGUI {
     }
 
 
-    private Callback<ListView<Item>, ListCell<Item>> selectedItemsListViewCallback(){
+    private Callback<ListView<Item>, ListCell<Item>> selectedItemsListViewCallback() {
         return new Callback<ListView<Item>, ListCell<Item>>() {
             @Override
             public ListCell<Item> call(ListView<Item> p) {
@@ -133,7 +136,8 @@ public class RetailerController implements InitGUI {
             }
         };
     }
-    private Callback<ListView<Camper>, ListCell<Camper>> campersListViewCallback(){
+
+    private Callback<ListView<Camper>, ListCell<Camper>> campersListViewCallback() {
         return new Callback<ListView<Camper>, ListCell<Camper>>() {
             @Override
             public ListCell<Camper> call(ListView<Camper> p) {
@@ -152,9 +156,8 @@ public class RetailerController implements InitGUI {
     }
 
 
-
     @FXML
-    private void filerKeyEvents(KeyEvent keyEvent){
+    private void filerKeyEvents(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             camperListView.getSelectionModel().selectFirst();
             filterTabPane.getSelectionModel().select(1);
@@ -167,10 +170,20 @@ public class RetailerController implements InitGUI {
     }
 
     @FXML
-    private void displayCamperPurchases() throws SQLException {
+    private void displayCamperPurchases() {
         Camper camper = camperListView.getSelectionModel().getSelectedItem();
-        camperPurchasesListView.getItems().clear();
+        if (!camperPurchasesListView.getItems().isEmpty())
+            camperPurchasesListView.getItems().clear();
+        if (camper == null) {
+            remainingBalanceText.setText("");
+            return;
+        }
         remainingBalanceText.setText("Remaining balance: " + camper.getBalanceString());
+        retreiveSpecificPurchasesActivity(camper);
+
+    }
+
+    private void retreiveSpecificPurchasesActivity(Camper camper){
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT itemName FROM purchasesactivity WHERE " +
                      "date = ? AND camperName = ?")) {
@@ -181,12 +194,14 @@ public class RetailerController implements InitGUI {
                     camperPurchasesListView.getItems().add(resultSet.getString("itemName"));
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
     }
 
-
     @FXML
-    private void checkout() throws SQLException {
+    private void checkout() {
         Camper selectedCamper = camperDAO.get(camperListView.getSelectionModel().getSelectedItem().getId());
         Util.displayAlert(getCheckoutText(selectedCamper), Alert.AlertType.CONFIRMATION);
         List<String> nameOfItemsNotCheckedOut = new ArrayList<>();
@@ -289,7 +304,8 @@ public class RetailerController implements InitGUI {
         try {
             return FXCollections.observableArrayList(camperDAO.getAll());
         } catch (SQLException e){
-            new ExceptionDialog(e).showAndWait();
+            e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
         }
         return null;
     }
