@@ -34,8 +34,6 @@ import main.java.com.traderbobsemporium.util.LoggingUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.controlsfx.control.table.TableFilter;
-import org.controlsfx.dialog.ExceptionDialog;
-
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,7 +55,7 @@ import java.util.stream.Collectors;
 
 public class EmployeeController implements InitGUI {
     private Subject subject = SecurityUtils.getSubject();
-    private final CamperDAO camperDAO = new CamperDAO();
+    private final CustomerDAO customerDAO = new CustomerDAO();
     private final ItemDAO itemDAO = new ItemDAO();
     private final AccountDAO accountDAO = new AccountDAO();
     private final AccountPermissionDAO accountPermissionDAO = new AccountPermissionDAO();
@@ -82,7 +80,7 @@ public class EmployeeController implements InitGUI {
     @FXML
     private TableView<PurchasesActivity> purchasesActivityTableView;
     @FXML
-    private TableColumn<PurchasesActivity, String> purchasesIdColumn, purchasesCamperNameColumn, purchasesCamperBalanceColumn,
+    private TableColumn<PurchasesActivity, String> purchasesIdColumn, purchasesCustomerNameColumn, purchasesCustomerBalanceColumn,
             purchasesItemIdColumn, purchasesItemNameColumn;
     @FXML
     private PieChart accountActivityFrequencyChart;
@@ -108,17 +106,17 @@ public class EmployeeController implements InitGUI {
     @FXML
     private Button itemAdd, itemUpdate, itemDelete;
     @FXML
-    private AnchorPane campersAnchorPane;
+    private AnchorPane customersAnchorPane;
     @FXML
-    private ImageView campersCancel;
+    private ImageView customersCancel;
     @FXML
-    private TableView<Camper> camperTableView;
+    private TableView<Customer> customerTableView;
     @FXML
-    private TableColumn<Camper, String> camperIdColumn, camperNameColumn, balanceColumn;
+    private TableColumn<Customer, String> customerIdColumn, customerNameColumn, balanceColumn;
     @FXML
-    private TextField camperNameField, camperBalanceField;
+    private TextField customerNameField, customerBalanceField;
     @FXML
-    private Button camperAdd, camperUpdate, camperDelete;
+    private Button customerAdd, customerUpdate, customerDelete;
     @FXML
     private AnchorPane accountsAnchorPane;
     @FXML
@@ -161,10 +159,10 @@ public class EmployeeController implements InitGUI {
     @FXML
     private TableView<PurchasesActivity> purchasesActivityLoggerTableView;
     @FXML
-    private TableColumn<PurchasesActivity, String> purchasesLoggerIdColumn, purchasesLoggerCamperNameColumn,
-            purchasesLoggerCamperBalanceColumn, purchasesLoggerItemIdColumn, purchasesLoggerItemNameColumn;
+    private TableColumn<PurchasesActivity, String> purchasesLoggerIdColumn, purchasesLoggerCustomerNameColumn,
+            purchasesLoggerCustomerBalanceColumn, purchasesLoggerItemIdColumn, purchasesLoggerItemNameColumn;
     @FXML
-    private TextField purchasesCamperNameField, purchasesCamperBalanceField, purchasesItemIdField, purchasesItemNameField, purchasesDateField;
+    private TextField purchasesCustomerNameField, purchasesCustomerBalanceField, purchasesItemIdField, purchasesItemNameField, purchasesDateField;
     @FXML
     private Button purchasesAdd, purchasesUpdate, purchasesDelete;
     @FXML
@@ -191,7 +189,7 @@ public class EmployeeController implements InitGUI {
     public void initialize(URL location, ResourceBundle resources) {
         accountActivityLogger.start();
         panels = new EmployeePanel[]{new EmployeePanel(dashboardScrollPane, "Dashboard"),
-                new EmployeePanel(dashboardResizerContainer, "Dashboard"), new EmployeePanel(campersAnchorPane, "Campers"),
+                new EmployeePanel(dashboardResizerContainer, "Dashboard"), new EmployeePanel(customersAnchorPane, "Customers"),
                 new EmployeePanel(accountsAnchorPane, "Accounts"), new EmployeePanel(logsTabPane, "Logs"),
                 new EmployeePanel(itemsAnchorPane, "Items"), new EmployeePanel(helpAnchorPane, "Help", false)};
         setCellValueFactory();
@@ -203,7 +201,7 @@ public class EmployeeController implements InitGUI {
     }
 
     private void setTableSelectionMethods() {
-        camperTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        customerTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         accountTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         announcementTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         accountActivityLoggerTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -217,7 +215,7 @@ public class EmployeeController implements InitGUI {
 
     private void loadDataManagerEventHandlers() {
         createItemsPanelEventHandler();
-        createCamperPanelEventHandler();
+        createCustomerPanelEventHandler();
         createPurchasesActivityPanelEventHandler();
         createAccountPanelEventHandler();
         createAnnouncementPanelEventHandler();
@@ -242,7 +240,7 @@ public class EmployeeController implements InitGUI {
     @FXML
     private void loadAllPanels() {
         populateTableViewWithObservableList(accountDAO, accountTableView);
-        populateTableViewWithObservableList(camperDAO, camperTableView);
+        populateTableViewWithObservableList(customerDAO, customerTableView);
         populateTableViewWithObservableList(announcementLogger, announcementTableView);
         populateTableViewWithObservableList(accountActivityLogger, accountActivityLoggerTableView);
         populateTableViewWithObservableList(itemDAO, itemsTableView);
@@ -433,38 +431,38 @@ public class EmployeeController implements InitGUI {
     //////////////
      */
 
-    private void createCamperPanelEventHandler() {
-        EventHandler<Event> camperEventHandler = new EmployeePanelHandler<Camper>(camperTableView, camperDAO, "campers",
+    private void createCustomerPanelEventHandler() {
+        EventHandler<Event> customerEventHandler = new EmployeePanelHandler<Customer>(customerTableView, customerDAO, "customers",
                 accountActivityLogger) {
             @Override
             String[] panelFields() {
-                return new String[]{camperNameField.getText(), camperBalanceField.getText()};
+                return new String[]{customerNameField.getText(), customerBalanceField.getText()};
             }
 
             @Override
             void afterEvent() {
-                populateTableViewWithObservableList(camperDAO, camperTableView);
+                populateTableViewWithObservableList(customerDAO, customerTableView);
             }
 
             void clearFields() {
-                camperNameField.clear();
-                camperBalanceField.clear();
-                camperNameField.requestFocus();
+                customerNameField.clear();
+                customerBalanceField.clear();
+                customerNameField.requestFocus();
             }
 
             @Override
             void populateFields() {
-                Camper camper = camperTableView.getSelectionModel().getSelectedItem();
-                camperNameField.setText(camper.getName());
-                camperBalanceField.setText(String.valueOf(camper.getBalance()));
+                Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+                customerNameField.setText(customer.getName());
+                customerBalanceField.setText(String.valueOf(customer.getBalance()));
             }
         }.getEventHandler();
-        camperUpdate.addEventHandler(ActionEvent.ACTION, camperEventHandler);
-        camperDelete.addEventHandler(ActionEvent.ACTION, camperEventHandler);
-        camperAdd.addEventHandler(ActionEvent.ACTION, camperEventHandler);
-        campersCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, camperEventHandler);
-        camperTableView.addEventHandler(MouseEvent.MOUSE_PRESSED, camperEventHandler);
-        campersAnchorPane.addEventFilter(KeyEvent.KEY_RELEASED, camperEventHandler);
+        customerUpdate.addEventHandler(ActionEvent.ACTION, customerEventHandler);
+        customerDelete.addEventHandler(ActionEvent.ACTION, customerEventHandler);
+        customerAdd.addEventHandler(ActionEvent.ACTION, customerEventHandler);
+        customersCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, customerEventHandler);
+        customerTableView.addEventHandler(MouseEvent.MOUSE_PRESSED, customerEventHandler);
+        customersAnchorPane.addEventFilter(KeyEvent.KEY_RELEASED, customerEventHandler);
     }
 
     /*
@@ -642,7 +640,7 @@ public class EmployeeController implements InitGUI {
                 purchasesActivityLogger, "purchasesactivity") {
             @Override
             String[] panelFields() {
-                return new String[]{purchasesCamperNameField.getText(), purchasesCamperBalanceField.getText(),
+                return new String[]{purchasesCustomerNameField.getText(), purchasesCustomerBalanceField.getText(),
                         purchasesItemIdField.getText(), purchasesItemNameField.getText(), purchasesDateField.getText()};
             }
 
@@ -653,23 +651,23 @@ public class EmployeeController implements InitGUI {
 
             @Override
             void clearFields() {
-                purchasesCamperNameField.clear();
-                purchasesCamperBalanceField.clear();
+                purchasesCustomerNameField.clear();
+                purchasesCustomerBalanceField.clear();
                 purchasesItemIdField.clear();
                 purchasesItemNameField.clear();
                 purchasesDateField.clear();
-                purchasesCamperNameField.requestFocus();
+                purchasesCustomerNameField.requestFocus();
             }
 
             @Override
             void populateFields() {
                 PurchasesActivity purchasesActivity = purchasesActivityLoggerTableView.getSelectionModel().getSelectedItem();
-                purchasesCamperNameField.setText(purchasesActivity.getName());
-                purchasesCamperBalanceField.setText(String.valueOf(purchasesActivity.getCamperBalance()));
+                purchasesCustomerNameField.setText(purchasesActivity.getName());
+                purchasesCustomerBalanceField.setText(String.valueOf(purchasesActivity.getCustomerBalance()));
                 purchasesItemIdField.setText(String.valueOf(purchasesActivity.getItemId()));
                 purchasesItemNameField.setText(purchasesActivity.getItemName());
                 purchasesDateField.setText(purchasesActivity.getDate());
-                purchasesCamperNameField.requestFocus();
+                purchasesCustomerNameField.requestFocus();
             }
 
         }.getEventHandler();
@@ -746,8 +744,8 @@ public class EmployeeController implements InitGUI {
         affectedName.setCellValueFactory(new PropertyValueFactory<>("affectedName"));
         affectedID.setCellValueFactory(new PropertyValueFactory<>("affectedId"));
         dateTimeColumnAccount.setCellValueFactory(new PropertyValueFactory<>("date"));
-        camperNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        camperIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balanceString"));
         accountIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -773,13 +771,13 @@ public class EmployeeController implements InitGUI {
         imageURLColumn.setCellValueFactory(new PropertyValueFactory<>("imageURL"));
         itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
         purchasesIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        purchasesCamperNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        purchasesCamperBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("camperBalanceString"));
+        purchasesCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        purchasesCustomerBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("customerBalanceString"));
         purchasesItemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         purchasesItemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         purchasesLoggerIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        purchasesLoggerCamperNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        purchasesLoggerCamperBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("camperBalance"));
+        purchasesLoggerCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        purchasesLoggerCustomerBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("customerBalance"));
         purchasesLoggerItemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         purchasesLoggerItemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
     }

@@ -30,7 +30,7 @@ public class PurchasesActivityLogger extends ThreadedDAO<PurchasesActivity> {
         if (!params[0].isEmpty())
             purchasesActivity.setName(params[0]);
         if (!params[1].isEmpty())
-            purchasesActivity.setCamperBalance(new BigDecimal(params[1]));
+            purchasesActivity.setCustomerBalance(new BigDecimal(params[1]));
         if (!params[2].isEmpty())
             purchasesActivity.setItemId(Integer.parseInt(params[2]));
         if (!params[3].isEmpty())
@@ -44,9 +44,9 @@ public class PurchasesActivityLogger extends ThreadedDAO<PurchasesActivity> {
     public void update(PurchasesActivity updated) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE purchasesactivity SET " +
-                     "camperName = ?, camperBalance = ?, itemId = ?, date = ?, itemName = ? WHERE id = ?")) {
+                     "customerName = ?, customerBalance = ?, itemId = ?, date = ?, itemName = ? WHERE id = ?")) {
             preparedStatement.setString(1, updated.getName());
-            preparedStatement.setBigDecimal(2, updated.getCamperBalance());
+            preparedStatement.setBigDecimal(2, updated.getCustomerBalance());
             preparedStatement.setInt(3, updated.getItemId());
             preparedStatement.setString(4, updated.getItemName());
             preparedStatement.execute();
@@ -88,10 +88,10 @@ public class PurchasesActivityLogger extends ThreadedDAO<PurchasesActivity> {
     private void logToDatabase(PurchasesActivity purchasesActivity){
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO purchasesactivity " +
-                     "(id, camperName, camperBalance, itemId, date, itemName) VALUES (?, ?, ?, ?, ?, ?)")) {
+                     "(id, customerName, customerBalance, itemId, date, itemName) VALUES (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setInt(1, purchasesActivity.getId());
             preparedStatement.setString(2, purchasesActivity.getName());
-            preparedStatement.setBigDecimal(3, purchasesActivity.getCamperBalance());
+            preparedStatement.setBigDecimal(3, purchasesActivity.getCustomerBalance());
             preparedStatement.setInt(4, purchasesActivity.getItemId());
             preparedStatement.setString(5, purchasesActivity.getDate());
             preparedStatement.setString(6, purchasesActivity.getItemName());

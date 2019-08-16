@@ -1,6 +1,6 @@
 package main.java.com.traderbobsemporium.model.Logging;
 
-import main.java.com.traderbobsemporium.model.Camper;
+import main.java.com.traderbobsemporium.model.Customer;
 import main.java.com.traderbobsemporium.model.Item;
 import main.java.com.traderbobsemporium.model.Model;
 import main.java.com.traderbobsemporium.util.Util;
@@ -18,30 +18,30 @@ import java.util.Locale;
  * All rights reserved.
  */
 public class PurchasesActivity extends Model {
-    private BigDecimal camperBalance;
+    private BigDecimal customerBalance;
     private int itemId;
     private String itemName;
     private String date;
 
-    public PurchasesActivity(Item item, Camper camper) {
-        super(camper.getName());
-        this.camperBalance = camper.getBalance();
+    public PurchasesActivity(Item item, Customer customer) {
+        super(customer.getName());
+        this.customerBalance = customer.getBalance();
         this.itemId = item.getId();
         this.itemName = item.getName();
         this.date = Util.date(false);
     }
 
-    public PurchasesActivity(String camperName, BigDecimal camperBalance, int itemId, String itemName, String date) {
-        super(camperName);
-        this.camperBalance = camperBalance;
+    public PurchasesActivity(String customerName, BigDecimal customerBalance, int itemId, String itemName, String date) {
+        super(customerName);
+        this.customerBalance = customerBalance;
         this.itemId = itemId;
         this.itemName = itemName;
         this.date = date;
     }
 
     public PurchasesActivity(ResultSet resultSet) throws SQLException {
-        super(resultSet.getInt("id"), resultSet.getString("camperName"));
-        this.camperBalance = resultSet.getBigDecimal("camperBalance");
+        super(resultSet.getInt("id"), resultSet.getString("customerName"));
+        this.customerBalance = resultSet.getBigDecimal("customerBalance");
         this.itemId = resultSet.getInt("itemId");
         this.itemName = resultSet.getString("itemName");
         this.date = resultSet.getString("date");
@@ -64,13 +64,13 @@ public class PurchasesActivity extends Model {
         this.itemName = itemName;
     }
 
-    public BigDecimal getCamperBalance() {
-        return camperBalance;
+    public BigDecimal getCustomerBalance() {
+        return customerBalance;
     }
 
-    public String getCamperBalanceString(){
+    public String getCustomerBalanceString(){
         NumberFormat n = NumberFormat.getCurrencyInstance(Locale.US);
-        double doublePayment = getCamperBalance().doubleValue();
+        double doublePayment = getCustomerBalance().doubleValue();
         return n.format(doublePayment);
     }
 
@@ -85,14 +85,14 @@ public class PurchasesActivity extends Model {
     @Override
     public String toString() {
         return "PurchasesActivity{" +
-                 "camperName='" + getName() + '\'' +
-                ", camperBalance=" + camperBalance +
+                 "customerName='" + getName() + '\'' +
+                ", customerBalance=" + customerBalance +
                 ", itemId=" + itemId +
                 ", itemName='" + itemName + '\'' +
                 '}';
     }
 
-    public void setCamperBalance(BigDecimal camperBalance) {
-        this.camperBalance = camperBalance;
+    public void setCustomerBalance(BigDecimal customerBalance) {
+        this.customerBalance = customerBalance;
     }
 }

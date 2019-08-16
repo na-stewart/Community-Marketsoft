@@ -190,8 +190,8 @@ abstract class EmployeePanelHandler<T>{
         switch (panelName){
             case "items":
                 return (T) new Item(params[0], Integer.valueOf(params[1]), new BigDecimal(params[2]), params[3], ItemType.valueOf(params[4]));
-            case "campers":
-                return (T) new Camper(params[0], new BigDecimal(params[1]));
+            case "customers":
+                return (T) new Customer(params[0], new BigDecimal(params[1]));
             case "accounts":
                 return (T) new Account(params[0], params[1], AccountRole.valueOf(params[2]));
             case "accountactivity":

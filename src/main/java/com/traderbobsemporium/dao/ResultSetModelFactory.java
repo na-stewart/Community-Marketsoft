@@ -26,8 +26,8 @@ class ResultSetModelFactory<T> {
     @SuppressWarnings("unchecked")
     T getModel(ResultSet resultSet) throws SQLException {
         Model returnedModel = null;
-        if (table.equals("camper"))
-            returnedModel = new Camper(resultSet);
+        if (table.equals("customer"))
+            returnedModel = new Customer(resultSet);
         if (table.equals("account"))
             returnedModel = new Account(resultSet);
         if (table.equals("item"))

@@ -68,7 +68,7 @@
                         <Font name="Leelawadee UI Semilight" size="20.0" />
                      </font>
                   </Text>
-                  <Text fill="WHITE" onMouseClicked="#openPanel" strokeType="OUTSIDE" strokeWidth="0.0" text="Campers" textAlignment="CENTER" wrappingWidth="98.8984375">
+                  <Text fill="WHITE" onMouseClicked="#openPanel" strokeType="OUTSIDE" strokeWidth="0.0" text="Customers" textAlignment="CENTER" wrappingWidth="98.8984375">
                      <font>
                         <Font name="Leelawadee UI Semilight" size="20.0" />
                      </font>
@@ -185,8 +185,8 @@
                            </columnResizePolicy>
                            <columns>
                               <TableColumn fx:id="purchasesIdColumn" prefWidth="75.0" text="ID" />
-                              <TableColumn fx:id="purchasesCamperNameColumn" prefWidth="75.0" text="Camper Name" />
-                              <TableColumn fx:id="purchasesCamperBalanceColumn" prefWidth="75.0" text="Camper Balance" />
+                              <TableColumn fx:id="purchasesCustomerNameColumn" prefWidth="75.0" text="Customer Name" />
+                              <TableColumn fx:id="purchasesCustomerBalanceColumn" prefWidth="75.0" text="Customer Balance" />
                               <TableColumn fx:id="purchasesItemIdColumn" prefWidth="75.0" text="Item ID" />
                               <TableColumn fx:id="purchasesItemNameColumn" prefWidth="75.0" text="Item Name" />
                            </columns>
@@ -228,12 +228,12 @@
             </TilePane>
          </content>
       </ScrollPane>
-      <AnchorPane fx:id="campersAnchorPane" layoutX="174.0" layoutY="52.0" prefHeight="676.0" prefWidth="1037.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+      <AnchorPane fx:id="customersAnchorPane" layoutX="174.0" layoutY="52.0" prefHeight="676.0" prefWidth="1037.0" style="-fx-background-color: #F2F1EC;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
          <children>
-            <TableView fx:id="camperTableView" layoutX="434.0" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TableView fx:id="customerTableView" layoutX="434.0" prefHeight="675.0" prefWidth="603.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columns>
-                <TableColumn fx:id="camperIdColumn" prefWidth="75.0" text="ID" />
-                <TableColumn fx:id="camperNameColumn" prefWidth="75.0" text="Name" />
+                <TableColumn fx:id="customerIdColumn" prefWidth="75.0" text="ID" />
+                <TableColumn fx:id="customerNameColumn" prefWidth="75.0" text="Name" />
                   <TableColumn fx:id="balanceColumn" prefWidth="75.0" text="Balance" />
               </columns>
                <columnResizePolicy>
@@ -242,7 +242,7 @@
             </TableView>
             <VBox alignment="TOP_CENTER" fillWidth="false" layoutY="17.0" prefHeight="659.0" prefWidth="432.0" spacing="50.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="17.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Campers">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customers">
                      <font>
                         <Font name="Georgia" size="37.0" />
                      </font>
@@ -254,7 +254,7 @@
                               <Font name="Leelawadee UI" size="27.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="camperNameField" prefHeight="25.0" prefWidth="317.0" />
+                        <TextField fx:id="customerNameField" prefHeight="25.0" prefWidth="317.0" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" layoutX="59.0" layoutY="83.0" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
@@ -264,22 +264,22 @@
                               <Font name="Leelawadee UI" size="27.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="camperBalanceField" prefHeight="38.0" prefWidth="334.0" />
+                        <TextField fx:id="customerBalanceField" prefHeight="38.0" prefWidth="334.0" />
                      </children>
                   </VBox>
                   <HBox alignment="CENTER" prefHeight="82.0" prefWidth="335.0" spacing="40.0">
                      <children>
-                        <Button fx:id="camperAdd" layoutX="93.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Add">
+                        <Button fx:id="customerAdd" layoutX="93.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Add">
                            <font>
                               <Font name="Malgun Gothic" size="16.0" />
                            </font>
                         </Button>
-                        <Button fx:id="camperUpdate" layoutX="75.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Update">
+                        <Button fx:id="customerUpdate" layoutX="75.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Update">
                            <font>
                               <Font name="Malgun Gothic" size="16.0" />
                            </font>
                         </Button>
-                        <Button fx:id="camperDelete" layoutX="75.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Delete">
+                        <Button fx:id="customerDelete" layoutX="75.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Delete">
                            <font>
                               <Font name="Malgun Gothic" size="16.0" />
                            </font>
@@ -288,7 +288,7 @@
                   </HBox>
                </children>
             </VBox>
-            <ImageView fx:id="campersCancel" layoutX="402.0" layoutY="1.0">
+            <ImageView fx:id="customersCancel" layoutX="402.0" layoutY="1.0">
                <image>
                   <Image url="@../Images/error.png" />
                </image>
@@ -535,8 +535,8 @@
                            </columnResizePolicy>
                            <columns>
                               <TableColumn fx:id="purchasesLoggerIdColumn" prefWidth="75.0" text="ID" />
-                              <TableColumn fx:id="purchasesLoggerCamperNameColumn" prefWidth="75.0" text="Camper Name" />
-                              <TableColumn fx:id="purchasesLoggerCamperBalanceColumn" prefWidth="75.0" text="Camper Balance" />
+                              <TableColumn fx:id="purchasesLoggerCustomerNameColumn" prefWidth="75.0" text="Customer Name" />
+                              <TableColumn fx:id="purchasesLoggerCustomerBalanceColumn" prefWidth="75.0" text="Customer Balance" />
                               <TableColumn fx:id="purchasesLoggerItemIdColumn" prefWidth="75.0" text="Item ID" />
                               <TableColumn fx:id="purchasesLoggerItemNameColumn" prefWidth="75.0" text="Item Name" />
                            </columns>
@@ -554,22 +554,22 @@
                                           </Text>
                                           <VBox alignment="CENTER" layoutX="59.0" layoutY="103.0" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
                                              <children>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Camper Name">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Name">
                                                    <font>
                                                       <Font name="Leelawadee UI" size="27.0" />
                                                    </font>
                                                 </Text>
-                                                <TextField fx:id="purchasesCamperNameField" prefHeight="25.0" prefWidth="317.0" />
+                                                <TextField fx:id="purchasesCustomerNameField" prefHeight="25.0" prefWidth="317.0" />
                                              </children>
                                           </VBox>
                                           <VBox alignment="CENTER" layoutX="59.0" layoutY="222.0" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
                                              <children>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Camper Balance">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Balance">
                                                    <font>
                                                       <Font name="Leelawadee UI" size="27.0" />
                                                    </font>
                                                 </Text>
-                                                <TextField fx:id="purchasesCamperBalanceField" prefHeight="25.0" prefWidth="317.0" />
+                                                <TextField fx:id="purchasesCustomerBalanceField" prefHeight="25.0" prefWidth="317.0" />
                                              </children>
                                           </VBox>
                                           <VBox alignment="CENTER" layoutX="59.0" layoutY="222.0" prefHeight="66.0" prefWidth="334.0" spacing="5.0">
@@ -854,7 +854,7 @@
                   </Text>
                </children>
             </HBox>
-            <TextArea editable="false" layoutX="39.0" layoutY="123.0" prefHeight="514.0" prefWidth="849.0" text="Github: https://github.com/sw1pe/Trader-Bobs-Emporium&#10;&#10;Trader Bobs Emporium is an application for a summer camp. This camp has a store which you can buy items from. This application is to allow employees to manage the inventory of the store and their values, and also campers within the camp and the amount of digital currency they have which is bought by the parents. Then the vendor (aka retail) interface is used in-store when selling items to campers. They used google tables before which people hated and even before that they did it on paper. I decided to take the opportunity to improve my skills and add to my resume by creating a customized, efficient, and usable system for them.﻿&#10;&#10;Make sure to watch the youtube video which describes in detail all of the important functionality: https://www.youtube.com/watch?v=kj8cPJ-QkEI&amp;t&#10;&#10;1. How do account permissions work:&#10;&#10;Account permissions are created using a system called WildCardPermissions. Please copy and paste the link shown here which will lead you to a website that explains in detail how the permissions system works: https://shiro.apache.org/permissions.html.&#10;&#10;Permissions are currently formatted as (panel name):(permission).&#10;&#10;Some examples would be as follows:&#10;&#10;- campers:display,add,update,delete&#10;- accounts:display,update&#10;- logs:display&#10;- accountactivity: add, update;&#10;-*:* (Allows for all permissions)&#10;- campers:* (allows for all actions for campers)&#10;- Etc...&#10;&#10;2.  I got an error dialog, what do I do?&#10;&#10;Some error dialog's are important to the user because they tell you what you've done wrong. For example, maybe you entered a field which was too large or you entered a username that already exist. However, if you are unfamilar with what a dialog means, feel free to let an administrator or a developer know.&#10;&#10;3.  Sometimes I click add or update but nothing happens, what can I do?&#10;&#10;If this occurs it is likely you accidently typed either a letter in a field that required a number such as price, left a field blank when it should be filled, or unrecognised characters were used. However if other problems occur feel free to let an adminstrator or a developer know.&#10;&#10;4. What are the key bind equivalent of the panel buttons? &#10;&#10;Add = Enter&#10;Update = Alt + Enter&#10;Delete = Delete/Del Key (Not Backspace)&#10;&#10;5. How do I filter a table? I cannot find a filter field!&#10;&#10;To filter a table in order to find specific data: right click on the column you want to filter, then either click the checkmarks or enter in the desired item within the filter field on the popup.&#10;&#10;6. Why is a panel unavalilable? &#10;&#10;This is because you dont have permissions to view the panel. &#10;&#10;7. Can I update multiple items in a database at once?&#10;&#10;Yes! First select the items that you want to update, Then the fields will clear and then fill in the field you would like to edit.&#10;&#10;8. What does the red X button do?&#10;&#10;The red X button clears the panel fields.&#10;&#10;9. Any other questions?&#10;&#10;Feel free to email me at aidanstewart2000@gmail.com&#10;&#10;&#10;&#10;" wrapText="true" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="123.0">
+            <TextArea editable="false" layoutX="39.0" layoutY="123.0" prefHeight="514.0" prefWidth="849.0" text="Github: https://github.com/sw1pe/Trader-Bobs-Emporium&#10;&#10;Trader Bobs Emporium is an application for a summer camp. This camp has a store which you can buy items from. This application is to allow employees to manage the inventory of the store and their values, and also customers within the camp and the amount of digital currency they have which is bought by the parents. Then the vendor (aka retail) interface is used in-store when selling items to customers. They used google tables before which people hated and even before that they did it on paper. I decided to take the opportunity to improve my skills and add to my resume by creating a customized, efficient, and usable system for them.﻿&#10;&#10;Make sure to watch the youtube video which describes in detail all of the important functionality: https://www.youtube.com/watch?v=kj8cPJ-QkEI&amp;t&#10;&#10;1. How do account permissions work:&#10;&#10;Account permissions are created using a system called WildCardPermissions. Please copy and paste the link shown here which will lead you to a website that explains in detail how the permissions system works: https://shiro.apache.org/permissions.html.&#10;&#10;Permissions are currently formatted as (panel name):(permission).&#10;&#10;Some examples would be as follows:&#10;&#10;- customers:display,add,update,delete&#10;- accounts:display,update&#10;- logs:display&#10;- accountactivity: add, update;&#10;-*:* (Allows for all permissions)&#10;- customers:* (allows for all actions for customers)&#10;- Etc...&#10;&#10;2.  I got an error dialog, what do I do?&#10;&#10;Some error dialog's are important to the user because they tell you what you've done wrong. For example, maybe you entered a field which was too large or you entered a username that already exist. However, if you are unfamilar with what a dialog means, feel free to let an administrator or a developer know.&#10;&#10;3.  Sometimes I click add or update but nothing happens, what can I do?&#10;&#10;If this occurs it is likely you accidently typed either a letter in a field that required a number such as price, left a field blank when it should be filled, or unrecognised characters were used. However if other problems occur feel free to let an adminstrator or a developer know.&#10;&#10;4. What are the key bind equivalent of the panel buttons? &#10;&#10;Add = Enter&#10;Update = Alt + Enter&#10;Delete = Delete/Del Key (Not Backspace)&#10;&#10;5. How do I filter a table? I cannot find a filter field!&#10;&#10;To filter a table in order to find specific data: right click on the column you want to filter, then either click the checkmarks or enter in the desired item within the filter field on the popup.&#10;&#10;6. Why is a panel unavalilable? &#10;&#10;This is because you dont have permissions to view the panel. &#10;&#10;7. Can I update multiple items in a database at once?&#10;&#10;Yes! First select the items that you want to update, Then the fields will clear and then fill in the field you would like to edit.&#10;&#10;8. What does the red X button do?&#10;&#10;The red X button clears the panel fields.&#10;&#10;9. Any other questions?&#10;&#10;Feel free to email me at aidanstewart2000@gmail.com&#10;&#10;&#10;&#10;" wrapText="true" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="123.0">
                <font>
                   <Font size="48.0" />
                </font>

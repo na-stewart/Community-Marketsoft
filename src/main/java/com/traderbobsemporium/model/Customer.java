@@ -1,8 +1,5 @@
 package main.java.com.traderbobsemporium.model;
 
-
-import main.java.com.traderbobsemporium.util.Util;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
@@ -16,16 +13,16 @@ import java.util.Locale;
  * Copyright (c)
  * All rights reserved.
  */
-public class Camper extends Model {
+public class Customer extends Model {
     private BigDecimal balance;
 
-    public Camper(String name, BigDecimal balance) {
+    public Customer(String name, BigDecimal balance) {
         super(name);
         this.balance = balance;
 
     }
 
-    public Camper(ResultSet resultset) throws SQLException {
+    public Customer(ResultSet resultset) throws SQLException {
         super(resultset.getInt("id"), resultset.getString("name"));
         this.balance = resultset.getBigDecimal("balance").setScale(2, RoundingMode.HALF_UP);
     }
@@ -46,7 +43,7 @@ public class Camper extends Model {
 
     @Override
     public String toString() {
-        return "Camper{" +
+        return "Customer{" +
                 "name=" + getName() +
                 " balance=" + balance +
                 '}';

@@ -13,13 +13,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
-import main.java.com.traderbobsemporium.dao.CamperDAO;
+import main.java.com.traderbobsemporium.dao.CustomerDAO;
 import main.java.com.traderbobsemporium.dao.ItemDAO;
 import main.java.com.traderbobsemporium.dao.Loggers.PurchasesActivityLogger;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.gui.InitGUI;
-import main.java.com.traderbobsemporium.model.Camper;
+import main.java.com.traderbobsemporium.model.Customer;
 import main.java.com.traderbobsemporium.model.Item;
 import main.java.com.traderbobsemporium.model.ItemType;
 import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
@@ -44,14 +44,14 @@ import java.util.ResourceBundle;
  */
 public class RetailerController implements InitGUI {
     private ItemDAO itemDAO = new ItemDAO();
-    private CamperDAO camperDAO = new CamperDAO();
+    private CustomerDAO customerDAO = new CustomerDAO();
     private PurchasesActivityLogger purchasesActivity = new PurchasesActivityLogger();
     @FXML
     private TabPane filterTabPane;
     @FXML
-    private ListView<Camper> camperListView;
+    private ListView<Customer> customerListView;
     @FXML
-    private ListView<String> camperPurchasesListView;
+    private ListView<String> customerPurchasesListView;
     @FXML
     private Text remainingBalanceText;
     @FXML
@@ -73,17 +73,17 @@ public class RetailerController implements InitGUI {
         purchasesActivity.start();
         itemTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> populateItemTilePane());
         itemTilePane.prefWidthProperty().bind(itemScrollPane.widthProperty());
-        filterTextField.textProperty().addListener(camperTableViewFilter);
-        camperPurchasesListView.setSelectionModel(null);
+        filterTextField.textProperty().addListener(customerTableViewFilter);
+        customerPurchasesListView.setSelectionModel(null);
     }
 
     private void setCellFactories() {
         itemsSelectedListView.setCellFactory(selectedItemsListViewCallback());
-        camperListView.setCellFactory(campersListViewCallback());
+        customerListView.setCellFactory(customersListViewCallback());
     }
 
     private void populateAll() {
-        camperListView.setItems(getUnfilteredCamperData());
+        customerListView.setItems(getUnfilteredCustomerData());
         populateItemTilePane();
     }
 
@@ -113,7 +113,7 @@ public class RetailerController implements InitGUI {
 
     private void addListener(ItemVBox itemVBox) {
         itemVBox.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-            if (camperListView.getSelectionModel().getSelectedItem() != null)
+            if (customerListView.getSelectionModel().getSelectedItem() != null)
                 itemsSelectedListView.getItems().add(itemVBox.getItem());
         });
     }
@@ -137,13 +137,13 @@ public class RetailerController implements InitGUI {
         };
     }
 
-    private Callback<ListView<Camper>, ListCell<Camper>> campersListViewCallback() {
-        return new Callback<ListView<Camper>, ListCell<Camper>>() {
+    private Callback<ListView<Customer>, ListCell<Customer>> customersListViewCallback() {
+        return new Callback<ListView<Customer>, ListCell<Customer>>() {
             @Override
-            public ListCell<Camper> call(ListView<Camper> p) {
-                return new ListCell<Camper>() {
+            public ListCell<Customer> call(ListView<Customer> p) {
+                return new ListCell<Customer>() {
                     @Override
-                    protected void updateItem(Camper i, boolean bln) {
+                    protected void updateItem(Customer i, boolean bln) {
                         super.updateItem(i, bln);
                         if (i != null)
                             setText(i.getName());
@@ -159,39 +159,39 @@ public class RetailerController implements InitGUI {
     @FXML
     private void filerKeyEvents(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
-            camperListView.getSelectionModel().selectFirst();
+            customerListView.getSelectionModel().selectFirst();
             filterTabPane.getSelectionModel().select(1);
 
         }
         if (keyEvent.getCode() == KeyCode.DOWN) {
-            camperListView.requestFocus();
-            camperListView.getSelectionModel().selectFirst();
+            customerListView.requestFocus();
+            customerListView.getSelectionModel().selectFirst();
         }
     }
 
     @FXML
-    private void displayCamperPurchases() {
-        Camper camper = camperListView.getSelectionModel().getSelectedItem();
-        if (!camperPurchasesListView.getItems().isEmpty())
-            camperPurchasesListView.getItems().clear();
-        if (camper == null) {
+    private void displayCustomerPurchases() {
+        Customer customer = customerListView.getSelectionModel().getSelectedItem();
+        if (!customerPurchasesListView.getItems().isEmpty())
+            customerPurchasesListView.getItems().clear();
+        if (customer == null) {
             remainingBalanceText.setText("");
             return;
         }
-        remainingBalanceText.setText("Remaining balance: " + camper.getBalanceString());
-        retreiveSpecificPurchasesActivity(camper);
+        remainingBalanceText.setText("Remaining balance: " + customer.getBalanceString());
+        retreiveSpecificPurchasesActivity(customer);
 
     }
 
-    private void retreiveSpecificPurchasesActivity(Camper camper){
+    private void retreiveSpecificPurchasesActivity(Customer customer){
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT itemName FROM purchasesactivity WHERE " +
-                     "date = ? AND camperName = ?")) {
+                     "date = ? AND customerName = ?")) {
             statement.setString(1, Util.date(false));
-            statement.setString(2, camper.getName());
+            statement.setString(2, customer.getName());
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    camperPurchasesListView.getItems().add(resultSet.getString("itemName"));
+                    customerPurchasesListView.getItems().add(resultSet.getString("itemName"));
                 }
             }
         } catch (SQLException e) {
@@ -202,10 +202,10 @@ public class RetailerController implements InitGUI {
 
     @FXML
     private void checkout() {
-        Camper selectedCamper = camperDAO.get(camperListView.getSelectionModel().getSelectedItem().getId());
-        Util.displayAlert(getCheckoutText(selectedCamper), Alert.AlertType.CONFIRMATION);
+        Customer selectedCustomer = customerDAO.get(customerListView.getSelectionModel().getSelectedItem().getId());
+        Util.displayAlert(getCheckoutText(selectedCustomer), Alert.AlertType.CONFIRMATION);
         List<String> nameOfItemsNotCheckedOut = new ArrayList<>();
-        attemptToCheckoutSelectedItems(nameOfItemsNotCheckedOut, selectedCamper);
+        attemptToCheckoutSelectedItems(nameOfItemsNotCheckedOut, selectedCustomer);
         clear();
         displayItemsNotCheckedOut(nameOfItemsNotCheckedOut);
         filterTextField.requestFocus();
@@ -216,38 +216,38 @@ public class RetailerController implements InitGUI {
     private void clear(){
         filterTextField.clear();
         itemsSelectedListView.getItems().clear();
-        camperListView.setItems(getUnfilteredCamperData());
+        customerListView.setItems(getUnfilteredCustomerData());
     }
 
     private void displayItemsNotCheckedOut(List<String> nameOfItemsNotCheckedOut){
         if (!nameOfItemsNotCheckedOut.isEmpty()) {
-            String dialog = "The following items did not checkout due to the campers insufficient balance " +
+            String dialog = "The following items did not checkout due to the customers insufficient balance " +
                     "or the item is out of stock!\n" + nameOfItemsNotCheckedOut;
             System.out.println(dialog);
             Util.displayAlert(dialog, Alert.AlertType.WARNING);
         }
     }
 
-    private void attemptToCheckoutSelectedItems(List<String> itemsNotCheckout, Camper selectedCamper) {
+    private void attemptToCheckoutSelectedItems(List<String> itemsNotCheckout, Customer selectedCustomer) {
         try {
             for (Item item : itemsSelectedListView.getItems()) {
                 Item syncedItem = itemDAO.get(item.getId());
-                if (syncedItem.getPrice().compareTo(selectedCamper.getBalance()) <= 0 && syncedItem.getQuantity() > 0)
-                    calculateCheckoutValues(syncedItem, selectedCamper);
+                if (syncedItem.getPrice().compareTo(selectedCustomer.getBalance()) <= 0 && syncedItem.getQuantity() > 0)
+                    calculateCheckoutValues(syncedItem, selectedCustomer);
                 else
                     itemsNotCheckout.add(item.getName());
             }
-            camperDAO.update(selectedCamper);
+            customerDAO.update(selectedCustomer);
         } catch (SQLException e){
             LoggingUtil.logExceptionToFile(e);
             e.printStackTrace();
         }
     }
 
-    private void calculateCheckoutValues(Item item, Camper camper) throws SQLException {
+    private void calculateCheckoutValues(Item item, Customer customer) throws SQLException {
         item.setQuantity(item.getQuantity() - 1);
-        camper.setBalance(camper.getBalance().subtract(item.getPrice()));
-        purchasesActivity.add(new PurchasesActivity(item, camper));
+        customer.setBalance(customer.getBalance().subtract(item.getPrice()));
+        purchasesActivity.add(new PurchasesActivity(item, customer));
         itemDAO.update(item);
     }
 
@@ -256,18 +256,18 @@ public class RetailerController implements InitGUI {
         itemsSelectedListView.getItems().remove(itemsSelectedListView.getSelectionModel().getSelectedIndex());
     }
 
-    private String getCheckoutText(Camper selectedCamper){
-        String camperName = selectedCamper.getName();
+    private String getCheckoutText(Customer selectedCustomer){
+        String customerName = selectedCustomer.getName();
         BigDecimal total = new BigDecimal(0);
-        StringBuilder stringBuilder = new StringBuilder("Are you sure you want to checkout " + camperName + "?\n");
+        StringBuilder stringBuilder = new StringBuilder("Are you sure you want to checkout " + customerName + "?\n");
         stringBuilder.append("=========================================");
         for (Item items : itemsSelectedListView.getItems()) {
             stringBuilder.append(items.getName()).append(" : ").append(items.getPrice()).append("\n");
             total = total.add(items.getPrice());
         }
-        BigDecimal remainingBalance = selectedCamper.getBalance().subtract(total);
+        BigDecimal remainingBalance = selectedCustomer.getBalance().subtract(total);
         stringBuilder.append("Your total is ").append(total)
-                .append(" and camper remaining balance would be $").append(remainingBalance);
+                .append(" and customer remaining balance would be $").append(remainingBalance);
         return String.valueOf(stringBuilder);
     }
 
@@ -289,20 +289,20 @@ public class RetailerController implements InitGUI {
 
     }
 
-    private ChangeListener<String> camperTableViewFilter = (observable, oldValue, newValue) -> {
-        FilteredList<Camper> filteredData = new FilteredList<>(Objects.requireNonNull(getUnfilteredCamperData()), c -> true);
-        filteredData.setPredicate(camper -> {
+    private ChangeListener<String> customerTableViewFilter = (observable, oldValue, newValue) -> {
+        FilteredList<Customer> filteredData = new FilteredList<>(Objects.requireNonNull(getUnfilteredCustomerData()), c -> true);
+        filteredData.setPredicate(customer -> {
             String lowerCaseFilter = newValue.toLowerCase();
             return !newValue.isEmpty() &&
-                    camper.getName().toLowerCase().startsWith(lowerCaseFilter) ||
-                    String.valueOf(camper.getId()).startsWith(lowerCaseFilter);
+                    customer.getName().toLowerCase().startsWith(lowerCaseFilter) ||
+                    String.valueOf(customer.getId()).startsWith(lowerCaseFilter);
         });
-        camperListView.setItems(filteredData);
+        customerListView.setItems(filteredData);
     };
 
-    private ObservableList<Camper> getUnfilteredCamperData() {
+    private ObservableList<Customer> getUnfilteredCustomerData() {
         try {
-            return FXCollections.observableArrayList(camperDAO.getAll());
+            return FXCollections.observableArrayList(customerDAO.getAll());
         } catch (SQLException e){
             e.printStackTrace();
             LoggingUtil.logExceptionToFile(e);

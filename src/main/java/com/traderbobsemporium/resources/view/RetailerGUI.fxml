@@ -36,28 +36,33 @@
         <Button layoutX="990.0" layoutY="14.0" mnemonicParsing="false" onAction="#setFullScreen" prefHeight="25.0" prefWidth="74.0" style="-fx-background-color: white;" text="Full Screen" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="14.0" />
       <TabPane fx:id="filterTabPane" layoutX="25.0" layoutY="22.0" prefHeight="587.0" prefWidth="426.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="220.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="22.0">
         <tabs>
-          <Tab closable="false" onSelectionChanged="#displayCamperPurchases" text="Campers">
+          <Tab closable="false" onSelectionChanged="#displayCustomerPurchases" text="Customers">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                           <VBox prefHeight="552.0" prefWidth="426.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                               <children>
                                   <TextField fx:id="filterTextField" onKeyPressed="#filerKeyEvents" VBox.vgrow="NEVER" />
-                              <ListView fx:id="camperListView" prefHeight="584.0" prefWidth="426.0" />
+                              <ListView fx:id="customerListView" prefHeight="584.0" prefWidth="426.0" />
                               </children>
                           </VBox>
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab closable="false" text="Camper Info">
+          <Tab closable="false" text="Customer Info">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView fx:id="camperPurchasesListView" prefHeight="558.0" prefWidth="426.0" />
-                        <Text fx:id="remainingBalanceText" layoutX="200.0" layoutY="538.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remaining Balance: $00.00" wrappingWidth="212.0">
+                        <ListView fx:id="customerPurchasesListView" layoutY="30.0" prefHeight="528.0" prefWidth="426.0" />
+                        <Text fx:id="remainingBalanceText" layoutX="372.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$00.00" wrappingWidth="54.0">
                            <font>
                               <Font size="18.0" />
+                           </font>
+                        </Text>
+                        <Text layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Todays Purchases">
+                           <font>
+                              <Font size="22.0" />
                            </font>
                         </Text>
                      </children>
