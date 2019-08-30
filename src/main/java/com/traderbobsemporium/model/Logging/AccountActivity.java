@@ -1,4 +1,4 @@
-package main.java.com.traderbobsemporium.model.Logging;
+package main.java.com.traderbobsemporium.model.logging;
 
 import main.java.com.traderbobsemporium.model.Model;
 import main.java.com.traderbobsemporium.util.Util;

@@ -24,20 +24,17 @@ import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.gui.InitGUI;
 import main.java.com.traderbobsemporium.model.*;
-import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
-import main.java.com.traderbobsemporium.model.Logging.ActivityType;
-import main.java.com.traderbobsemporium.model.Logging.Announcement;
-import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
+import main.java.com.traderbobsemporium.model.logging.AccountActivity;
+import main.java.com.traderbobsemporium.model.logging.ActivityType;
+import main.java.com.traderbobsemporium.model.logging.Announcement;
+import main.java.com.traderbobsemporium.model.logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.LoggingUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.controlsfx.control.table.TableFilter;
+import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,16 +46,12 @@ import java.util.stream.Collectors;
  * All rights reserved.
  */
 
-//https://camo.githubusercontent.com/8708a8dcb49d365b1786a5093d8f3fd37aeb18a2/68747470733a2f2f7770696d672e77616c6c7374636e2e636f6d2f61353839346331622d663661662d343536652d383264662d3131353164613038333962662e706e67 <- design link\
-
-
 
 public class EmployeeController implements InitGUI {
     private Subject subject = SecurityUtils.getSubject();
     private final CustomerDAO customerDAO = new CustomerDAO();
     private final ItemDAO itemDAO = new ItemDAO();
     private final AccountDAO accountDAO = new AccountDAO();
-    private final AccountPermissionDAO accountPermissionDAO = new AccountPermissionDAO();
     private final AccountActivityLogger accountActivityLogger = new AccountActivityLogger();
     private final PurchasesActivityLogger purchasesActivityLogger = new PurchasesActivityLogger();
     private final AnnouncementLogger announcementLogger = new AnnouncementLogger();
@@ -73,19 +66,9 @@ public class EmployeeController implements InitGUI {
     @FXML
     private TilePane dashboardTilePane;
     @FXML
-    private TableView<AccountActivity> accountActivityTableView;
-    @FXML
-    private TableColumn<AccountActivity, String> usernameActivityColumn, activityTypeColumn,
-            affectedName, affectedID, dateTimeColumnAccount;
-    @FXML
-    private TableView<PurchasesActivity> purchasesActivityTableView;
-    @FXML
-    private TableColumn<PurchasesActivity, String> purchasesIdColumn, purchasesCustomerNameColumn, purchasesCustomerBalanceColumn,
-            purchasesItemIdColumn, purchasesItemNameColumn;
-    @FXML
     private PieChart accountActivityFrequencyChart;
     @FXML
-    private ChoiceBox<ItemType> itemsBoughtFrequencyChoiceBox;
+    private ChoiceBox<String> itemsBoughtFrequencyChoiceBox;
     @FXML
     private PieChart itemsBoughtFrequencyChart;
     @FXML
@@ -100,9 +83,9 @@ public class EmployeeController implements InitGUI {
     private TableColumn<Item, String> itemsIdColumn, itemsNameColumn, itemsPriceColumn, itemsQuantityColumn,
             imageURLColumn, itemTypeColumn;
     @FXML
-    private TextField itemNameField, itemPriceField, itemQuantityField, itemImageUrlField;
+    private TextField itemNameField, itemPriceField, itemQuantityField, itemImageUrlField, itemCategoryField;
     @FXML
-    private ChoiceBox<ItemType> itemTypeChoiceBox;
+    private ChoiceBox<String> itemTypeChoiceBox;
     @FXML
     private Button itemAdd, itemUpdate, itemDelete;
     @FXML
@@ -112,9 +95,9 @@ public class EmployeeController implements InitGUI {
     @FXML
     private TableView<Customer> customerTableView;
     @FXML
-    private TableColumn<Customer, String> customerIdColumn, customerNameColumn, balanceColumn;
+    private TableColumn<Customer, String> customerIdColumn, customerNameColumn, balanceColumn, dailyLimitColumn;
     @FXML
-    private TextField customerNameField, customerBalanceField;
+    private TextField customerNameField, customerBalanceField, customerDailyLimitField;
     @FXML
     private Button customerAdd, customerUpdate, customerDelete;
     @FXML
@@ -160,9 +143,11 @@ public class EmployeeController implements InitGUI {
     private TableView<PurchasesActivity> purchasesActivityLoggerTableView;
     @FXML
     private TableColumn<PurchasesActivity, String> purchasesLoggerIdColumn, purchasesLoggerCustomerNameColumn,
-            purchasesLoggerCustomerBalanceColumn, purchasesLoggerItemIdColumn, purchasesLoggerItemNameColumn;
+            purchasesLoggerItemIdColumn, purchasesLoggerItemNameColumn, purchasesLoggerItemTypeColumn, purchasesLoggerDateColumn;
     @FXML
-    private TextField purchasesCustomerNameField, purchasesCustomerBalanceField, purchasesItemIdField, purchasesItemNameField, purchasesDateField;
+    private TextField purchasesCustomerNameField, purchasesItemIdField, purchasesItemNameField, purchasesDateField;
+    @FXML
+    private ChoiceBox<String> purchasesItemTypeChoiceBox;
     @FXML
     private Button purchasesAdd, purchasesUpdate, purchasesDelete;
     @FXML
@@ -188,15 +173,15 @@ public class EmployeeController implements InitGUI {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         accountActivityLogger.start();
-        panels = new EmployeePanel[]{new EmployeePanel(dashboardScrollPane, "Dashboard"),
-                new EmployeePanel(dashboardResizerContainer, "Dashboard"), new EmployeePanel(customersAnchorPane, "Customers"),
+        panels = new EmployeePanel[]{new EmployeePanel(dashboardScrollPane, "Dashboard", false),
+                new EmployeePanel(dashboardResizerContainer, "Dashboard", false), new EmployeePanel(customersAnchorPane, "Customers"),
                 new EmployeePanel(accountsAnchorPane, "Accounts"), new EmployeePanel(logsTabPane, "Logs"),
                 new EmployeePanel(itemsAnchorPane, "Items"), new EmployeePanel(helpAnchorPane, "Help", false)};
         setCellValueFactory();
-        setupDashboardResponsiveness();
-        loadAllPanels();
-        loadDataManagerEventHandlers();
         loadPanelsChoiceBox();
+        setupDashboardResponsiveness();
+        loadDashboard();
+        loadDataManagerEventHandlers();
         setTableSelectionMethods();
     }
 
@@ -208,8 +193,6 @@ public class EmployeeController implements InitGUI {
         itemsTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         purchasesActivityLoggerTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         accountPermissionTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        accountActivityTableView.setSelectionModel(null);
-        purchasesActivityTableView.setSelectionModel(null);
     }
 
 
@@ -220,13 +203,10 @@ public class EmployeeController implements InitGUI {
         createAccountPanelEventHandler();
         createAnnouncementPanelEventHandler();
         createAccountActivitiesPanelEventHandler();
-
-
     }
 
     private void loadPanelsChoiceBox() {
         populateAccountRoleChoiceBox();
-        populateItemsBoughtFrequencyChoiceBox();
         populateAccountActivityTypeChoiceBox();
         populateItemTypeChoiceBox();
     }
@@ -236,17 +216,6 @@ public class EmployeeController implements InitGUI {
     SIDE/TOP BAR
     /////////////
      */
-
-    @FXML
-    private void loadAllPanels() {
-        populateTableViewWithObservableList(accountDAO, accountTableView);
-        populateTableViewWithObservableList(customerDAO, customerTableView);
-        populateTableViewWithObservableList(announcementLogger, announcementTableView);
-        populateTableViewWithObservableList(accountActivityLogger, accountActivityLoggerTableView);
-        populateTableViewWithObservableList(itemDAO, itemsTableView);
-        populateTableViewWithObservableList(purchasesActivityLogger, purchasesActivityLoggerTableView);
-        loadDashboard();
-    }
 
     @FXML
     private void openPanel(MouseEvent mouseEvent) {
@@ -285,10 +254,9 @@ public class EmployeeController implements InitGUI {
         dashboardTilePane.prefHeightProperty().bind(dashboardScrollPane.heightProperty());
     }
 
+    @FXML
     private void loadDashboard() {
         try {
-            populateTableViewWithObservableList(accountActivityLogger, accountActivityTableView);
-            populateTableViewWithObservableList(purchasesActivityLogger, purchasesActivityTableView);
             populateAccountActivityFrequency();
             populatePurchasedItemsFrequencyChart();
             populateAnnouncementsTextArea();
@@ -317,7 +285,6 @@ public class EmployeeController implements InitGUI {
             stringBuilder.append("\n\n\n");
         }
         announcementsArea.setText(stringBuilder.toString());
-
     }
 
 
@@ -347,12 +314,13 @@ public class EmployeeController implements InitGUI {
             e.printStackTrace();
             LoggingUtil.logExceptionToFile(e);
         }
+
     }
 
-    private List<String> listOfItemNames() throws SQLException {
+    private List<String> listOfItemNames() {
         List<String> list = new ArrayList<>();
-        for (PurchasesActivity purchasesActivity : purchasesActivityLogger.getAll()) {
-            if (itemDAO.get(purchasesActivity.getItemId()).getItemType() == itemsBoughtFrequencyChoiceBox.getValue())
+        for (PurchasesActivity purchasesActivity : purchasesActivityLogger.getAll("WHERE itemtype = ?",
+                itemsBoughtFrequencyChoiceBox.getValue())) {
                 list.add(purchasesActivity.getItemName());
         }
         return list;
@@ -363,12 +331,6 @@ public class EmployeeController implements InitGUI {
             if (data.get(i).getPieValue() == 0)
                 data.remove(i--);
         }
-    }
-
-    private void populateItemsBoughtFrequencyChoiceBox() {
-        for (ItemType activityType : ItemType.values())
-            itemsBoughtFrequencyChoiceBox.getItems().add(activityType);
-        itemsBoughtFrequencyChoiceBox.setValue(ItemType.CHIPS);
     }
 
     /*
@@ -382,23 +344,33 @@ public class EmployeeController implements InitGUI {
                 accountActivityLogger) {
 
             @Override
-            String[] panelFields() {
-                return new String[]{itemNameField.getText(), itemQuantityField.getText(), itemPriceField.getText(),
-                        itemImageUrlField.getText(),itemTypeChoiceBox.getValue().name()};
-            }
-
-            @Override
-            void afterEvent() {
-                populateTableViewWithObservableList(itemDAO, itemsTableView);
-            }
-
-            @Override
             void clearFields() {
                 itemNameField.requestFocus();
                 itemNameField.clear();
                 itemQuantityField.clear();
                 itemPriceField.clear();
+                itemTypeChoiceBox.setValue(null);
                 itemImageUrlField.clear();
+            }
+
+            @Override
+            Item panelModel() {
+                return new Item(itemNameField.getText(), Integer.parseInt(itemQuantityField.getText()),
+                        new BigDecimal(itemPriceField.getText()), itemImageUrlField.getText(), itemTypeChoiceBox.getValue());
+            }
+
+            @Override
+            void updateSelectedModel(Item item) {
+                if (!itemNameField.getText().isEmpty())
+                    item.setName(itemNameField.getText());
+                if (!itemQuantityField.getText().isEmpty())
+                    item.setQuantity(Integer.parseInt(itemQuantityField.getText()));
+                if (!itemPriceField.getText().isEmpty())
+                    item.setPrice(new BigDecimal(itemPriceField.getText()));
+                if (!itemImageUrlField.getText().isEmpty())
+                    item.setImageURL(itemImageUrlField.getText());
+                if (itemTypeChoiceBox.getValue() != null)
+                    item.setItemType(itemTypeChoiceBox.getValue());
             }
 
             @Override
@@ -418,36 +390,65 @@ public class EmployeeController implements InitGUI {
         itemsTableView.addEventHandler(MouseEvent.MOUSE_PRESSED, itemEventHandler);
     }
 
+    @FXML
+    private void addItemCategory(){
+        itemDAO.addItemCategory(itemCategoryField.getText());
+        itemTypeChoiceBox.getItems().add(itemCategoryField.getText());
+        itemCategoryField.clear();
+    }
+
+    @FXML
+    private void removeItemCategory(){
+        itemDAO.deleteItemCategory(itemTypeChoiceBox.getValue());
+        itemTypeChoiceBox.getItems().remove(itemTypeChoiceBox.getValue());
+        itemTypeChoiceBox.setValue(null);
+
+    }
+
     private void populateItemTypeChoiceBox() {
-        for (ItemType itemType : ItemType.values())
-            itemTypeChoiceBox.getItems().add(itemType);
-        itemTypeChoiceBox.setValue(ItemType.CANDY);
+        try {
+            for (String itemType : itemDAO.getItemCategories()) {
+                itemTypeChoiceBox.getItems().add(itemType);
+                purchasesItemTypeChoiceBox.getItems().add(itemType);
+                itemsBoughtFrequencyChoiceBox.getItems().add(itemType);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
     /*
     //////////////
-    CAMPERS
+    CUSTOMERS
     //////////////
      */
 
     private void createCustomerPanelEventHandler() {
         EventHandler<Event> customerEventHandler = new EmployeePanelHandler<Customer>(customerTableView, customerDAO, "customers",
                 accountActivityLogger) {
-            @Override
-            String[] panelFields() {
-                return new String[]{customerNameField.getText(), customerBalanceField.getText()};
-            }
-
-            @Override
-            void afterEvent() {
-                populateTableViewWithObservableList(customerDAO, customerTableView);
-            }
 
             void clearFields() {
                 customerNameField.clear();
                 customerBalanceField.clear();
+                customerDailyLimitField.clear();
                 customerNameField.requestFocus();
+            }
+
+            @Override
+            Customer panelModel() {
+               return new Customer(customerNameField.getText(), new BigDecimal(customerBalanceField.getText()),
+                       Integer.parseInt(customerDailyLimitField.getText()));
+            }
+
+            @Override
+            void updateSelectedModel(Customer customer) {
+                if (!customerNameField.getText().isEmpty())
+                    customer.setName(customerNameField.getText());
+                if (!customerBalanceField.getText().isEmpty())
+                    customer.setBalance(new BigDecimal(customerBalanceField.getText()));
+                if (!customerDailyLimitField.getText().isEmpty())
+                    customer.setDailyLimit(Integer.parseInt(customerDailyLimitField.getText()));
             }
 
             @Override
@@ -455,6 +456,7 @@ public class EmployeeController implements InitGUI {
                 Customer customer = customerTableView.getSelectionModel().getSelectedItem();
                 customerNameField.setText(customer.getName());
                 customerBalanceField.setText(String.valueOf(customer.getBalance()));
+                customerDailyLimitField.setText(String.valueOf(customer.getDailyLimit()));
             }
         }.getEventHandler();
         customerUpdate.addEventHandler(ActionEvent.ACTION, customerEventHandler);
@@ -476,31 +478,42 @@ public class EmployeeController implements InitGUI {
                 accountActivityLogger) {
 
             @Override
-            String[] panelFields() {
-                return new String[]{usernameField.getText(), passwordField.getText(),
-                        accountRoleChoiceBox.getValue().name()};
-            }
-
-            @Override
             void clearFields() {
                 usernameField.requestFocus();
                 usernameField.clear();
                 passwordField.clear();
                 permissionsField.clear();
+                accountRoleChoiceBox.setValue(null);
                 accountPermissionTableView.getItems().clear();
+            }
+
+            @Override
+            Account panelModel() {
+                return new Account(usernameField.getText(), passwordField.getText(), accountRoleChoiceBox.getValue());
+            }
+
+            @Override
+            void updateSelectedModel(Account account) {
+                if (!usernameField.getText().isEmpty())
+                    account.setName(usernameField.getText());
+                if (!passwordField.getText().isEmpty())
+                    account.setPassword(passwordField.getText());
+                if (accountRoleChoiceBox.getValue() != null)
+                    account.setAccountRoles(accountRoleChoiceBox.getValue());
             }
 
             @Override
             void populateFields() {
                 Account account = accountTableView.getSelectionModel().getSelectedItem();
                 usernameField.setText(account.getName());
-                accountPermissionTableView.getItems().setAll(getEmployeePermissions());
+                accountPermissionTableView.getItems().setAll(accountDAO.getAccountPermissions(usernameField.getText()));
                 accountRoleChoiceBox.setValue(account.getAccountRole());
             }
 
             @Override
-            void afterEvent() {
-                populateTableViewWithObservableList(accountDAO, accountTableView);
+            public void postEvent(){
+                if (getEventType() == EventType.DELETE)
+                    accountDAO.deletePermissions(usernameField.getText());
             }
         }.getEventHandler();
         accountsCancel.addEventHandler(MouseEvent.MOUSE_PRESSED, accountEventHandler);
@@ -513,24 +526,6 @@ public class EmployeeController implements InitGUI {
 
 
 
-    private ObservableList<AccountPermission> getEmployeePermissions(){
-        Account account = accountTableView.getSelectionModel().getSelectedItem();
-        ObservableList<AccountPermission> accountPermissions = FXCollections.observableArrayList();
-        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM accountpermissions WHERE " +
-                     "username = ?")) {
-            statement.setString(1, account.getName());
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                   accountPermissions.add(new AccountPermission(resultSet));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            LoggingUtil.logExceptionToFile(e);
-        }
-        return accountPermissions;
-    }
 
     private void populateAccountRoleChoiceBox() {
         for (AccountRole accountType : AccountRole.values())
@@ -544,33 +539,30 @@ public class EmployeeController implements InitGUI {
     //////////////
     */
 
-    @FXML
+      @FXML
     private void addPermission() {
         subject.checkPermission("accounts:add");
         AccountPermission accountPermission = new AccountPermission(usernameField.getText(), permissionsField.getText());
         try {
-            accountPermissionDAO.add(accountPermission);
+            accountDAO.addPermissions(accountPermission);
             accountActivityLogger.add(new AccountActivity(ActivityType.ADD, accountPermission));
             permissionsField.clear();
         } catch (SQLException e){
             LoggingUtil.logExceptionToFile(e);
             e.printStackTrace();
         }
-        accountPermissionTableView.getItems().setAll(getEmployeePermissions());
+        accountPermissionTableView.getItems().setAll(accountDAO.getAccountPermissions(usernameField.getText()));
 
     }
 
     @FXML
     private void deletePermission() {
-        subject.checkPermission("accounts:delete");
         for (AccountPermission accountPermission : accountPermissionTableView.getSelectionModel().getSelectedItems()) {
-            accountPermissionDAO.delete(accountPermission.getId());
+            accountDAO.deletePermissions(accountPermission.getId());
             accountActivityLogger.add(new AccountActivity(ActivityType.DELETE, accountPermission));
         }
-        accountPermissionTableView.getItems().setAll(getEmployeePermissions());
+        accountPermissionTableView.getItems().setAll(accountDAO.getAccountPermissions(usernameField.getText()));
     }
-
-
       /*
     //////////////
     ACCOUNT ACTIVITY
@@ -582,14 +574,23 @@ public class EmployeeController implements InitGUI {
                 accountActivityLogger, "accountactivity") {
 
             @Override
-            String[] panelFields() {
-                return new String[]{activityUsernameField.getText(), activityTypeChoiceBox.getValue().name(),
-                        affectedIdField.getText(), affectedNameField.getText(), activityDateTimeField.getText()};
+            AccountActivity panelModel() {
+                return new AccountActivity(activityUsernameField.getText(), activityTypeChoiceBox.getValue(),
+                        Integer.parseInt(affectedIdField.getText()), affectedNameField.getText(), activityDateTimeField.getText());
             }
 
             @Override
-            void afterEvent() {
-                populateTableViewWithObservableList(accountActivityLogger, accountActivityLoggerTableView);
+            void updateSelectedModel(AccountActivity accountActivity) {
+                if (!activityUsernameField.getText().isEmpty())
+                    accountActivity.setName(activityUsernameField.getText());
+                if (activityTypeChoiceBox.getValue() != null)
+                    accountActivity.setActivityType(activityTypeChoiceBox.getValue());
+                if (!affectedIdField.getText().isEmpty())
+                    accountActivity.setAffectedId(Integer.parseInt(affectedIdField.getText()));
+                if (!affectedNameField.getText().isEmpty())
+                    accountActivity.setAffectedName(affectedNameField.getText());
+                if (!activityDateTimeField.getText().isEmpty())
+                    accountActivity.setDate(activityDateTimeField.getText());
             }
 
             @Override
@@ -621,7 +622,6 @@ public class EmployeeController implements InitGUI {
         accountActivityLoggerTableView.addEventHandler(MouseEvent.MOUSE_PRESSED, panelEventHandler);
     }
 
-
     private void populateAccountActivityTypeChoiceBox() {
         for (ActivityType activityType : ActivityType.values())
             activityTypeChoiceBox.getItems().add(activityType);
@@ -638,24 +638,34 @@ public class EmployeeController implements InitGUI {
     private void createPurchasesActivityPanelEventHandler() {
         EventHandler<Event> panelEventHandler = new EmployeePanelHandler<PurchasesActivity>(purchasesActivityLoggerTableView,
                 purchasesActivityLogger, "purchasesactivity") {
+
             @Override
-            String[] panelFields() {
-                return new String[]{purchasesCustomerNameField.getText(), purchasesCustomerBalanceField.getText(),
-                        purchasesItemIdField.getText(), purchasesItemNameField.getText(), purchasesDateField.getText()};
+            PurchasesActivity panelModel() {
+                return new PurchasesActivity(purchasesCustomerNameField.getText(), Integer.parseInt(purchasesItemIdField.getText()),
+                        purchasesItemNameField.getText(), purchasesItemTypeChoiceBox.getValue(), purchasesDateField.getText());
             }
 
             @Override
-            void afterEvent() {
-                populateTableViewWithObservableList(purchasesActivityLogger, purchasesActivityLoggerTableView);
+            void updateSelectedModel(PurchasesActivity purchasesActivity) {
+                if (!purchasesCustomerNameField.getText().isEmpty())
+                    purchasesActivity.setName(purchasesCustomerNameField.getText());
+                if (!purchasesItemIdField.getText().isEmpty())
+                    purchasesActivity.setItemId(Integer.parseInt(purchasesItemIdField.getText()));
+                if (!purchasesItemNameField.getText().isEmpty())
+                    purchasesActivity.setItemName(purchasesItemNameField.getText());
+                if (purchasesItemTypeChoiceBox.getValue() != null)
+                    purchasesActivity.setItemType(purchasesItemTypeChoiceBox.getValue());
+                if (!purchasesDateField.getText().isEmpty())
+                    purchasesActivity.setDate(purchasesDateField.getText());
             }
 
             @Override
             void clearFields() {
                 purchasesCustomerNameField.clear();
-                purchasesCustomerBalanceField.clear();
                 purchasesItemIdField.clear();
                 purchasesItemNameField.clear();
                 purchasesDateField.clear();
+                purchasesItemTypeChoiceBox.setValue(null);
                 purchasesCustomerNameField.requestFocus();
             }
 
@@ -663,9 +673,9 @@ public class EmployeeController implements InitGUI {
             void populateFields() {
                 PurchasesActivity purchasesActivity = purchasesActivityLoggerTableView.getSelectionModel().getSelectedItem();
                 purchasesCustomerNameField.setText(purchasesActivity.getName());
-                purchasesCustomerBalanceField.setText(String.valueOf(purchasesActivity.getCustomerBalance()));
                 purchasesItemIdField.setText(String.valueOf(purchasesActivity.getItemId()));
                 purchasesItemNameField.setText(purchasesActivity.getItemName());
+                purchasesItemTypeChoiceBox.setValue(purchasesActivity.getItemType());
                 purchasesDateField.setText(purchasesActivity.getDate());
                 purchasesCustomerNameField.requestFocus();
             }
@@ -688,16 +698,24 @@ public class EmployeeController implements InitGUI {
     private void createAnnouncementPanelEventHandler(){
         EventHandler<Event> panelEventHandler = new EmployeePanelHandler<Announcement>(announcementTableView,
                 announcementLogger, "announcement") {
+
             @Override
-            String[] panelFields() {
-                return new String[]{authorField.getText(), titleField.getText(),
-                        dialogField.getText(), announcementDateTimeField.getText()};
+            Announcement panelModel() {
+                return new Announcement(titleField.getText(), dialogField.getText());
             }
 
             @Override
-            void afterEvent() {
-                populateTableViewWithObservableList(announcementLogger, announcementTableView);
+            void updateSelectedModel(Announcement announcement) {
+                if (!authorField.getText().isEmpty())
+                    announcement.setName(authorField.getText());
+                if (!titleField.getText().isEmpty())
+                    announcement.setTitle(titleField.getText());
+                if (!dialogField.getText().isEmpty())
+                    announcement.setDialog(dialogField.getText());
+                if (!announcementDateTimeField.getText().isEmpty())
+                    announcement.setDateTime(announcementDateTimeField.getText());
             }
+
 
             @Override
             void clearFields() {
@@ -723,30 +741,14 @@ public class EmployeeController implements InitGUI {
         announcementsAnchorPane.addEventFilter(KeyEvent.KEY_RELEASED, panelEventHandler);
         announcementTableView.addEventHandler(MouseEvent.MOUSE_PRESSED, panelEventHandler);
         announcementsAdd.addEventHandler(ActionEvent.ACTION, panelEventHandler);
-    }
 
-
-    @SuppressWarnings("unchecked")
-    private void populateTableViewWithObservableList(DAO dao, TableView tableView) {
-        try {
-            ObservableList observableList = FXCollections.observableArrayList(dao.getAll());
-            tableView.setItems(observableList);
-            TableFilter.forTableView(tableView).apply();
-        }catch (Exception e){
-            e.printStackTrace();
-            LoggingUtil.logExceptionToFile(e);
-        }
     }
 
     private void setCellValueFactory(){
-        usernameActivityColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        activityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("activityType"));
-        affectedName.setCellValueFactory(new PropertyValueFactory<>("affectedName"));
-        affectedID.setCellValueFactory(new PropertyValueFactory<>("affectedId"));
-        dateTimeColumnAccount.setCellValueFactory(new PropertyValueFactory<>("date"));
         customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balanceString"));
+        dailyLimitColumn.setCellValueFactory(new PropertyValueFactory<>("dailyLimit"));
         accountIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         passwordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
@@ -770,16 +772,12 @@ public class EmployeeController implements InitGUI {
         itemsQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         imageURLColumn.setCellValueFactory(new PropertyValueFactory<>("imageURL"));
         itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
-        purchasesIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        purchasesCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        purchasesCustomerBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("customerBalanceString"));
-        purchasesItemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
-        purchasesItemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         purchasesLoggerIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         purchasesLoggerCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        purchasesLoggerCustomerBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("customerBalance"));
         purchasesLoggerItemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         purchasesLoggerItemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+        purchasesLoggerItemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
+        purchasesLoggerDateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
     }
 
     @Override

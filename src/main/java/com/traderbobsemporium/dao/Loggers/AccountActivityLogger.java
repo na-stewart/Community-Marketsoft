@@ -1,9 +1,7 @@
 package main.java.com.traderbobsemporium.dao.Loggers;
-import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
-import main.java.com.traderbobsemporium.model.Logging.ActivityType;
+import main.java.com.traderbobsemporium.model.logging.AccountActivity;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.LoggingUtil;
-import main.java.com.traderbobsemporium.util.Util;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -26,21 +24,6 @@ public class AccountActivityLogger extends ThreadedDAO<AccountActivity> {
     }
 
     @Override
-    public void updateAll(AccountActivity accountActivity, String[] params) throws SQLException {
-        if (!params[0].isEmpty())
-            accountActivity.setName(params[0]);
-        if (!params[1].isEmpty())
-            accountActivity.setActivityType(ActivityType.valueOf(params[1]));
-        if (!params[2].isEmpty())
-            accountActivity.setAffectedId(Integer.parseInt(params[2]));
-        if (!params[3].isEmpty())
-            accountActivity.setAffectedName(params[3]);
-        if (!params[4].isEmpty())
-            accountActivity.setDate(params[4]);
-        update(accountActivity);
-    }
-
-    @Override
     public void update(AccountActivity updated) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE accountactivity SET " +
@@ -52,6 +35,7 @@ public class AccountActivityLogger extends ThreadedDAO<AccountActivity> {
             preparedStatement.setString(5, "date");
             preparedStatement.setInt(6, updated.getId());
             preparedStatement.execute();
+
         }
     }
 

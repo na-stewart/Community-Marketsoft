@@ -2,18 +2,20 @@ package main.java.com.traderbobsemporium;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import main.java.com.traderbobsemporium.dao.AccountDAO;
+import main.java.com.traderbobsemporium.auth.BobsVeryOwnJbdcRealm;
 import main.java.com.traderbobsemporium.gui.GUI;
 import main.java.com.traderbobsemporium.gui.GUIManager;
-import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
-import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.LoggingUtil;
 import main.java.com.traderbobsemporium.util.Util;
 import org.apache.shiro.SecurityUtils;
-import org.controlsfx.dialog.ExceptionDialog;
-
-import java.sql.SQLException;
+import org.apache.shiro.authc.credential.PasswordMatcher;
+import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
+import org.apache.shiro.authz.ModularRealmAuthorizer;
+import org.apache.shiro.authz.permission.WildcardPermissionResolver;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.realm.jdbc.JdbcRealm;
 
 /**
  * @Author Aidan Stewart
@@ -27,7 +29,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             DatabaseUtil.CONFIG_SETUP();
-            AuthUtil.INIT_AUTH();
+            initAuth();
             displayLogin();
         }catch (Exception e){
             e.printStackTrace();
@@ -41,6 +43,25 @@ public class Main extends Application {
         GUIManager guiManager = GUIManager.getInstance();
         guiManager.getGuiList().add(new GUI("main/java/com/traderbobsemporium/resources/view/LoginGUI.fxml", "LoginGUI"));
         guiManager.openByName("LoginGUI");
+    }
+
+    private void initAuth(){
+        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
+        ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator();
+        authenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
+        defaultSecurityManager.setAuthenticator(authenticator);
+        ModularRealmAuthorizer authorizer = new ModularRealmAuthorizer();
+        authorizer.setPermissionResolver(new WildcardPermissionResolver());
+        defaultSecurityManager.setAuthorizer(authorizer);
+        JdbcRealm realm = new BobsVeryOwnJbdcRealm();
+        realm.setDataSource(DatabaseUtil.DATA_SOURCE);
+        realm.setAuthenticationQuery("SELECT password FROM account WHERE username = ?");
+        realm.setUserRolesQuery("SELECT accountRole FROM account WHERE username = ?");
+        realm.setPermissionsQuery("SELECT permission FROM accountpermissions WHERE username = ?");
+        realm.setPermissionsLookupEnabled(true);
+        realm.setCredentialsMatcher(new PasswordMatcher());
+        defaultSecurityManager.setRealm(realm);
+        SecurityUtils.setSecurityManager(defaultSecurityManager);
     }
 
 }

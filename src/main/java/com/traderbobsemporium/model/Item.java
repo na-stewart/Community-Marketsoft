@@ -19,9 +19,9 @@ public class Item extends Model {
     private String imageURL;
     private BigDecimal price;
     private int quantity;
-    private ItemType itemType;
+    private String itemType;
 
-    public Item(String name, int quantity, BigDecimal price, String imageURL, ItemType itemType) {
+    public Item(String name, int quantity, BigDecimal price, String imageURL, String itemType) {
         super(name);
         this.imageURL = imageURL;
         this.price = price;
@@ -34,14 +34,14 @@ public class Item extends Model {
         this.imageURL = resultSet.getString("imageURL");
         this.price = resultSet.getBigDecimal("price");
         this.quantity = resultSet.getInt("quantity");
-        this.itemType = ItemType.valueOf(resultSet.getString("itemType"));
+        this.itemType = resultSet.getString("itemType");
     }
 
-    public ItemType getItemType() {
+    public String getItemType() {
         return itemType;
     }
 
-    public void setItemType(ItemType itemType) {
+    public void setItemType(String itemType) {
         this.itemType = itemType;
     }
 

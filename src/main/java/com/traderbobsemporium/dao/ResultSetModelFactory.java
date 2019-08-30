@@ -1,9 +1,9 @@
 package main.java.com.traderbobsemporium.dao;
 
 import main.java.com.traderbobsemporium.model.*;
-import main.java.com.traderbobsemporium.model.Logging.AccountActivity;
-import main.java.com.traderbobsemporium.model.Logging.Announcement;
-import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
+import main.java.com.traderbobsemporium.model.logging.AccountActivity;
+import main.java.com.traderbobsemporium.model.logging.Announcement;
+import main.java.com.traderbobsemporium.model.logging.PurchasesActivity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

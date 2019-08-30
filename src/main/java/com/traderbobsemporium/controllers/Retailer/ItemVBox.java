@@ -3,8 +3,10 @@ package main.java.com.traderbobsemporium.controllers.Retailer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import main.java.com.traderbobsemporium.dao.ItemDAO;
 import main.java.com.traderbobsemporium.model.Item;
 import main.java.com.traderbobsemporium.util.LoggingUtil;
 
@@ -23,19 +25,26 @@ class ItemVBox extends VBox {
     private Item item;
     private ImageView imageView = new ImageView();
 
-    public ItemVBox(Item item) {
+    ItemVBox(Item item) {
         super();
         this.item = item;
         imageView.setFitWidth(210);
         imageView.setFitHeight(225);
-        buildVbox();
+        buildVBox();
+        displayQuantity();
     }
 
     Item getItem() {
         return item;
     }
 
-    private void buildVbox() {
+    private void displayQuantity(){
+        addEventFilter(MouseEvent.MOUSE_ENTERED, e ->
+                getChildren().add(1, vBoxTextBuilder("Quantity: " + new ItemDAO().get(item.getId()).getQuantity())));
+        addEventFilter(MouseEvent.MOUSE_EXITED, e -> getChildren().remove(1));
+    }
+
+    private void buildVBox() {
         addChildren();
         setAlignment(Pos.TOP_CENTER);
         setStyle("-fx-background-color: white");
@@ -43,16 +52,14 @@ class ItemVBox extends VBox {
     }
 
     private void addChildren(){
-        getChildren().add(vBoxTextBuilder(String.valueOf(item.getId())));
-        getChildren().add(vBoxTextBuilder("Price: " + String.valueOf(item.getPrice())));
-        getChildren().add(vBoxTextBuilder("Quantity: " + String.valueOf(item.getQuantity())));
+        getChildren().add(vBoxTextBuilder("Price: " + item.getPriceString()));
         getChildren().add(vBoxTextBuilder(item.getName()));
         getChildren().add(imageView);
     }
 
     private Text vBoxTextBuilder(String data){
         Text text = new Text(data);
-        text.setStyle("-fx-font: 20 arial;");
+        text.setStyle("-fx-font: 25 arial;");
         return text;
     }
 

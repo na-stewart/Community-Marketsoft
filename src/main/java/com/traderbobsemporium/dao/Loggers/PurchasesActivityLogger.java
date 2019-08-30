@@ -1,11 +1,9 @@
 package main.java.com.traderbobsemporium.dao.Loggers;
 
-import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
+import main.java.com.traderbobsemporium.model.logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.LoggingUtil;
-import org.controlsfx.dialog.ExceptionDialog;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,29 +24,16 @@ public class PurchasesActivityLogger extends ThreadedDAO<PurchasesActivity> {
     }
 
     @Override
-    public void updateAll(PurchasesActivity purchasesActivity, String[] params) throws SQLException {
-        if (!params[0].isEmpty())
-            purchasesActivity.setName(params[0]);
-        if (!params[1].isEmpty())
-            purchasesActivity.setCustomerBalance(new BigDecimal(params[1]));
-        if (!params[2].isEmpty())
-            purchasesActivity.setItemId(Integer.parseInt(params[2]));
-        if (!params[3].isEmpty())
-            purchasesActivity.setItemName(params[3]);
-        if (!params[4].isEmpty())
-            purchasesActivity.setDate(params[4]);
-        update(purchasesActivity);
-    }
-
-    @Override
     public void update(PurchasesActivity updated) throws SQLException {
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE purchasesactivity SET " +
-                     "customerName = ?, customerBalance = ?, itemId = ?, date = ?, itemName = ? WHERE id = ?")) {
+                     "customerName = ?, itemId = ?, itemName = ?, itemType = ?, date = ? WHERE id = ?")) {
             preparedStatement.setString(1, updated.getName());
-            preparedStatement.setBigDecimal(2, updated.getCustomerBalance());
-            preparedStatement.setInt(3, updated.getItemId());
-            preparedStatement.setString(4, updated.getItemName());
+            preparedStatement.setInt(2, updated.getItemId());
+            preparedStatement.setString(3, updated.getItemName());
+            preparedStatement.setString(4, updated.getItemType());
+            preparedStatement.setString(5, updated.getDate());
+            preparedStatement.setInt(6, updated.getId());
             preparedStatement.execute();
         }
     }
@@ -88,13 +73,13 @@ public class PurchasesActivityLogger extends ThreadedDAO<PurchasesActivity> {
     private void logToDatabase(PurchasesActivity purchasesActivity){
         try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO purchasesactivity " +
-                     "(id, customerName, customerBalance, itemId, date, itemName) VALUES (?, ?, ?, ?, ?, ?)")) {
+                     "(id, customerName, itemId, itemName, itemType, Date) VALUES (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setInt(1, purchasesActivity.getId());
             preparedStatement.setString(2, purchasesActivity.getName());
-            preparedStatement.setBigDecimal(3, purchasesActivity.getCustomerBalance());
-            preparedStatement.setInt(4, purchasesActivity.getItemId());
-            preparedStatement.setString(5, purchasesActivity.getDate());
-            preparedStatement.setString(6, purchasesActivity.getItemName());
+            preparedStatement.setInt(3, purchasesActivity.getItemId());
+            preparedStatement.setString(4, purchasesActivity.getItemName());
+            preparedStatement.setString(5, purchasesActivity.getItemType());
+            preparedStatement.setString(6, purchasesActivity.getDate());
             preparedStatement.execute();
 
         } catch (SQLException e) {
@@ -102,5 +87,4 @@ public class PurchasesActivityLogger extends ThreadedDAO<PurchasesActivity> {
             LoggingUtil.logExceptionToFile(e);
         }
     }
-
 }

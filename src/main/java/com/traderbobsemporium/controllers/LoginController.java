@@ -108,7 +108,6 @@ public class LoginController implements InitGUI {
             throw new AccountLockedException();
         if (subject.hasRole(AccountRole.DISABLED.name()))
             throw new DisabledAccountException();
-        System.out.println("Successfully Logged In!\n================================");
     }
 
 

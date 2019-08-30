@@ -1,4 +1,4 @@
-package main.java.com.traderbobsemporium.model.Logging;
+package main.java.com.traderbobsemporium.model.logging;
 
 import main.java.com.traderbobsemporium.model.Customer;
 import main.java.com.traderbobsemporium.model.Item;
@@ -18,32 +18,32 @@ import java.util.Locale;
  * All rights reserved.
  */
 public class PurchasesActivity extends Model {
-    private BigDecimal customerBalance;
     private int itemId;
     private String itemName;
+    private String itemType;
     private String date;
 
     public PurchasesActivity(Item item, Customer customer) {
         super(customer.getName());
-        this.customerBalance = customer.getBalance();
         this.itemId = item.getId();
         this.itemName = item.getName();
+        this.itemType = item.getItemType();
         this.date = Util.date(false);
     }
 
-    public PurchasesActivity(String customerName, BigDecimal customerBalance, int itemId, String itemName, String date) {
+    public PurchasesActivity(String customerName, int itemId, String itemName, String itemType, String date) {
         super(customerName);
-        this.customerBalance = customerBalance;
         this.itemId = itemId;
         this.itemName = itemName;
+        this.itemType = itemType;
         this.date = date;
     }
 
     public PurchasesActivity(ResultSet resultSet) throws SQLException {
         super(resultSet.getInt("id"), resultSet.getString("customerName"));
-        this.customerBalance = resultSet.getBigDecimal("customerBalance");
         this.itemId = resultSet.getInt("itemId");
         this.itemName = resultSet.getString("itemName");
+        this.itemType = resultSet.getString("itemType");
         this.date = resultSet.getString("date");
     }
 
@@ -64,15 +64,14 @@ public class PurchasesActivity extends Model {
         this.itemName = itemName;
     }
 
-    public BigDecimal getCustomerBalance() {
-        return customerBalance;
+    public String getItemType() {
+        return itemType;
     }
 
-    public String getCustomerBalanceString(){
-        NumberFormat n = NumberFormat.getCurrencyInstance(Locale.US);
-        double doublePayment = getCustomerBalance().doubleValue();
-        return n.format(doublePayment);
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
     }
+
 
     public void setDate(String date) {
         this.date = date;
@@ -86,13 +85,8 @@ public class PurchasesActivity extends Model {
     public String toString() {
         return "PurchasesActivity{" +
                  "customerName='" + getName() + '\'' +
-                ", customerBalance=" + customerBalance +
                 ", itemId=" + itemId +
                 ", itemName='" + itemName + '\'' +
                 '}';
-    }
-
-    public void setCustomerBalance(BigDecimal customerBalance) {
-        this.customerBalance = customerBalance;
     }
 }

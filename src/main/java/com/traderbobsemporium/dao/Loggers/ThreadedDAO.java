@@ -12,7 +12,6 @@ public abstract class ThreadedDAO<T> extends DAO<T> {
     ThreadedDAO(String tableBeingSelected) {
         super(tableBeingSelected);
     }
-
     public abstract  void start();
     public abstract void stop();
 }

@@ -1,12 +1,12 @@
 package main.java.com.traderbobsemporium.controllers.Retailer;
 
-import com.sun.javafx.image.BytePixelSetter;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -21,20 +21,19 @@ import main.java.com.traderbobsemporium.gui.GUIManager;
 import main.java.com.traderbobsemporium.gui.InitGUI;
 import main.java.com.traderbobsemporium.model.Customer;
 import main.java.com.traderbobsemporium.model.Item;
-import main.java.com.traderbobsemporium.model.ItemType;
-import main.java.com.traderbobsemporium.model.Logging.PurchasesActivity;
+import main.java.com.traderbobsemporium.model.exceptions.InsufficientBalanceException;
+import main.java.com.traderbobsemporium.model.exceptions.QuantityException;
+import main.java.com.traderbobsemporium.model.logging.PurchasesActivity;
 import main.java.com.traderbobsemporium.util.AuthUtil;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.LoggingUtil;
 import main.java.com.traderbobsemporium.util.Util;
-import org.controlsfx.dialog.ExceptionDialog;
+
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Author Aidan Stewart
@@ -51,9 +50,11 @@ public class RetailerController implements InitGUI {
     @FXML
     private ListView<Customer> customerListView;
     @FXML
-    private ListView<String> customerPurchasesListView;
+    private TableView<PurchasesActivity> customerPurchasesTableView;
     @FXML
-    private Text remainingBalanceText;
+    private TableColumn<PurchasesActivity, String> camperColumn, itemColumn, itemTypeColumn;
+    @FXML
+    private Text remainingBalanceText, dailyLimitText;
     @FXML
     private TextField filterTextField;
     @FXML
@@ -63,7 +64,7 @@ public class RetailerController implements InitGUI {
     @FXML
     private TilePane itemTilePane;
     @FXML
-    private ChoiceBox<ItemType> itemTypeChoiceBox;
+    private ChoiceBox<String> itemTypeChoiceBox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -73,13 +74,8 @@ public class RetailerController implements InitGUI {
         purchasesActivity.start();
         itemTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> populateItemTilePane());
         itemTilePane.prefWidthProperty().bind(itemScrollPane.widthProperty());
-        filterTextField.textProperty().addListener(customerTableViewFilter);
-        customerPurchasesListView.setSelectionModel(null);
-    }
-
-    private void setCellFactories() {
-        itemsSelectedListView.setCellFactory(selectedItemsListViewCallback());
-        customerListView.setCellFactory(customersListViewCallback());
+        filterTextField.textProperty().addListener(customerFilter);
+        customerPurchasesTableView.setSelectionModel(null);
     }
 
     private void populateAll() {
@@ -89,18 +85,15 @@ public class RetailerController implements InitGUI {
 
     private void populateItemTilePane() {
         itemTilePane.getChildren().clear();
-        try {
-            for (Item item : itemDAO.getAll()) {
-                ItemVBox itemVbox = new ItemVBox(item);
-                itemTilePane.getChildren().add(itemVbox);
-                addListener(itemVbox);
-            }
-            setVBoxImage();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            LoggingUtil.logExceptionToFile(e);
+        for (Item item : itemDAO.getAll("WHERE itemType = ?", itemTypeChoiceBox.getValue())) {
+            ItemVBox itemVbox = new ItemVBox(item);
+            itemTilePane.getChildren().add(itemVbox);
+            addListener(itemVbox);
         }
+        setVBoxImage();
     }
+
+
 
     private void setVBoxImage() {
         new Thread(() -> {
@@ -170,106 +163,88 @@ public class RetailerController implements InitGUI {
     }
 
     @FXML
-    private void displayCustomerPurchases() {
-        Customer customer = customerListView.getSelectionModel().getSelectedItem();
-        if (!customerPurchasesListView.getItems().isEmpty())
-            customerPurchasesListView.getItems().clear();
-        if (customer == null) {
-            remainingBalanceText.setText("");
-            return;
-        }
-        remainingBalanceText.setText("Remaining balance: " + customer.getBalanceString());
-        retreiveSpecificPurchasesActivity(customer);
-
+    private void displaySelectedItemOnFilterListView(KeyEvent keyEvent){
+        if (keyEvent.getCode() == KeyCode.ENTER)
+            filterTabPane.getSelectionModel().select(1);
     }
 
-    private void retreiveSpecificPurchasesActivity(Customer customer){
-        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT itemName FROM purchasesactivity WHERE " +
-                     "date = ? AND customerName = ?")) {
-            statement.setString(1, Util.date(false));
-            statement.setString(2, customer.getName());
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    customerPurchasesListView.getItems().add(resultSet.getString("itemName"));
-                }
+    @FXML
+    private void displayCustomerPurchases() {
+        try {
+            Customer customer = customerDAO.get(customerListView.getSelectionModel().getSelectedItem().getId());
+            if (customer == null) {
+                remainingBalanceText.setText("");
+                dailyLimitText.setText("");
+            } else {
+                if (!customerPurchasesTableView.getItems().isEmpty())
+                    customerPurchasesTableView.getItems().clear();
+                remainingBalanceText.setText(customer.getBalanceString());
+                dailyLimitText.setText("Daily limit: " + String.valueOf(customer.getDailyLimit()));
+                customerPurchasesTableView.getItems().setAll(purchasesActivity.getAll("WHERE date = ? AND customerName = ?",
+                        new String[]{Util.date(false), customer.getName()}));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            LoggingUtil.logExceptionToFile(e);
-        }
+        } catch (Exception ignored) { }
     }
 
     @FXML
     private void checkout() {
-        Customer selectedCustomer = customerDAO.get(customerListView.getSelectionModel().getSelectedItem().getId());
-        Util.displayAlert(getCheckoutText(selectedCustomer), Alert.AlertType.CONFIRMATION);
-        List<String> nameOfItemsNotCheckedOut = new ArrayList<>();
-        attemptToCheckoutSelectedItems(nameOfItemsNotCheckedOut, selectedCustomer);
+        Util.displayAlert("Are you sure you want to checkout?", Alert.AlertType.CONFIRMATION);
+        try {
+            subtractBalance();
+            subtractQuantities();
+            logPurchases();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (InsufficientBalanceException e){
+            Util.displayAlert("Checkout failed! Customer has insufficient balance to complete transaction", Alert.AlertType.ERROR);
+        } catch (QuantityException e){
+            Util.displayAlert("Checkout failed! Item is out of stock!", Alert.AlertType.ERROR);
+        }
         clear();
-        displayItemsNotCheckedOut(nameOfItemsNotCheckedOut);
-        filterTextField.requestFocus();
+    }
+
+    private void subtractBalance() throws InsufficientBalanceException, SQLException, QuantityException {
+        Customer syncedCustomer = customerDAO.get(customerListView.getSelectionModel().getSelectedItem().getId());
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Item item : itemsSelectedListView.getItems()) {
+            if (item.getQuantity() <= 0)
+                throw new QuantityException();
+            sum = sum.add(item.getPrice());
+        }
+        if (sum.compareTo(syncedCustomer.getBalance()) <= 0)
+            syncedCustomer.setBalance(syncedCustomer.getBalance().subtract(sum));
+        else
+            throw new InsufficientBalanceException();
+        customerDAO.update(syncedCustomer);
+    }
 
 
+    private void subtractQuantities() throws SQLException {
+        Map<Item, Long> counts = itemsSelectedListView.getItems().stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+        for (Item item : counts.keySet()) {
+            item.setQuantity((int) (item.getQuantity() - counts.get(item)));
+            itemDAO.update(item);
+        }
+    }
+
+    private void logPurchases(){
+        Customer customer = customerListView.getSelectionModel().getSelectedItem();
+        for (Item item : itemsSelectedListView.getItems())
+            purchasesActivity.add(new PurchasesActivity(item, customer));
     }
 
     private void clear(){
         filterTextField.clear();
         itemsSelectedListView.getItems().clear();
-        customerListView.setItems(getUnfilteredCustomerData());
+        filterTabPane.getSelectionModel().select(0);
     }
 
-    private void displayItemsNotCheckedOut(List<String> nameOfItemsNotCheckedOut){
-        if (!nameOfItemsNotCheckedOut.isEmpty()) {
-            String dialog = "The following items did not checkout due to the customers insufficient balance " +
-                    "or the item is out of stock!\n" + nameOfItemsNotCheckedOut;
-            System.out.println(dialog);
-            Util.displayAlert(dialog, Alert.AlertType.WARNING);
-        }
-    }
-
-    private void attemptToCheckoutSelectedItems(List<String> itemsNotCheckout, Customer selectedCustomer) {
-        try {
-            for (Item item : itemsSelectedListView.getItems()) {
-                Item syncedItem = itemDAO.get(item.getId());
-                if (syncedItem.getPrice().compareTo(selectedCustomer.getBalance()) <= 0 && syncedItem.getQuantity() > 0)
-                    calculateCheckoutValues(syncedItem, selectedCustomer);
-                else
-                    itemsNotCheckout.add(item.getName());
-            }
-            customerDAO.update(selectedCustomer);
-        } catch (SQLException e){
-            LoggingUtil.logExceptionToFile(e);
-            e.printStackTrace();
-        }
-    }
-
-    private void calculateCheckoutValues(Item item, Customer customer) throws SQLException {
-        item.setQuantity(item.getQuantity() - 1);
-        customer.setBalance(customer.getBalance().subtract(item.getPrice()));
-        purchasesActivity.add(new PurchasesActivity(item, customer));
-        itemDAO.update(item);
-    }
 
     @FXML
     private void delete(){
         itemsSelectedListView.getItems().remove(itemsSelectedListView.getSelectionModel().getSelectedIndex());
     }
 
-    private String getCheckoutText(Customer selectedCustomer){
-        String customerName = selectedCustomer.getName();
-        BigDecimal total = new BigDecimal(0);
-        StringBuilder stringBuilder = new StringBuilder("Are you sure you want to checkout " + customerName + "?\n");
-        stringBuilder.append("=========================================");
-        for (Item items : itemsSelectedListView.getItems()) {
-            stringBuilder.append(items.getName()).append(" : ").append(items.getPrice()).append("\n");
-            total = total.add(items.getPrice());
-        }
-        BigDecimal remainingBalance = selectedCustomer.getBalance().subtract(total);
-        stringBuilder.append("Your total is ").append(total)
-                .append(" and customer remaining balance would be $").append(remainingBalance);
-        return String.valueOf(stringBuilder);
-    }
 
     @FXML
     private void logout(){
@@ -283,19 +258,20 @@ public class RetailerController implements InitGUI {
     }
 
     private void setChoiceBox() {
-        for (ItemType itemType : ItemType.values())
-            itemTypeChoiceBox.getItems().add(itemType);
-        itemTypeChoiceBox.setValue(ItemType.CANDY);
-
+        try {
+            for (String itemType : itemDAO.getItemCategories())
+                itemTypeChoiceBox.getItems().add(itemType);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private ChangeListener<String> customerTableViewFilter = (observable, oldValue, newValue) -> {
+    private ChangeListener<String> customerFilter = (observable, oldValue, newValue) -> {
         FilteredList<Customer> filteredData = new FilteredList<>(Objects.requireNonNull(getUnfilteredCustomerData()), c -> true);
         filteredData.setPredicate(customer -> {
             String lowerCaseFilter = newValue.toLowerCase();
             return !newValue.isEmpty() &&
-                    customer.getName().toLowerCase().startsWith(lowerCaseFilter) ||
-                    String.valueOf(customer.getId()).startsWith(lowerCaseFilter);
+                    customer.getName().toLowerCase().startsWith(lowerCaseFilter);
         });
         customerListView.setItems(filteredData);
     };
@@ -314,5 +290,14 @@ public class RetailerController implements InitGUI {
     public void exit() {
         purchasesActivity.stop();
         DatabaseUtil.DATA_SOURCE.close();
+    }
+
+    private void setCellFactories() {
+        itemsSelectedListView.setCellFactory(selectedItemsListViewCallback());
+        customerListView.setCellFactory(customersListViewCallback());
+        camperColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        itemColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+        itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
+
     }
 }

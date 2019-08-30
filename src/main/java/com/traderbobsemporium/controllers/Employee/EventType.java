@@ -1,4 +1,4 @@
-package main.java.com.traderbobsemporium.model.logging;
+package main.java.com.traderbobsemporium.controllers.Employee;
 
 /**
  * @Author Aidan Stewart
@@ -6,6 +6,6 @@ package main.java.com.traderbobsemporium.model.logging;
  * Copyright (c)
  * All rights reserved.
  */
-public enum ActivityType {
+public enum EventType {
     ADD, UPDATE, DELETE
 }

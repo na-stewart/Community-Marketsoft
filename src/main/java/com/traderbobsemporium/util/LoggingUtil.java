@@ -11,7 +11,7 @@ import java.io.*;
 public final class LoggingUtil {
 
     public static void logExceptionToFile(Exception e){
-        File dir = new File(System.getProperty("user.home") + "\\Trader-Bobs-Error-Logs");
+        File dir = new File(System.getProperty("user.home") + "\\CMS-Logs");
         File file = new File(dir, Util.date(false) + ".txt");
         try {
             if (!dir.exists())

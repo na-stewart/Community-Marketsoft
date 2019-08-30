@@ -1,11 +1,10 @@
 package main.java.com.traderbobsemporium.dao;
 
 import main.java.com.traderbobsemporium.model.Item;
-import main.java.com.traderbobsemporium.model.ItemType;
 import main.java.com.traderbobsemporium.util.DatabaseUtil;
 import main.java.com.traderbobsemporium.util.LoggingUtil;
+import main.java.com.traderbobsemporium.util.Util;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,20 +22,49 @@ public class ItemDAO extends DAO<Item> {
         super("item");
     }
 
-    @Override
-    public void updateAll(Item item, String[] params) throws SQLException {
-        if (!params[0].isEmpty())
-            item.setName(params[0]);
-        if (!params[1].isEmpty())
-            item.setQuantity(Integer.parseInt(params[1]));
-        if (!params[2].isEmpty())
-            item.setPrice(new BigDecimal(params[2]));
-        if (!params[3].isEmpty())
-            item.setImageURL(params[3]);
-        if (!params[4].isEmpty())
-            item.setItemType(ItemType.valueOf(params[4]));
-        update(item);
+
+    //Rething item categorys
+
+    //text field right below item choice box. Allows you to delete items exc.
+
+
+    public void addItemCategory(String category){
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO itemcategories" +
+                     "(id, category) VALUES (?, ?)")) {
+            preparedStatement.setInt(1, Util.NEW_ID());
+            preparedStatement.setString(2, category);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+    public List<String> getItemCategories() throws SQLException {
+        List<String> categories = new ArrayList<>();
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery("SELECT category FROM itemcategories")) {
+                while (resultSet.next()) {
+                    categories.add(resultSet.getString("category"));
+                }
+                return categories;
+            }
+        }
+    }
+
+
+    public void deleteItemCategory(String category){
+        try (Connection connection = DatabaseUtil.DATA_SOURCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM itemcategories WHERE category = ?")) {
+            preparedStatement.setString(1, category);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            LoggingUtil.logExceptionToFile(e);
+        }
+    }
+
 
     @Override
     public void update(Item updated) throws SQLException {
@@ -47,7 +75,7 @@ public class ItemDAO extends DAO<Item> {
             preparedStatement.setString(2, updated.getImageURL());
             preparedStatement.setBigDecimal(3, updated.getPrice());
             preparedStatement.setInt(4, updated.getQuantity());
-            preparedStatement.setString(5, updated.getItemType().name());
+            preparedStatement.setString(5, updated.getItemType());
             preparedStatement.setInt(6, updated.getId());
             preparedStatement.execute();
         }
@@ -63,8 +91,9 @@ public class ItemDAO extends DAO<Item> {
             preparedStatement.setBigDecimal(3, item.getPrice());
             preparedStatement.setInt(4, item.getQuantity());
             preparedStatement.setString(5, item.getImageURL());
-            preparedStatement.setString(6, item.getItemType().name());
+            preparedStatement.setString(6, item.getItemType());
             preparedStatement.execute();
         }
     }
+
 }

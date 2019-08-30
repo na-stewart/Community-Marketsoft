@@ -25,7 +25,7 @@ public final class Util {
     }
 
     public static int NEW_ID(){
-        return ThreadLocalRandom.current().nextInt(32767);
+        return ThreadLocalRandom.current().nextInt(8388607);
     }
 
     public static String date(boolean time){
@@ -42,10 +42,9 @@ public final class Util {
         if (alertType == Alert.AlertType.CONFIRMATION){
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() != ButtonType.OK){
-                throw new RuntimeException("User Declined Checkout!");
+                throw new RuntimeException("User Declined!");
             }
         } else
             alert.showAndWait();
-
     }
 }

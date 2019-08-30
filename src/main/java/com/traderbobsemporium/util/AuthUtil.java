@@ -12,7 +12,9 @@ import org.apache.shiro.authz.permission.WildcardPermissionResolver;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.jdbc.JdbcRealm;
 
+import java.sql.Connection;
 import java.util.Iterator;
+import java.util.UUID;
 
 /**
  * @Author Aidan Stewart
@@ -22,7 +24,14 @@ import java.util.Iterator;
  */
 public final class AuthUtil {
 
+    public static UUID uuid;
+
     private AuthUtil(){
+
+    }
+
+    public static void UUID(){
+        //get Logged in account UUID
 
     }
 
@@ -34,23 +43,6 @@ public final class AuthUtil {
         System.out.println("Successfully Logged Out!\n================================");
     }
 
-    public static void INIT_AUTH(){
-        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
-        ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator();
-        authenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
-        defaultSecurityManager.setAuthenticator(authenticator);
-        ModularRealmAuthorizer authorizer = new ModularRealmAuthorizer();
-        authorizer.setPermissionResolver(new WildcardPermissionResolver());
-        defaultSecurityManager.setAuthorizer(authorizer);
-        JdbcRealm realm = new BobsVeryOwnJbdcRealm();
-        realm.setDataSource(DatabaseUtil.DATA_SOURCE);
-        realm.setAuthenticationQuery("SELECT password FROM account WHERE username = ?");
-        realm.setUserRolesQuery("SELECT accountRole FROM account WHERE username = ?");
-        realm.setPermissionsQuery("SELECT permission FROM accountpermissions WHERE username = ?");
-        realm.setPermissionsLookupEnabled(true);
-        realm.setCredentialsMatcher(new PasswordMatcher());
-        defaultSecurityManager.setRealm(realm);
-        SecurityUtils.setSecurityManager(defaultSecurityManager);
-    }
+
 
 }

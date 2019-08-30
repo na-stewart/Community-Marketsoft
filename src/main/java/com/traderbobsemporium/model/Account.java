@@ -1,6 +1,7 @@
 package main.java.com.traderbobsemporium.model;
 
 import main.java.com.traderbobsemporium.util.Util;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +19,7 @@ public class Account extends Model {
 
     public Account(String name, String password, AccountRole accountRoles) {
         super(name);
-        this.password = password;
+        this.password = new DefaultPasswordService().encryptPassword(password);
         this.accountRoles = accountRoles;
     }
 
@@ -42,7 +43,7 @@ public class Account extends Model {
     }
 
     public void setPassword(String password) {
-            this.password = password;
+            this.password = new DefaultPasswordService().encryptPassword(password);
     }
 
 
