@@ -1,5 +1,7 @@
 package main.java.com.marketsoftcommunityapi.repository.Loggers;
 
+import main.java.com.marketsoftcommunityapi.model.logging.AccountActivity;
+import main.java.com.marketsoftcommunityapi.model.logging.ActivityType;
 import main.java.com.marketsoftcommunityapi.repository.Repo;
 import main.java.com.marketsoftcommunityapi.model.logging.Announcement;
 import main.java.com.marketsoftcommunityapi.util.DbUtil;
@@ -16,6 +18,7 @@ import java.sql.SQLException;
  */
 public class AnnouncementRepo extends Repo<Announcement> {
 
+
     public AnnouncementRepo() {
         super("announcement");
     }
@@ -31,6 +34,7 @@ public class AnnouncementRepo extends Repo<Announcement> {
             preparedStatement.setString(4, updated.getDateTime());
             preparedStatement.setInt(5, updated.getId());
             preparedStatement.execute();
+            getAccountActivityRepo().add(new AccountActivity(ActivityType.UPDATE, updated));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,6 +52,7 @@ public class AnnouncementRepo extends Repo<Announcement> {
             preparedStatement.setString(4, announcement.getDialog());
             preparedStatement.setString(5, announcement.getDateTime());
             preparedStatement.execute();
+            getAccountActivityRepo().add(new AccountActivity(ActivityType.ADD, announcement));
         } catch (SQLException e) {
             e.printStackTrace();
         }

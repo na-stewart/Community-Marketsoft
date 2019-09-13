@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
  * Copyright (c)
  * All rights reserved.
  */
+
+@RestController
 public class PurchasesActivityController {
     private Subject subject = SecurityUtils.getSubject();
     private PurchasesActivityRepo repo = new PurchasesActivityRepo();
@@ -44,7 +46,7 @@ public class PurchasesActivityController {
     @GetMapping("/purchasesactivity")
     public ResponseEntity get(@RequestParam int id) {
         subject.checkPermission("purchasesactivity:display");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(repo.get(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/purchasesactivity")

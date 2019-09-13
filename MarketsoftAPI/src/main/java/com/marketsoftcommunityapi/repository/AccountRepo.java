@@ -2,8 +2,13 @@ package main.java.com.marketsoftcommunityapi.repository;
 
 import main.java.com.marketsoftcommunityapi.model.Account;
 import main.java.com.marketsoftcommunityapi.model.AccountPermission;
+import main.java.com.marketsoftcommunityapi.model.Model;
+import main.java.com.marketsoftcommunityapi.model.logging.AccountActivity;
+import main.java.com.marketsoftcommunityapi.model.logging.ActivityType;
 import main.java.com.marketsoftcommunityapi.util.DbUtil;
 import main.java.com.marketsoftcommunityapi.util.LoggingUtil;
+import org.eclipse.jetty.util.annotation.ManagedObject;
+import org.springframework.web.util.pattern.PathPattern;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,60 +24,38 @@ import java.util.List;
  * All rights reserved.
  */
 public class AccountRepo extends Repo<Account> {
+    private Repo<AccountPermission> accountPermissionRepo = new Repo<AccountPermission>("accountpermissions") {
+        @Override
+        public void update(AccountPermission updated) {
+            //ignore
+        }
+
+        @Override
+        public void add(AccountPermission accountPermission) {
+            try (Connection connection = DbUtil.DATA_SOURCE.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO accountpermissions " +
+                         "(id, permission, username, userId) VALUES (?, ?, ?, ?)")) {
+                preparedStatement.setInt(1, accountPermission.getId());
+                preparedStatement.setString(2, accountPermission.getPermission());
+                preparedStatement.setString(3, accountPermission.getName());
+                preparedStatement.setInt(4, accountPermission.getUserId());
+                preparedStatement.execute();
+                getAccountActivityRepo().add(new AccountActivity(ActivityType.ADD, accountPermission));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    };
 
     public AccountRepo() {
         super("account");
     }
 
-    //Move accountpermissiondao to here.
-
-    public List<AccountPermission> getAccountPermissions(String username){
-        List<AccountPermission> list = new ArrayList<>();
+    public void deleteAccountPermissions(int id) {
         try (Connection connection = DbUtil.DATA_SOURCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM accountpermissions WHERE username = ?")) {
-            statement.setString(1, username);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next())
-                    list.add(new AccountPermission(resultSet));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            LoggingUtil.logExceptionToFile(e);
-        }
-        return list;
-    }
-
-
-    public void addPermissions(AccountPermission accountPermission)  {
-        try (Connection connection = DbUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO accountpermissions " +
-                     "(id, permission, username) VALUES (?, ?, ?)")) {
-            preparedStatement.setInt(1, accountPermission.getId());
-            preparedStatement.setString(2, accountPermission.getPermission());
-            preparedStatement.setString(3, accountPermission.getName());
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void deletePermissions(String username){
-        deletePermissions(0, username);
-    }
-
-    public void deletePermissions(int id){
-        deletePermissions(id, null);
-    }
-
-    private void deletePermissions(int id, String username){
-        String where = username == null ? "WHERE id = ?" : "WHERE username = ?";
-        try (Connection connection = DbUtil.DATA_SOURCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM accountpermissions " + where)) {
-            if (username == null)
-                 preparedStatement.setInt(1, id);
-            else
-                preparedStatement.setString(1, username);
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM accountpermissions WHERE userId = ? ")) {
+            preparedStatement.setInt(1, id);
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -90,6 +73,7 @@ public class AccountRepo extends Repo<Account> {
             preparedStatement.setString(3, updated.getAccountRole().name());
             preparedStatement.setInt(4, updated.getId());
             preparedStatement.execute();
+            getAccountActivityRepo().add(new AccountActivity(ActivityType.UPDATE, updated));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -105,8 +89,13 @@ public class AccountRepo extends Repo<Account> {
             preparedStatement.setString(3, account.getPassword());
             preparedStatement.setString(4, account.getAccountRole().name());
             preparedStatement.execute();
+            getAccountActivityRepo().add(new AccountActivity(ActivityType.ADD, account));
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Repo<AccountPermission> getAccountPermissionRepo() {
+        return accountPermissionRepo;
     }
 }

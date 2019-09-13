@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.*;
  * Copyright (c)
  * All rights reserved.
  */
+
+@RestController
 public class AccountActivityController{
         private Subject subject = SecurityUtils.getSubject();
         private AccountActivityRepo repo = new AccountActivityRepo();
 
-        @GetMapping("accountactivity/all")
+        @GetMapping("/accountactivity/all")
         public ResponseEntity getAll() {
             subject.checkPermission("accountactivity:display");
             return new ResponseEntity<>(repo.getAll(), HttpStatus.OK);
@@ -43,7 +45,7 @@ public class AccountActivityController{
         @GetMapping("/accountactivity")
         public ResponseEntity get(@RequestParam int id) {
             subject.checkPermission("accountactivity:display");
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(repo.get(id), HttpStatus.OK);
         }
 
         @DeleteMapping("/accountactivity")

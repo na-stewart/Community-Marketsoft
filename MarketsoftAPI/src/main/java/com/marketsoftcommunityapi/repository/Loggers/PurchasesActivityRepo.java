@@ -42,6 +42,7 @@ public class PurchasesActivityRepo extends LogRepo<PurchasesActivity> {
         }
     }
 
+
     @Override
     public void add(PurchasesActivity purchasesActivity) {
         queue.add(purchasesActivity);

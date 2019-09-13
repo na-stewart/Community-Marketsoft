@@ -20,11 +20,11 @@ public class AccountActivity extends Model {
     private String date;
 
 
-    public AccountActivity(ActivityType activityType, Model profile) {
+    public AccountActivity(ActivityType activityType, Model model) {
         super(String.valueOf(SecurityUtils.getSubject().getPrincipal()));
         this.activityType = activityType;
-        this.affectedName = profile.getName();
-        this.affectedId = profile.getId();
+        this.affectedName = model.getName();
+        this.affectedId = model.getId();
         this.date = Util.date(true);
     }
 

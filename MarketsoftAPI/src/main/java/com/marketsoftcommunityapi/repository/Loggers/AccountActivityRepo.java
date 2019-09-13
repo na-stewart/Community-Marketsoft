@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * All rights reserved.
  */
 public class AccountActivityRepo extends LogRepo<AccountActivity> {
+    private static AccountActivityRepo accountActivityInstance = new AccountActivityRepo();
     private List<AccountActivity> queue = new ArrayList<>();
     private AtomicBoolean running = new AtomicBoolean();
 
@@ -51,11 +52,12 @@ public class AccountActivityRepo extends LogRepo<AccountActivity> {
 
     private void update(){
         while(running.get()) {
+            //Your ide may tell you to change this to a foreach loop, don't or it will throw exceptions.
             for (int i = 0; i < queue.size(); i++)
                 logToDatabase(queue.get(i));
             queue.clear();
             try {
-                Thread.sleep(3000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 LoggingUtil.logExceptionToFile(e);
@@ -74,6 +76,7 @@ public class AccountActivityRepo extends LogRepo<AccountActivity> {
             preparedStatement.setString(5, accountActivity.getAffectedName());
             preparedStatement.setString(6, accountActivity.getDate());
             preparedStatement.execute();
+
         } catch (SQLException e) {
             e.printStackTrace();
             LoggingUtil.logExceptionToFile(e);
@@ -87,6 +90,11 @@ public class AccountActivityRepo extends LogRepo<AccountActivity> {
     @Override
     public void add(AccountActivity accountActivity) {
         queue.add(accountActivity);
+    }
+
+    public static AccountActivityRepo getInstance()
+    {
+        return accountActivityInstance;
     }
 
 }

@@ -1,6 +1,10 @@
 package main.java.com.marketsoftcommunityapi.repository;
 
 
+import main.java.com.marketsoftcommunityapi.model.Model;
+import main.java.com.marketsoftcommunityapi.model.logging.AccountActivity;
+import main.java.com.marketsoftcommunityapi.model.logging.ActivityType;
+import main.java.com.marketsoftcommunityapi.repository.Loggers.AccountActivityRepo;
 import main.java.com.marketsoftcommunityapi.util.DbUtil;
 import main.java.com.marketsoftcommunityapi.util.LoggingUtil;
 
@@ -19,6 +23,7 @@ public abstract class Repo<T> {
     private String selectQuery;
     private String tableBeingSelected;
     private ResultSetModelFactory<T> resultSetModelFactory;
+    private AccountActivityRepo accountActivityRepo = AccountActivityRepo.getInstance();
 
     /*
     Events: Add update delete
@@ -61,6 +66,7 @@ public abstract class Repo<T> {
                     model = resultSetModelFactory.getModel(resultSet);
                     modelList.add(model);
                 }
+
                 return modelList;
             }
         } catch (SQLException e) {
@@ -94,12 +100,19 @@ public abstract class Repo<T> {
     public void delete(int id){
         try (Connection connection = DbUtil.DATA_SOURCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM "+ tableBeingSelected + " WHERE id = ?")) {
+            T t = get(id);
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
+            accountActivityRepo.add(new AccountActivity(ActivityType.DELETE, (Model) t));
+
         } catch (SQLException e) {
             e.printStackTrace();
             LoggingUtil.logExceptionToFile(e);
         }
+    }
+
+    public AccountActivityRepo getAccountActivityRepo() {
+        return accountActivityRepo;
     }
 
     public abstract void update(T updated);

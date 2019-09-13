@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import main.java.com.marketsoftcommunityapi.auth.customRealm;
 import main.java.com.marketsoftcommunityapi.model.Customer;
 import main.java.com.marketsoftcommunityapi.repository.CustomerRepo;
+import main.java.com.marketsoftcommunityapi.repository.Loggers.AccountActivityRepo;
 import main.java.com.marketsoftcommunityapi.util.DbUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.PasswordMatcher;
@@ -32,7 +33,9 @@ public class Main {
     public static void main(String args[]) {
         configDb();
         initAuth();
+        AccountActivityRepo.getInstance().start();
         SpringApplication.run(Main.class, args);
+
     }
 
     private static void configDb() {

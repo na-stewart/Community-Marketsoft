@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * Copyright (c)
  * All rights reserved.
  */
+@RestController
 public class AnnouncementController {
     private Subject subject = SecurityUtils.getSubject();
     private AnnouncementRepo repo = new AnnouncementRepo();
@@ -44,7 +45,7 @@ public class AnnouncementController {
     @GetMapping("/announcement")
     public ResponseEntity get(@RequestParam int id) {
         subject.checkPermission("announcement:display");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(repo.get(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/announcement")

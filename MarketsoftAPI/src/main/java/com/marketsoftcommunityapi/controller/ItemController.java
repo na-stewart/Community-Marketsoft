@@ -1,9 +1,8 @@
 package main.java.com.marketsoftcommunityapi.controller;
 
 import com.google.gson.Gson;
-import main.java.com.marketsoftcommunityapi.model.Customer;
 import main.java.com.marketsoftcommunityapi.model.Item;
-import main.java.com.marketsoftcommunityapi.repository.CustomerRepo;
+import main.java.com.marketsoftcommunityapi.model.ItemCategory;
 import main.java.com.marketsoftcommunityapi.repository.ItemRepo;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
  * Copyright (c)
  * All rights reserved.
  */
+
+@RestController
 public class ItemController {
     private Subject subject = SecurityUtils.getSubject();
     private ItemRepo repo = new ItemRepo();
@@ -25,6 +26,11 @@ public class ItemController {
     public ResponseEntity getAll() {
         subject.checkPermission("item:display");
         return new ResponseEntity<>(repo.getAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("item/categories")
+    public ResponseEntity getAllCategories(){
+        return new ResponseEntity<>(repo.getCategoryRepo().getAll(), HttpStatus.OK);
     }
 
 
@@ -44,7 +50,7 @@ public class ItemController {
     @GetMapping("/item")
     public ResponseEntity get(@RequestParam int id) {
         subject.checkPermission("item:display");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(repo.get(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/item")
@@ -55,17 +61,17 @@ public class ItemController {
     }
 
     @DeleteMapping("/item/itemcategory")
-    public ResponseEntity deleteItemCategory(@RequestParam String category){
+    public ResponseEntity deleteItemCategory(@RequestParam("id") int id){
         subject.checkPermission("item:delete");
-        repo.deleteItemCategory(category);
+        repo.getCategoryRepo().delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/item/itemcategory")
-    public ResponseEntity postItemCategory(@RequestParam("category") String itemType) {
+    public ResponseEntity postItemCategory(@RequestParam("category") String category) {
         subject.checkPermission("item:add");
-        repo.addItemCategory(itemType);
-        return new ResponseEntity<>(itemType, HttpStatus.OK);
+        repo.getCategoryRepo().add(new Gson().fromJson(category, ItemCategory.class));
+        return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
     @PostMapping("/item")

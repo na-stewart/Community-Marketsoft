@@ -38,7 +38,7 @@ public class CustomerController {
     @GetMapping("/customer/all/whereparams")
     public ResponseEntity getAll(@RequestParam("where") String whereClause, @RequestParam("params") String[] params) {
         subject.checkPermission("customer:display");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(repo.getAll(whereClause, params), HttpStatus.OK);
     }
 
     @GetMapping("customer/all/where")
@@ -51,7 +51,7 @@ public class CustomerController {
     @GetMapping("/customer")
     public ResponseEntity get(@RequestParam int id) {
         subject.checkPermission("customer:display");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(repo.get(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/customer")

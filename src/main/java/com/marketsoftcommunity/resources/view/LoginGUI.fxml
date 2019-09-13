@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="647.0" prefWidth="1080.0" style="-fx-background-color: #7D953F;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.marketsoftcommunity.controllers.LoginController">
+   <children>
+      <Pane layoutX="774.0" layoutY="39.0" prefHeight="570.0" prefWidth="366.0" style="-fx-background-color: white;" stylesheets="@../css/LoginCSS.css" AnchorPane.bottomAnchor="38.0" AnchorPane.rightAnchor="43.0" AnchorPane.topAnchor="39.0">
+         <children>
+            <TextField fx:id="usernameField" layoutX="32.0" layoutY="173.0" prefHeight="31.0" prefWidth="303.0" promptText="username" />
+            <Text layoutX="134.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign In">
+               <font>
+                  <Font name="Calibri Light" size="37.0" />
+               </font>
+            </Text>
+            <Button layoutX="28.0" layoutY="385.0" mnemonicParsing="false" onAction="#login" prefHeight="31.0" prefWidth="309.0" text="Login" />
+            <Hyperlink layoutX="158.0" layoutY="480.0" onAction="#registerAccount" text="Register" />
+            <PasswordField fx:id="passwordField" layoutX="29.0" layoutY="294.0" prefHeight="31.0" prefWidth="309.0" promptText="password" />
+         </children>
+      </Pane>
+      <StackPane fx:id="backgroundImageContainer" prefHeight="647.0" prefWidth="724.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="457.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fx:id="backgroundImage" fitHeight="647.0" fitWidth="724.0">
+               <image>
+                  <Image url="@../Images/recreation-maine-teen-camp-waterfront-view-stanley-pond-re.jpg" />
+               </image>
+            </ImageView>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

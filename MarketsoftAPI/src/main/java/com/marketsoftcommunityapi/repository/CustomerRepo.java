@@ -1,6 +1,8 @@
 package main.java.com.marketsoftcommunityapi.repository;
 
 import main.java.com.marketsoftcommunityapi.model.Customer;
+import main.java.com.marketsoftcommunityapi.model.logging.AccountActivity;
+import main.java.com.marketsoftcommunityapi.model.logging.ActivityType;
 import main.java.com.marketsoftcommunityapi.util.DbUtil;
 
 import java.sql.Connection;
@@ -29,6 +31,7 @@ public class CustomerRepo extends Repo<Customer> {
             preparedStatement.setInt(3, updated.getDailyLimit());
             preparedStatement.setInt(4, updated.getId());
             preparedStatement.execute();
+            getAccountActivityRepo().add(new AccountActivity(ActivityType.UPDATE, updated));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -46,6 +49,7 @@ public class CustomerRepo extends Repo<Customer> {
             preparedStatement.setBigDecimal(3, customer.getBalance());
             preparedStatement.setInt(4, customer.getDailyLimit());
             preparedStatement.execute();
+            getAccountActivityRepo().add(new AccountActivity(ActivityType.ADD, customer));
         } catch (SQLException e) {
             e.printStackTrace();
         }

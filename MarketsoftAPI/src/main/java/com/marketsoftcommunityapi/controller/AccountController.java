@@ -3,10 +3,7 @@ package main.java.com.marketsoftcommunityapi.controller;
 import com.google.gson.Gson;
 import main.java.com.marketsoftcommunityapi.model.Account;
 import main.java.com.marketsoftcommunityapi.model.AccountPermission;
-import main.java.com.marketsoftcommunityapi.model.AccountRole;
-import main.java.com.marketsoftcommunityapi.model.Customer;
 import main.java.com.marketsoftcommunityapi.repository.AccountRepo;
-import main.java.com.marketsoftcommunityapi.repository.CustomerRepo;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.http.HttpStatus;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * Copyright (c)
  * All rights reserved.
  */
+@RestController
 public class AccountController {
     private Subject subject = SecurityUtils.getSubject();
     private AccountRepo repo = new AccountRepo();
@@ -27,6 +25,12 @@ public class AccountController {
     public ResponseEntity getAll() {
         subject.checkPermission("account:display");
         return new ResponseEntity<>(repo.getAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("account/permissions/all")
+    public ResponseEntity getAllPermissions(@RequestParam("username") String user){
+        subject.checkPermission("account:display");
+        return new ResponseEntity<>(repo.getAccountPermissionRepo().getAll("WHERE username = ?", user), HttpStatus.OK);
     }
 
 
@@ -46,20 +50,22 @@ public class AccountController {
     @GetMapping("/account")
     public ResponseEntity get(@RequestParam int id) {
         subject.checkPermission("account:display");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(repo.get(id) ,HttpStatus.OK);
     }
+
 
     @DeleteMapping("/account")
     public ResponseEntity delete(@RequestParam int id){
         subject.checkPermission("account:delete");
         repo.delete(id);
+        repo.deleteAccountPermissions(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/account/permissions")
     public ResponseEntity deletePerm(@RequestParam int id){
         subject.checkPermission("account:delete");
-        repo.deletePermissions(id);
+        repo.getAccountPermissionRepo().delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -74,7 +80,7 @@ public class AccountController {
     @PostMapping("/account/permissions")
     public ResponseEntity postPerm (@RequestParam("permission") String json) {
         subject.checkPermission("account:add");
-        repo.addPermissions(new Gson().fromJson(json, AccountPermission.class));
+        repo.getAccountPermissionRepo().add(new Gson().fromJson(json, AccountPermission.class));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
