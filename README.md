@@ -8,7 +8,7 @@ A youtube demo is here: https://www.youtube.com/watch?v=kj8cPJ-QkEI&t
 
 Screen Shots:
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/1.png)
+![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/1.PNG)
 
 ![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/2.png)
 
