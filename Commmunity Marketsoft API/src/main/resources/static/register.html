@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<body onload="subscribe()">
+<script src="https://js.stripe.com/v3"></script>
+
+<!-- Create a button that your customers click to complete their purchase. Customize the styling to suit your branding. -->
+<script>
+
+function subscribe() {
+var searchParams = new URLSearchParams(window.location.search);
+
+
+  var stripe = Stripe('pk_live_iSbQmel0Kg6MSWF9BrbuEzWY00oY7HMaIG');
+
+  stripe.redirectToCheckout({
+  // Make the id field from the Checkout Session creation API response
+  // available to this file, so you can provide it as parameter here
+  // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+  sessionId: searchParams.get("sessionId"),
+}).then(function (result) {
+  // If `redirectToCheckout` fails due to a browser or network
+  // error, display the localized error message to your customer
+  // using `result.error.message`.
+});
+    
+  }
+</script>
+</body>
+</html>
