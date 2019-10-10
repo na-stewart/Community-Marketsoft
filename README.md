@@ -2,9 +2,9 @@
 
 (new desc coming soon)
 
-https://github.com/sw1pe/Trader-Bobs-Emporium/projects
+https://communitymarketsoft.com
 
-A youtube demo is here: https://www.youtube.com/watch?v=kj8cPJ-QkEI&t
+demo coming soon.
 
 Screen Shots:
 
