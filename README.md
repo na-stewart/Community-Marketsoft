@@ -1,4 +1,4 @@
-# Camp Store
+# Community Marketsoft
 
 A brand new cashless transaction platform, specifically designed for your community.
 
