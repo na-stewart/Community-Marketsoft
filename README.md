@@ -2,7 +2,7 @@
 
 (new desc coming soon)
 
-https://communitymarketsoft.com
+https://www.communitymarketsoft.com
 
 demo coming soon.
 
