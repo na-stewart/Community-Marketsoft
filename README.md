@@ -8,19 +8,18 @@ A youtube demo is here: https://www.youtube.com/watch?v=kj8cPJ-QkEI&t
 
 Screen Shots:
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/1.PNG)
+![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/1.PNG)
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/2.png)
+![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/2.PNG)
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/3.png)
+![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/3.PNG)
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/4.png)
+![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/4.PNG)
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/5.png)
+![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/5.PNG)
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/6.png)
+![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/6.PNG)
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/7.png)
+![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/7.PNG)
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/tree/master/8.png)
-
+![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/8.PNG)
