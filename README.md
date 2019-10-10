@@ -1,6 +1,8 @@
 # Camp Store
 
-(new desc coming soon)
+A brand new cashless transaction platform, specifically designed for your community.
+
+Contributing is encouraged.
 
 https://www.communitymarketsoft.com
 
