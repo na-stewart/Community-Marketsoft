@@ -67,12 +67,6 @@ public final class Util {
         return ThreadLocalRandom.current().nextInt(8388607);
     }
 
-
-    public static String timeZone(){
-        Calendar now = Calendar.getInstance();
-        return now.getTimeZone().getID();
-    }
-
     public static String DATE(boolean time){
         String format = time ? "MM-dd-yyyy HH:mm:ss" : "MM-dd-yyyy";
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(AccountUtil.TIME_ZONE()));
