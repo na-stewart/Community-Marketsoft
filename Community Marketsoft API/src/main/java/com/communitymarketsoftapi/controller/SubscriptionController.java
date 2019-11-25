@@ -102,7 +102,7 @@ public class SubscriptionController {
     public ResponseEntity cancel() throws StripeException {
         Subject subject = SecurityUtils.getSubject();
         subject.checkRole("ADMIN");
-        Subscription.retrieve(Objects.requireNonNull(AccountUtil.SUBSCRIPTION_ID())).setCancelAtPeriodEnd(true);
+        Subscription.retrieve(AccountUtil.SUBSCRIPTION_ID()).cancel();
         subject.logout();
         return new ResponseEntity(HttpStatus.OK);
     }
