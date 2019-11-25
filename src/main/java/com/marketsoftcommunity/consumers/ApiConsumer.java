@@ -33,7 +33,7 @@ public class ApiConsumer<T> {
 //TODO try with resources
 
     private Gson gson = new Gson();
-    private String apiUrl = "http://localhost:5000/";
+    private String apiUrl = "https://api.communitymarketsoft.com/";
     private CloseableHttpClient httpClient = HttpClients.createDefault();
 
 
