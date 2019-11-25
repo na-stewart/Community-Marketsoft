@@ -197,8 +197,8 @@ public class EmployeeController implements InitGUI {
     @FXML
     private void unsubscribe(){
         Util.displayAlert("Are you sure you want to unsubscribe?", "Even if you unsubscribe, your information " +
-                "will still be available if you choose to subscribe again with same email. Application will be available until subscription " +
-                "period end.", Alert.AlertType.CONFIRMATION);
+                "will still be available if you choose to subscribe again with same email. Application will be available until logout."
+                          ,Alert.AlertType.CONFIRMATION);
         try {
             new ApiConsumer().post("subscription/cancel");
         } catch (IOException | ApiException e) {
