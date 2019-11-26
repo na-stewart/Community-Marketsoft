@@ -8,8 +8,6 @@ All rights are reserved and it is not Open Source or Free. You cannot modify or 
 
 https://www.communitymarketsoft.com
 
-demo coming soon.
-
 Screen Shots:
 
 ![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/1.PNG)
