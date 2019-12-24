@@ -4,7 +4,7 @@ A brand new cashless transaction platform, specifically designed for your commun
 
 Contributing is encouraged.
 
-All rights are reserved and it is not Open Source or Free. You cannot modify or redistribute this code without explicit permission from the copyright holder. 
+This was one of my first attempts of making a real application. Since this my abilities and intelligence in the field of making API's, and apps in general using spring and other frameworks has improved.
 
 https://www.communitymarketsoft.com
 
