@@ -4,8 +4,6 @@ A brand new cashless transaction platform, specifically designed for your commun
 
 Contributing is encouraged.
 
-This was one of my first attempts of making a real application. Since this my abilities and intelligence in the field of making API's, and apps in general using spring and other frameworks has improved.
-
 https://www.communitymarketsoft.com
 
 Screen Shots:
