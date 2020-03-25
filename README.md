@@ -1,5 +1,7 @@
 # Community Marketsoft
 
+## No longer in service, was an attempt at my first marketable application :) Learn what you can from my mistakes in the code.
+
 A brand new cashless transaction platform, specifically designed for your community.
 
 Contributing is encouraged.
