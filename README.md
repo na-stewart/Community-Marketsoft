@@ -1,8 +1,6 @@
 # Community Marketsoft
 
-I have learned a lot about Api design since this application. I've also learned that writing Api's in python is personally what I believe is the way to go.
-
-No longer in service, was an attempt at my first marketable application :) 
+No longer in service, was an attempt at my first marketable application.
 
 A brand new cashless transaction platform, specifically designed for your community.
 
