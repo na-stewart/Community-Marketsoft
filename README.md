@@ -1,6 +1,6 @@
 # Community Marketsoft
 
-No longer in service, was an attempt at my first marketable application.
+No longer in service as of 2019.
 
 A brand new cashless transaction platform, specifically designed for your community.
 
