@@ -24,8 +24,6 @@ https://www.communitymarketsoft.com
 
 ![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/5.PNG)
 
-![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/5.PNG)
-
 ## Retail
 
 ![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/6.PNG)
