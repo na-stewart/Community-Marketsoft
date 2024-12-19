@@ -6,8 +6,6 @@ A brand new cashless transaction platform, specifically designed for your commun
 
 Contributing is encouraged.
 
-https://www.communitymarketsoft.com
-
 ## Login
 
 ![alt text](https://github.com/sw1pe/Community-Marketsoft/blob/master/Screen%20Shots/4.PNG)
